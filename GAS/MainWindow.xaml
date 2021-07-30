@@ -1,0 +1,81 @@
+﻿<Window x:Class="GAS.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:GAS"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800" WindowStartupLocation="CenterScreen" WindowState="Maximized">
+    <DockPanel>
+        <Menu VerticalAlignment="Top" DockPanel.Dock="Top">
+            <MenuItem Header="Datei"></MenuItem>
+            <MenuItem Header="Bearbeiten">
+                <MenuItem Header="Kurs Hinzufügen" Click="AddCourse_Click"></MenuItem>
+                <MenuItem Header="LuL Hinzufügen" Click="AddTeacher_Click"></MenuItem>
+                <MenuItem Header="SuS Hinzufügen" Click="AddStudent_Click"></MenuItem>
+            </MenuItem>
+        </Menu>
+        <Grid DockPanel.Dock="Bottom">
+            <Button Content="Stundenplan Berechnen" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,10,10" Padding="5" Click="CalculateButton_Click"></Button>
+        </Grid>
+        <TabControl Margin="5">
+            <TabItem Header="Kurse">
+                <Grid>
+                    <Button HorizontalAlignment="Right" VerticalAlignment="Top" Content="Kurs Hinzufügen" Padding="5" Margin="10" Click="AddCourse_Click"/>
+                    <Label Content="Kurse:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="20,20,0,0" Height="25"></Label>
+                    <ComboBox x:Name="Course_Picker" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="100,20,0,0" Height="25" MinWidth="150" SelectionChanged="Course_Picker_SelectionChanged"></ComboBox>
+                    
+                    <Label HorizontalAlignment="Left" VerticalAlignment="Top" Content="ID:" Margin="20,80,0,0" Height="25"/>
+                    <Label HorizontalAlignment="Left" VerticalAlignment="Top" MinWidth="150" x:Name="ID_Course" Margin="100,80,0,0" Height="25" VerticalContentAlignment="Center"></Label>
+                    <Label HorizontalAlignment="Left" VerticalAlignment="Top" Content="Stunden:" Margin="20,120,0,0" Height="25" x:Name="PeriodsLabel_Course"/>
+                    <TextBox HorizontalAlignment="Left" VerticalAlignment="Top" Width="150" x:Name="Periods_Course" Margin="100,120,0,0" Height="25" VerticalContentAlignment="Center"></TextBox>
+                    <Label HorizontalAlignment="Left" VerticalAlignment="Top" Content="LuL:" Margin="20,160,0,0" Height="25" x:Name="TeacherLabel_Course"/>
+                    <ComboBox HorizontalAlignment="Left" VerticalAlignment="Top" Width="150" x:Name="Teacher_Course" Margin="100,160,0,0" Height="25" VerticalContentAlignment="Center"></ComboBox>
+                    <Label HorizontalAlignment="Left" VerticalAlignment="Top" Content="SuS:" Margin="20,200,0,0" Height="25"/>
+                    <ListBox HorizontalAlignment="Left" VerticalAlignment="Top" Width="150" x:Name="SelectedStudents_Course" Margin="100,200,20,20" MinHeight="25" VerticalContentAlignment="Center"></ListBox>
+                    <Button HorizontalAlignment="Left" VerticalAlignment="Top" Content="Verschieben" Padding="5" Margin="270,200,0,0" Width="90" Click="SwitchButton1_Click"></Button>
+                    <ListBox HorizontalAlignment="Left" VerticalAlignment="Top" Width="150" x:Name="NotSelectedStudents_Course" Margin="380,200,20,20" MinHeight="25" VerticalContentAlignment="Center"></ListBox>
+
+                    <Button Content="Löschen" HorizontalAlignment="Right" VerticalAlignment="Bottom" Padding="5" Margin="0,0,100,10" Click="DeleteCourse_Click"/>
+                    <Button Content="Speichern" HorizontalAlignment="Right" VerticalAlignment="Bottom" Padding="5" Margin="0,0,10,10" Click="SaveCourse_Click"/>
+                </Grid>
+            </TabItem>
+            <TabItem Header="LuL">
+                <Grid>
+                    <Button HorizontalAlignment="Right" VerticalAlignment="Top" Content="LuL Hinzufügen" Padding="5" Margin="10" Click="AddTeacher_Click"/>
+                    <Label Content="LuL:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="20,20,0,0" Height="25"></Label>
+                    <ComboBox x:Name="Teacher_Picker" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="100,20,0,0" Height="25" MinWidth="150" SelectionChanged="Teacher_Picker_SelectionChanged"></ComboBox>
+
+                    <Label HorizontalAlignment="Left" VerticalAlignment="Top" Content="ID:" Margin="20,80,0,0" Height="25"/>
+                    <Label HorizontalAlignment="Left" VerticalAlignment="Top" MinWidth="150" x:Name="ID_Teacher" Margin="100,80,0,0" Height="25" VerticalContentAlignment="Center"></Label>
+                    <Label HorizontalAlignment="Left" VerticalAlignment="Top" Content="Name:" Margin="20,120,0,0" Height="25"/>
+                    <TextBox HorizontalAlignment="Left" VerticalAlignment="Top" Width="150" x:Name="Name_Teacher" Margin="100,120,0,0" Height="25" VerticalContentAlignment="Center"></TextBox>
+                    <Label HorizontalAlignment="Left" VerticalAlignment="Top" Content="Kurse:" Margin="20,160,0,0" Height="25"/>
+                    <ListBox HorizontalAlignment="Left" VerticalAlignment="Top" Width="150" x:Name="Courses_Teacher" Margin="100,160,20,20" MinHeight="25" VerticalContentAlignment="Center"></ListBox>
+
+                    <Button Content="Löschen" HorizontalAlignment="Right" VerticalAlignment="Bottom" Padding="5" Margin="0,0,100,10" Click="DeleteTeacher_Click"/>
+                    <Button Content="Speichern" HorizontalAlignment="Right" VerticalAlignment="Bottom" Padding="5" Margin="0,0,10,10" Click="SaveTeacher_Click"/>
+                </Grid>
+            </TabItem>
+            <TabItem Header="SuS">
+                <Grid>
+                    <Button HorizontalAlignment="Right" VerticalAlignment="Top" Content="SuS Hinzufügen" Padding="5" Margin="10" Click="AddStudent_Click"/>
+                    <Label Content="SuS:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="20,20,0,0" Height="25"></Label>
+                    <ComboBox x:Name="Student_Picker" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="100,20,0,0" Height="25" MinWidth="150" SelectionChanged="Student_Picker_SelectionChanged"></ComboBox>
+                    
+                    <Label HorizontalAlignment="Left" VerticalAlignment="Top" Content="ID:" Margin="20,80,0,0" Height="25"/>
+                    <Label HorizontalAlignment="Left" VerticalAlignment="Top" Width="150" x:Name="ID_Student" Margin="100,80,0,0" Height="25" VerticalContentAlignment="Center"></Label>
+                    <Label HorizontalAlignment="Left" VerticalAlignment="Top" Content="Name:" Margin="20,120,0,0" Height="25"/>
+                    <TextBox HorizontalAlignment="Left" VerticalAlignment="Top" Width="150" x:Name="Name_Student" Margin="100,120,0,0" Height="25" VerticalContentAlignment="Center"></TextBox>
+                    <Label HorizontalAlignment="Left" VerticalAlignment="Top" Content="Kurse:" Margin="20,160,0,0" Height="25"/>
+                    <ListBox HorizontalAlignment="Left" VerticalAlignment="Top" Width="150" x:Name="SelectedCourses_Student" Margin="100,160,20,20" MinHeight="25" VerticalContentAlignment="Center"></ListBox>
+                    <Button HorizontalAlignment="Left" VerticalAlignment="Top" Content="Verschieben" Padding="5" Margin="270,160,0,0" Width="90" Click="SwitchButton3_Click"></Button>
+                    <ListBox HorizontalAlignment="Left" VerticalAlignment="Top" Width="150" x:Name="NotSelectedCourses_Student" Margin="380,160,20,20" MinHeight="25" VerticalContentAlignment="Center"></ListBox>
+
+                    <Button Content="Löschen" HorizontalAlignment="Right" VerticalAlignment="Bottom" Padding="5" Margin="0,0,100,10" Click="DeleteLöschenStudent_Click"/>
+                    <Button Content="Speichern" HorizontalAlignment="Right" VerticalAlignment="Bottom" Padding="5" Margin="0,0,10,10" Click="SaveStudent_Click"/>
+                </Grid>
+            </TabItem>
+        </TabControl>
+    </DockPanel>
+</Window>

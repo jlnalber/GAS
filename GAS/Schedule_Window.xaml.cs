@@ -1,0 +1,49 @@
+﻿using GeneticFramework;
+using System;
+using System.Linq;
+using System.Windows;
+using System.Windows.Controls;
+
+namespace GAS
+{
+    /// <summary>
+    /// Interaktionslogik für Schedule_Window.xaml
+    /// </summary>
+    public partial class Schedule_Window : Window
+    {
+        Schedule Schedule;
+        public Schedule_Window(Schedule schedule)
+        {
+            InitializeComponent();
+
+            this.Schedule = schedule;
+
+            Schedule[] population = new Schedule[20];
+            for (int i = 0; i < population.Length; i++)
+            {
+                population[i] = this.Schedule.GetRandomInstance();
+            }
+
+            GeneticAlgorithm<Schedule> geneticAlgorithm = new(population, 1);
+            geneticAlgorithm.ExtraCondition = (Schedule s) => s.AllApplies();
+            this.Schedule = geneticAlgorithm.Run();
+
+            //Stelle die Ergebniss dar.
+            for (int i = 1; i <= 5; i++)
+            {
+                for (int j = 1; j <= 11; j++)
+                {
+                    TextBlock textBlock = new TextBlock();
+                    textBlock.Text = string.Join(", ", from k in this.Schedule.Courses where k.Periods.Contains(new Period((Weekday)i, (Hour)j)) select k.ID);
+                    textBlock.TextAlignment = TextAlignment.Center;
+
+                    Grid.SetColumn(textBlock, i);
+                    Grid.SetRow(textBlock, j);
+
+                    this.Timetable.Children.Add(textBlock);
+
+                }
+            }
+        }
+    }
+}
