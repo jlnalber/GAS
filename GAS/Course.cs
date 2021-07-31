@@ -1,4 +1,5 @@
 ﻿using System;
+using GeneticFramework;
 
 namespace GAS
 {
@@ -71,6 +72,17 @@ namespace GAS
             return true;
         }
 
+        public void AddStudent(Student student)
+        {
+            this.Students = Utils.AddToArray(this.Students, student);
+            student.Courses = Utils.AddToArray(student.Courses, this);
+        }
+
+        public void RemoveStudent(Student student)
+        {
+            this.Students = Utils.RemoveFromArray(this.Students, student);
+            student.Courses = Utils.RemoveFromArray(student.Courses, this);
+        }
     }
 
     public enum Weekday

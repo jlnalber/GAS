@@ -280,20 +280,16 @@ namespace GAS
 
                 //Aktualisiere den LuL.
                 Teacher newTeacher = (from i in this.TeachersC_Course where i.Item2 == this.Teacher_Course.SelectedItem select i.Item1).First();
-                course.Teacher.Courses = Utils.RemoveFromArray(course.Teacher.Courses, course);
-                course.Teacher = newTeacher;
-                newTeacher.Courses = Utils.AddToArray(newTeacher.Courses, course);
+                course.Teacher.RemoveFromCourse(course, newTeacher);
 
                 //Aktualisiere die SuS.
                 foreach (Student i in from s in StudentsC_Course where this.SelectedStudents_Course.Items.Contains(s.Item2) && !course.Students.Contains(s.Item1) select s.Item1)
                 {
-                    course.Students = Utils.AddToArray(course.Students, i);
-                    i.Courses = Utils.AddToArray(i.Courses, course);
+                    i.AddToCourse(course);
                 }
                 foreach (Student i in from s in StudentsC_Course where this.NotSelectedStudents_Course.Items.Contains(s.Item2) && course.Students.Contains(s.Item1) select s.Item1)
                 {
-                    course.Students = Utils.RemoveFromArray(course.Students, i);
-                    i.Courses = Utils.RemoveFromArray(i.Courses, course);
+                    i.RemoveFromCourse(course);
                 }
 
                 //Aktualisiere die anderen Tabs.
@@ -526,13 +522,11 @@ namespace GAS
                 //Aktualisiere die Kurse.
                 foreach (Course i in from c in CoursesC_Student where this.SelectedCourses_Student.Items.Contains(c.Item2) && !student.Courses.Contains(c.Item1) select c.Item1)
                 {
-                    student.Courses = Utils.AddToArray(student.Courses, i);
-                    i.Students = Utils.AddToArray(i.Students, student);
+                    student.AddToCourse(i);
                 }
                 foreach (Course i in from c in CoursesC_Student where this.NotSelectedCourses_Student.Items.Contains(c.Item2) && student.Courses.Contains(c.Item1) select c.Item1)
                 {
-                    student.Courses = Utils.RemoveFromArray(student.Courses, i);
-                    i.Students = Utils.RemoveFromArray(i.Students, student);
+                    student.RemoveFromCourse(i);
                 }
 
                 //Aktualisiere die anderen Tabs.

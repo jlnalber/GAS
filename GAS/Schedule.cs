@@ -65,7 +65,7 @@ namespace GAS
 
         public override double Fitness()
         {
-            return 1 / (this.Issues() + 1);
+            return 1.0 / (this.Issues() / 2 + 1);
         }
 
         public override Schedule GetRandomInstance()

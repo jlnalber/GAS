@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using GeneticFramework;
 
 namespace GAS
 {
@@ -73,10 +74,36 @@ namespace GAS
     public class Teacher : Person
     {
         public Teacher(Course[] courses, string ID) : base(courses, ID) { }
+
+        public void AddToCourse(Course course)
+        {
+            course.Teacher.Courses = Utils.RemoveFromArray(course.Teacher.Courses, course);
+            course.Teacher = this;
+            this.Courses = Utils.AddToArray(this.Courses, course);
+        }
+
+        public void RemoveFromCourse(Course course, Teacher replaceBy)
+        {
+            course.Teacher = replaceBy;
+            replaceBy.Courses = Utils.AddToArray(replaceBy.Courses, course);
+            this.Courses = Utils.RemoveFromArray(this.Courses, course);
+        }
     }
 
     public class Student : Person
     {
         public Student(Course[] courses, string ID) : base(courses, ID) { }
+
+        public void AddToCourse(Course course)
+        {
+            course.Students = Utils.AddToArray(course.Students, this);
+            this.Courses = Utils.AddToArray(this.Courses, course);
+        }
+
+        public void RemoveFromCourse(Course course)
+        {
+            course.Students = Utils.RemoveFromArray(course.Students, this);
+            this.Courses = Utils.RemoveFromArray(this.Courses, course);
+        }
     }
 }
