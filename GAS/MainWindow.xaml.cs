@@ -61,7 +61,7 @@ namespace GAS
             if (this.Course_Picker.Items.Count == 0)
             {
                 this.ID_Course.Content = "";
-                this.Periods_Course.Text = "";
+                this.Periods_Course.InputText = "";
                 this.Teacher_Course.Items.Clear();
                 this.SelectedStudents_Course.Items.Clear();
                 this.NotSelectedStudents_Course.Items.Clear();
@@ -92,7 +92,7 @@ namespace GAS
             if (this.Teacher_Picker.Items.Count == 0)
             {
                 this.ID_Teacher.Content = "";
-                this.Name_Teacher.Text = "";
+                this.Name_Teacher.InputText = "";
                 this.Courses_Teacher.Items.Clear();
             }
         }
@@ -121,7 +121,7 @@ namespace GAS
             if (this.Student_Picker.Items.Count == 0)
             {
                 this.ID_Student.Content = "";
-                this.Name_Student.Text = "";
+                this.Name_Student.InputText = "";
                 this.SelectedCourses_Student.Items.Clear();
                 this.NotSelectedCourses_Student.Items.Clear();
             }
@@ -227,7 +227,7 @@ namespace GAS
         {
             try
             {
-                new Schedule_Window(new Schedule(this.Courses.ToArray())).Show();
+                new ScheduleCalculator_Window(new Schedule(this.Courses.ToArray())).Show();
             }
             catch (Schedule.InvalidIDException)
             {
@@ -276,7 +276,7 @@ namespace GAS
                 Course course = (from i in this.CoursesC where i.Item2 == this.Course_Picker.SelectedItem select i.Item1).First();
 
                 //Aktualisiere die Stundenanzahl.
-                course.Periods = new Period[int.Parse(this.Periods_Course.Text)];
+                course.Periods = new Period[this.Periods_Course.GetValueInt()];
 
                 //Aktualisiere den LuL.
                 Teacher newTeacher = (from i in this.TeachersC_Course where i.Item2 == this.Teacher_Course.SelectedItem select i.Item1).First();
@@ -300,11 +300,7 @@ namespace GAS
                 this.RefreshTeachers();
                 this.RefreshStudents();
             }
-            catch (FormatException)
-            {
-                SystemSounds.Asterisk.Play();
-                this.PeriodsLabel_Course.Foreground = Brushes.Red;
-            }
+            catch (FormatException) { }
             catch (InvalidOperationException)
             {
                 SystemSounds.Asterisk.Play();
@@ -314,7 +310,7 @@ namespace GAS
 
         private void ResetColors_Course()
         {
-            this.PeriodsLabel_Course.Foreground = Brushes.Black;
+            this.Periods_Course.Label.Foreground = Brushes.Black;
             this.TeacherLabel_Course.Foreground = Brushes.Black;
         }
 
@@ -324,7 +320,7 @@ namespace GAS
 
             this.ID_Course.Content = course.ID;
 
-            this.Periods_Course.Text = course.Periods.Length.ToString();
+            this.Periods_Course.InputText = course.Periods.Length.ToString();
 
             this.TeachersC_Course.Clear();
             this.Teacher_Course.Items.Clear();
@@ -428,7 +424,7 @@ namespace GAS
                 Teacher teacher = (from i in this.TeachersC where i.Item2 == this.Teacher_Picker.SelectedItem select i.Item1).First();
 
                 //Aktualisiere den Namen.
-                teacher.Name = this.Name_Teacher.Text;
+                teacher.Name = this.Name_Teacher.GetValueString();
 
                 //Aktualisiere die anderen Tabs.
                 this.RefreshCourses();
@@ -444,7 +440,7 @@ namespace GAS
         {
             this.ID_Teacher.Content = teacher.ID;
 
-            this.Name_Teacher.Text = teacher.Name;
+            this.Name_Teacher.InputText = teacher.Name;
 
             this.Courses_Teacher.Items.Clear();
             foreach (Course i in teacher.Courses)
@@ -525,7 +521,7 @@ namespace GAS
                 Student student = (from i in this.StudentsC where i.Item2 == this.Student_Picker.SelectedItem select i.Item1).First();
 
                 //Aktualisiere den Namen.
-                student.Name = this.Name_Student.Text;
+                student.Name = this.Name_Student.GetValueString();
 
                 //Aktualisiere die Kurse.
                 foreach (Course i in from c in CoursesC_Student where this.SelectedCourses_Student.Items.Contains(c.Item2) && !student.Courses.Contains(c.Item1) select c.Item1)
@@ -553,7 +549,7 @@ namespace GAS
         {
             this.ID_Student.Content = student.ID;
 
-            this.Name_Student.Text = student.Name;
+            this.Name_Student.InputText = student.Name;
 
             this.CoursesC_Student.Clear();
             this.SelectedCourses_Student.Items.Clear();

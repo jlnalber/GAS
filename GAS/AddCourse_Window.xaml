@@ -7,10 +7,8 @@
         mc:Ignorable="d"
         Title="Kurs Hinzufügen" Height="450" Width="800" MinHeight="400" MinWidth="700">
     <Grid>
-        <Label HorizontalAlignment="Left" VerticalAlignment="Top" Content="ID:" Margin="20,20,0,0" x:Name="IDLabel" Height="25"/>
-        <TextBox HorizontalAlignment="Left" VerticalAlignment="Top" Width="150" x:Name="ID" Margin="100,20,0,0" Height="25" VerticalContentAlignment="Center"></TextBox>
-        <Label HorizontalAlignment="Left" VerticalAlignment="Top" Content="Stunden:" Margin="20,60,0,0" Height="25" x:Name="PeriodsLabel"/>
-        <TextBox HorizontalAlignment="Left" VerticalAlignment="Top" Width="150" x:Name="Periods" Margin="100,60,0,0" Height="25" VerticalContentAlignment="Center"></TextBox>
+        <local:InputField x:Name="ID" LabelContent="ID:" Margin="20,20,0,0" Distance="80"/>
+        <local:InputField x:Name="Periods" LabelContent="Stunden:" Margin="20,60,0,0" Distance="80"/>
         <Label HorizontalAlignment="Left" VerticalAlignment="Top" Content="LuL:" Margin="20,100,0,0" Height="25" x:Name="TeacherLabel"/>
         <ComboBox HorizontalAlignment="Left" VerticalAlignment="Top" Width="150" x:Name="Teacher" Margin="100,100,0,0" Height="25" VerticalContentAlignment="Center"></ComboBox>
         <Label HorizontalAlignment="Left" VerticalAlignment="Top" Content="SuS:" Margin="20,140,0,0" Height="25"/>

@@ -18,16 +18,6 @@ namespace GAS
 
             this.Schedule = schedule;
 
-            Schedule[] population = new Schedule[20];
-            for (int i = 0; i < population.Length; i++)
-            {
-                population[i] = this.Schedule.GetRandomInstance();
-            }
-
-            GeneticAlgorithm<Schedule> geneticAlgorithm = new(population, 1);
-            geneticAlgorithm.ExtraCondition = (Schedule s) => s.AllApplies();
-            this.Schedule = geneticAlgorithm.Run();
-
             //Stelle die Ergebniss dar.
             for (int i = 1; i <= 5; i++)
             {

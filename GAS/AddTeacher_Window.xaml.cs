@@ -59,10 +59,10 @@ namespace GAS
 
         private void Add_Click(object sender, RoutedEventArgs e)
         {
-            if (this.ID.Text.Replace(" ", "") == "" || Schedule.UsedIDs.Contains(this.ID.Text))
+            if (this.ID.InputText.Replace(" ", "") == "")
             {
                 SystemSounds.Asterisk.Play();
-                this.NameLabel.Foreground = Brushes.Red;
+                this.ID.Label.Foreground = Brushes.Red;
             }
             else
             {
@@ -72,9 +72,9 @@ namespace GAS
                     courses[i] = (from j in this.CoursesC where j.Item2 == this.SelectedCourses.Items[i] select j.Item1).First();
                 }
 
-                string ID = this.ID.Text;
+                string ID = this.ID.GetValueString();
 
-                string name = this.NameT.Text;
+                string name = this.NameT.GetValueString();
 
                 Teacher teacher = new(courses, ID);
                 teacher.Name = name;

@@ -74,16 +74,16 @@ namespace GAS
 
         private void Add_Click(object sender, RoutedEventArgs e)
         {
-            if (this.ID.Text.Replace(" ", "") == "")
+            if (this.ID.InputText.Replace(" ", "") == "")
             {
                 SystemSounds.Asterisk.Play();
-                this.IDLabel.Foreground = Brushes.Red;
+                this.ID.Label.Foreground = Brushes.Red;
             }
             else
             {
                 try
                 {
-                    int periods = int.Parse(this.Periods.Text);
+                    int periods = this.Periods.GetValueInt();
 
                     Student[] students = new Student[this.SelectedStudents.Items.Count];
                     for (int i = 0; i < this.SelectedStudents.Items.Count; i++)
@@ -93,7 +93,7 @@ namespace GAS
 
                     Teacher teacher = (from i in this.TeachersC where i.Item2 == this.Teacher.SelectedItem select i.Item1).First();
 
-                    string ID = this.ID.Text;
+                    string ID = this.ID.GetValueString();
 
                     this.MainWindow.AddCourse(new Course(periods, students, teacher, ID));
                     this.Close();
@@ -103,16 +103,7 @@ namespace GAS
                     SystemSounds.Asterisk.Play();
                     this.TeacherLabel.Foreground = Brushes.Red;
                 }
-                catch (FormatException)
-                {
-                    SystemSounds.Asterisk.Play();
-                    this.PeriodsLabel.Foreground = Brushes.Red;
-                }
-                catch (Schedule.InvalidIDException)
-                {
-                    SystemSounds.Asterisk.Play();
-                    this.IDLabel.Foreground = Brushes.Red;
-                }
+                catch (FormatException) { }
             }
         }
 

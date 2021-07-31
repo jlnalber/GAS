@@ -7,10 +7,8 @@
         mc:Ignorable="d"
         Title="LuL Hinzufügen" Height="450" Width="800" MinHeight="400" MinWidth="700">
     <Grid>
-        <Label HorizontalAlignment="Left" VerticalAlignment="Top" Content="ID:" Margin="20,20,0,0" x:Name="NameLabel" Height="25"/>
-        <TextBox HorizontalAlignment="Left" VerticalAlignment="Top" Width="150" x:Name="ID" Margin="100,20,0,0" Height="25" VerticalContentAlignment="Center"></TextBox>
-        <Label HorizontalAlignment="Left" VerticalAlignment="Top" Content="Name:" Margin="20,60,0,0" Height="25"/>
-        <TextBox HorizontalAlignment="Left" VerticalAlignment="Top" Width="150" x:Name="NameT" Margin="100,60,0,0" Height="25" VerticalContentAlignment="Center"></TextBox>
+        <local:InputField LabelContent="ID:" x:Name="ID" Margin="20,20,0,0" Distance="80"/>
+        <local:InputField LabelContent="Name:" x:Name="NameT" Margin="20,60,0,0" Distance="80"/>
         <Label HorizontalAlignment="Left" VerticalAlignment="Top" Content="Kurse:" Margin="20,100,0,0" Height="25"/>
         <ListBox HorizontalAlignment="Left" VerticalAlignment="Top" Width="150" x:Name="SelectedCourses" Margin="100,100,20,20" MinHeight="25" VerticalContentAlignment="Center"></ListBox>
         <Button HorizontalAlignment="Left" VerticalAlignment="Top" Content="Verschieben" Padding="5" Margin="270,100,0,0" Width="90" Click="SwitchButton_Click"></Button>

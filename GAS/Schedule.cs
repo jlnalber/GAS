@@ -241,7 +241,5 @@ namespace GAS
             public InvalidIDException(string message) : base(message) { }
             public InvalidIDException() : base() { }
         }
-
-        public static HashSet<string> UsedIDs = new();
     }
 }
