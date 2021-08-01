@@ -1,10 +1,7 @@
-﻿using System;
+﻿using GeneticFramework;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using GeneticFramework;
 using System.IO;
+using System.Linq;
 
 namespace GAS
 {
@@ -32,6 +29,8 @@ namespace GAS
                     this.Table[j, i] = csv[i][j];
                 }
             }
+
+            streamReader.Close();
         }
 
         public string this[int column, int row]

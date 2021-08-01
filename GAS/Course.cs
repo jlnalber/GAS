@@ -1,5 +1,5 @@
-﻿using System;
-using GeneticFramework;
+﻿using GeneticFramework;
+using System;
 
 namespace GAS
 {

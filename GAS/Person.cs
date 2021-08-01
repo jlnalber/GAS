@@ -1,6 +1,6 @@
-﻿using System;
+﻿using GeneticFramework;
+using System;
 using System.Linq;
-using GeneticFramework;
 
 namespace GAS
 {

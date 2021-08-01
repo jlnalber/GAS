@@ -5,8 +5,10 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:GAS"
         mc:Ignorable="d"
-        Title="Stundenplan" Height="450" Width="800">
-    <Grid>
-        <local:Timetabel Margin="20" x:Name="Timetable"/>
+        Title="GAS - Stundenplan" Height="450" Width="800">
+    <Grid x:Name="Grid">
+        <Label Content="Aus der Sicht von:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="20,20,0,0" Height="25"/>
+        <ComboBox x:Name="PersonPicker" VerticalAlignment="Top" Margin="150,20,20,0" Height="25" SelectionChanged="PersonPicker_SelectionChanged"/>
+        <local:Timetabel Margin="20,80,20,20" x:Name="Timetable"/>
     </Grid>
 </Window>

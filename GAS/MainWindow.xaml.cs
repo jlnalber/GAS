@@ -1,4 +1,5 @@
 ﻿using GeneticFramework;
+using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -185,9 +186,51 @@ namespace GAS
             this.RefreshAll();
         }
 
+        private void ExportData_Click(object sender, RoutedEventArgs e)
+        {
+            SaveFileDialog saveFileDialog = new();
+            saveFileDialog.Filter = "Comma-separated values|*csv";
+            saveFileDialog.Title = "Daten exportieren";
+            if (saveFileDialog.ShowDialog() == true)
+            {
+                try
+                {
+                    this.ExportToFile(saveFileDialog.FileName);
+                }
+                catch
+                {
+                    SystemSounds.Asterisk.Play();
+                }
+            }
+        }
+
         public void ExportToFile(string path)
         {
-            throw new NotImplementedException();
+            CSVWriter csvWriter = new(this.Courses.Count + 1, this.Students.Count + 1);
+
+            csvWriter[0, 0] = "-";
+
+            for (int i = 0; i < this.Courses.Count; i++)
+            {
+                csvWriter[i + 1, 0] = this.Courses[i].ID;
+            }
+
+            for (int i = 0; i < this.Students.Count; i++)
+            {
+                csvWriter[0, i + 1] = this.Students[i].Name;
+
+                for (int j = 0; j < this.Courses.Count; j++)
+                {
+                    string str = ".";
+                    if (this.Students[i].Courses.Contains(this.Courses[j]))
+                    {
+                        str = "x";
+                    }
+                    csvWriter[j + 1, i + 1] = str;
+                }
+            }
+
+            csvWriter.Save(path);
         }
         #endregion
 

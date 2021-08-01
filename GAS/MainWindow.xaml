@@ -5,11 +5,12 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:GAS"
         mc:Ignorable="d"
-        Title="MainWindow" MinHeight="300" MinWidth="600" Height="450" Width="800" WindowStartupLocation="CenterScreen" WindowState="Maximized">
+        Title="GAS" MinHeight="300" MinWidth="600" Height="450" Width="800" WindowStartupLocation="CenterScreen" WindowState="Maximized">
     <DockPanel>
         <Menu VerticalAlignment="Top" DockPanel.Dock="Top">
             <MenuItem Header="Datei">
                 <MenuItem Header="Daten importieren" Click="ImportData_Click"/>
+                <MenuItem Header="Daten exportieren" Click="ExportData_Click"/>
             </MenuItem>
             <MenuItem Header="Bearbeiten">
                 <MenuItem Header="Kurs Hinzufügen" Click="AddCourse_Click"></MenuItem>
