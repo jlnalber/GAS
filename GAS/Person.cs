@@ -77,16 +77,16 @@ namespace GAS
 
         public void AddToCourse(Course course)
         {
-            course.Teacher.Courses = Utils.RemoveFromArray(course.Teacher.Courses, course);
+            course.Teacher.Courses = course.Teacher.Courses.RemoveFromArray(course);
             course.Teacher = this;
-            this.Courses = Utils.AddToArray(this.Courses, course);
+            this.Courses = this.Courses.AddToArray(course);
         }
 
         public void RemoveFromCourse(Course course, Teacher replaceBy)
         {
             course.Teacher = replaceBy;
-            replaceBy.Courses = Utils.AddToArray(replaceBy.Courses, course);
-            this.Courses = Utils.RemoveFromArray(this.Courses, course);
+            replaceBy.Courses = replaceBy.Courses.AddToArray(course);
+            this.Courses = this.Courses.RemoveFromArray(course);
         }
     }
 
@@ -96,14 +96,14 @@ namespace GAS
 
         public void AddToCourse(Course course)
         {
-            course.Students = Utils.AddToArray(course.Students, this);
-            this.Courses = Utils.AddToArray(this.Courses, course);
+            course.Students = course.Students.AddToArray(this);
+            this.Courses = this.Courses.AddToArray(course);
         }
 
         public void RemoveFromCourse(Course course)
         {
-            course.Students = Utils.RemoveFromArray(course.Students, this);
-            this.Courses = Utils.RemoveFromArray(this.Courses, course);
+            course.Students = course.Students.RemoveFromArray(this);
+            this.Courses = this.Courses.RemoveFromArray(course);
         }
     }
 }

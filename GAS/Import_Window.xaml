@@ -1,0 +1,25 @@
+﻿<Window x:Class="GAS.Import_Window"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:GAS"
+        mc:Ignorable="d"
+        Title="Datei Importieren" Height="450" Width="800">
+    <Grid>
+        <Label Content="Datei importieren:" FontSize="18" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="10,10,0,0"/>
+        <Label Content="Speicherort:" x:Name="Path_Label" Height="25" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="20,70,0,0" VerticalContentAlignment="Center"/>
+        <TextBox x:Name="Path" Height="25" Width="300" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="170,70,0,0" VerticalContentAlignment="Center"/>
+        <Button Content="..." Height="25" Width="30" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="490,70,0,0" FontSize="15" Click="FileButton_Click"/>
+        <local:InputField x:Name="ColumnStart" Margin="20,120,0,0" LabelContent="Starte in Spalte:" InputText="1" Distance="150"/>
+        <local:InputField x:Name="ColumnEnd" Margin="20,160,0,0" LabelContent="Ende in Spalte:" Distance="150"/>
+        <local:InputField x:Name="RowStart" Margin="20,200,0,0" LabelContent="Starte in Zeile:" InputText="1" Distance="150"/>
+        <local:InputField x:Name="RowEnd" Margin="20,240,0,0" LabelContent="Ende in Zeile:" Distance="150"/>
+        <local:InputField x:Name="ColumnStudentsNames" Margin="20,280,0,0" LabelContent="Spalte der Namen der Sus:" Distance="150" IsEnabled="False"/>
+        <CheckBox x:Name="ImportNamesStudents" Margin="340,280,0,0" Content="Importiere Namen der SuS" Checked="ImportNamesStudents_Checked" Unchecked="ImportNamesStudents_Unchecked" HorizontalAlignment="Left" VerticalAlignment="Top" Height="25" VerticalContentAlignment="Center" IsChecked="False"/>
+        <local:InputField x:Name="RowCoursesIDs" Margin="20,320,0,0" LabelContent="Zeile der IDs der Kurse:" Distance="150" IsEnabled="False"/>
+        <CheckBox x:Name="ImportIDsCourses" Margin="340,320,0,0" Content="Importiere die IDs der Kurse" Checked="ImportIDsCourses_Checked" Unchecked="ImportIDsCourses_Unchecked" HorizontalAlignment="Left" VerticalAlignment="Top" Height="25" VerticalContentAlignment="Center" IsChecked="False"/>
+
+        <Button HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,20,20" Padding="5" Content="Datei Importieren" Click="ImportButton_Click"/>
+    </Grid>
+</Window>

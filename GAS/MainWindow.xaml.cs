@@ -137,9 +137,52 @@ namespace GAS
 
         //Methoden, mit denen Dateiexport/-import gemacht werden kann:
         #region
-        public void LoadFromFile(string path)
+        private void ImportData_Click(object sender, RoutedEventArgs e)
         {
-            throw new NotImplementedException();
+            new Import_Window(this).Show();
+        }
+
+        public void LoadFromFile(string path, int startCol, int endCol, int startRow, int endRow, int rowIDsCourses = -1, int columnNamesStudents = -1)
+        {
+            CSVReader reader = new(path);
+
+            Course[] courses = new Course[endCol - startCol];
+            List<Teacher> teachers = new();
+            List<Student> students = new();
+
+            for (int i = 0; i < endCol - startCol; i++)
+            {
+                Teacher teacher = new Teacher(new Course[0], "T" + (i + 1));
+                string ID = rowIDsCourses == -1 ? "C" + (i + 1) : reader[i + startCol, rowIDsCourses];
+                Course course = new(1, new Student[0], teacher, ID);
+                teacher.Courses = new Course[1] { course };
+                courses[i] = course;
+                teachers.Add(teacher);
+            }
+
+            for (int i = 0; i < endRow - startRow; i++)
+            {
+                Student student = new(new Course[0], "S" + (i + 1));
+                if (columnNamesStudents != -1)
+                {
+                    student.Name = reader[columnNamesStudents, i + startRow];
+                }
+                for (int j = 0; j < endCol - startCol; j++)
+                {
+                    if (reader[j + startCol, i + startRow].ToUpper() == "X")
+                    {
+                        student.AddToCourse(courses[j]);
+                    }
+                }
+                students.Add(student);
+            }
+
+            this.Courses.Clear();
+            this.Courses.AddRange(courses);
+            this.Teachers = teachers;
+            this.Students = students;
+
+            this.RefreshAll();
         }
 
         public void ExportToFile(string path)
@@ -275,6 +318,9 @@ namespace GAS
             {
                 Course course = (from i in this.CoursesC where i.Item2 == this.Course_Picker.SelectedItem select i.Item1).First();
 
+                //Aktualisiere die ID.
+                course.ID = this.ID_Course.GetValueString();
+
                 //Aktualisiere die Stundenanzahl.
                 course.Periods = new Period[this.Periods_Course.GetValueInt()];
 
@@ -314,7 +360,7 @@ namespace GAS
         {
             this.ResetColors_Course();
 
-            this.ID_Course.Content = course.ID;
+            this.ID_Course.InputText = course.ID;
 
             this.Periods_Course.InputText = course.Periods.Length.ToString();
 
@@ -419,6 +465,9 @@ namespace GAS
             {
                 Teacher teacher = (from i in this.TeachersC where i.Item2 == this.Teacher_Picker.SelectedItem select i.Item1).First();
 
+                //Aktualisiere die ID.
+                teacher.ID = this.ID_Teacher.GetValueString();
+
                 //Aktualisiere den Namen.
                 teacher.Name = this.Name_Teacher.GetValueString();
 
@@ -434,7 +483,7 @@ namespace GAS
 
         private void DisplayTeacher(Teacher teacher)
         {
-            this.ID_Teacher.Content = teacher.ID;
+            this.ID_Teacher.InputText = teacher.ID;
 
             this.Name_Teacher.InputText = teacher.Name;
 
@@ -516,6 +565,9 @@ namespace GAS
             {
                 Student student = (from i in this.StudentsC where i.Item2 == this.Student_Picker.SelectedItem select i.Item1).First();
 
+                //Aktualisiere die ID.
+                student.ID = this.ID_Student.GetValueString();
+
                 //Aktualisiere den Namen.
                 student.Name = this.Name_Student.GetValueString();
 
@@ -541,7 +593,7 @@ namespace GAS
 
         private void DisplayStudent(Student student)
         {
-            this.ID_Student.Content = student.ID;
+            this.ID_Student.InputText = student.ID;
 
             this.Name_Student.InputText = student.Name;
 
@@ -588,7 +640,7 @@ namespace GAS
             }
         }
 
-        private void DeleteLöschenStudent_Click(object sender, RoutedEventArgs e)
+        private void DeleteStudent_Click(object sender, RoutedEventArgs e)
         {
             try
             {
