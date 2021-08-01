@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:GAS"
         mc:Ignorable="d"
-        Title="GAS - Daten Importieren" Height="450" Width="800">
+        Title="GAS - Daten Importieren" MinHeight="500" MinWidth="700" Height="500" Width="800">
     <Grid>
         <Label Content="Daten importieren:" FontSize="18" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="10,10,0,0"/>
         <Label Content="Speicherort:" x:Name="Path_Label" Height="25" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="20,70,0,0" VerticalContentAlignment="Center"/>
@@ -19,6 +19,9 @@
         <CheckBox x:Name="ImportNamesStudents" Margin="340,280,0,0" Content="Importiere Namen der SuS" Checked="ImportNamesStudents_Checked" Unchecked="ImportNamesStudents_Unchecked" HorizontalAlignment="Left" VerticalAlignment="Top" Height="25" VerticalContentAlignment="Center" IsChecked="False"/>
         <local:InputField x:Name="RowCoursesIDs" Margin="20,320,0,0" LabelContent="Zeile der IDs der Kurse:" Distance="150" IsEnabled="False"/>
         <CheckBox x:Name="ImportIDsCourses" Margin="340,320,0,0" Content="Importiere die IDs der Kurse" Checked="ImportIDsCourses_Checked" Unchecked="ImportIDsCourses_Unchecked" HorizontalAlignment="Left" VerticalAlignment="Top" Height="25" VerticalContentAlignment="Center" IsChecked="False"/>
+        <local:InputField x:Name="RowPeriods" LabelContent="Reihe der Kursstunden:" Distance="150" Margin="20,360,0,0" IsEnabled="False"/>
+        <CheckBox x:Name="ImportRowPeriods" Margin="340,360,0,0" Content="Importiere die Kursstunden" Checked="ImportRowPeriods_Checked" Unchecked="ImportRowPeriods_Unchecked" HorizontalAlignment="Left" VerticalAlignment="Top" Height="25" VerticalContentAlignment="Center" IsChecked="False"/>
+        <local:InputField x:Name="DefaultPeriods" LabelContent="Standardwert der Stunden:" Distance="150" Margin="20,400,0,0" InputText="2"/>
 
         <Button HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,20,20" Padding="5" Content="Daten Importieren" Click="ImportButton_Click"/>
     </Grid>

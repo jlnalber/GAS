@@ -143,7 +143,7 @@ namespace GAS
             new Import_Window(this).Show();
         }
 
-        public void LoadFromFile(string path, int startCol, int endCol, int startRow, int endRow, int rowIDsCourses = -1, int columnNamesStudents = -1)
+        public void LoadFromFile(string path, int startCol, int endCol, int startRow, int endRow, int rowIDsCourses = -1, int columnNamesStudents = -1, int rowPeriods = -1, int defaultPeriods = 2)
         {
             CSVReader reader = new(path);
 
@@ -155,7 +155,13 @@ namespace GAS
             {
                 Teacher teacher = new Teacher(new Course[0], "T" + (i + 1));
                 string ID = rowIDsCourses == -1 ? "C" + (i + 1) : reader[i + startCol, rowIDsCourses];
-                Course course = new(1, new Student[0], teacher, ID);
+                int periods = defaultPeriods;
+                try
+                {
+                    periods = int.Parse(reader[i + startCol, rowPeriods]);
+                }
+                catch { }
+                Course course = new(periods, new Student[0], teacher, ID);
                 teacher.Courses = new Course[1] { course };
                 courses[i] = course;
                 teachers.Add(teacher);

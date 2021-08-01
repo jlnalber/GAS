@@ -51,7 +51,15 @@ namespace GAS
                     columnNamesStudents = this.ColumnStudentsNames.GetValueInt() - 1;
                 }
 
-                this.MainWindow.LoadFromFile(path, colStart, colEnd, rowStart, rowEnd, rowIDsCourses, columnNamesStudents);
+                int rowPeriods = -1;
+                if (this.ImportRowPeriods.IsChecked == true)
+                {
+                    rowPeriods = this.RowPeriods.GetValueInt() - 1;
+                }
+
+                int defaultPeriods = this.DefaultPeriods.GetValueInt();
+
+                this.MainWindow.LoadFromFile(path, colStart, colEnd, rowStart, rowEnd, rowIDsCourses, columnNamesStudents, rowPeriods, defaultPeriods);
 
                 this.Close();
             }
@@ -67,7 +75,7 @@ namespace GAS
             catch { }
         }
 
-        //Methoden für den Import der Namen und der IDs:
+        //Methoden für den Import der Namen, der IDs und der Stunden:
         #region
         private void ImportNamesStudents_Checked(object sender, RoutedEventArgs e)
         {
@@ -87,6 +95,16 @@ namespace GAS
         private void ImportIDsCourses_Unchecked(object sender, RoutedEventArgs e)
         {
             this.RowCoursesIDs.IsEnabled = false;
+        }
+
+        private void ImportRowPeriods_Checked(object sender, RoutedEventArgs e)
+        {
+            this.RowPeriods.IsEnabled = true;
+        }
+
+        private void ImportRowPeriods_Unchecked(object sender, RoutedEventArgs e)
+        {
+            this.RowPeriods.IsEnabled = false;
         }
         #endregion
     }
