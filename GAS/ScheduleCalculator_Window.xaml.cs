@@ -19,15 +19,10 @@ namespace GAS
             this.Schedule = schedule;
         }
 
-        public void WriteLine(string text)
-        {
-            DateTime dateTime = DateTime.Now;
-            this.Console.Text += "[" + dateTime.ToString() + "]: " + text + "\n";
-        }
-
         private async void Calculate_Click(object sender, RoutedEventArgs e)
         {
-            this.Console.Text = "";
+            this.Generation.Content = "0";
+            this.Fitness.Content = "0";
             try
             {
                 int initialPopulationSize = this.InitialPopulationSize.GetValueInt();
@@ -56,7 +51,7 @@ namespace GAS
 
                 GeneticAlgorithm<Schedule> geneticAlgorithm = new(population, 1, maxGenerations, mutationChance, crossoverChance, selectionType);
                 geneticAlgorithm.ExtraCondition = (Schedule s) => s.AllApplies();
-                geneticAlgorithm.ForEachGeneration = (int gen, Schedule[] schedules, (Schedule, double) best) => WriteLine("Generation: " + gen + ", Beste Fitness: " + best.Item2);
+                geneticAlgorithm.ForEachGeneration = (int gen, Schedule[] schedules, (Schedule, double) best) => { this.Generation.Content = gen; this.Fitness.Content = best.Item2; };
                 this.Schedule = await geneticAlgorithm.RunAsync();
 
                 new Schedule_Window(this.Schedule).Show();
