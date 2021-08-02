@@ -59,6 +59,10 @@ namespace GAS
             //Wähle wieder den alten Kurs aus:
             try
             {
+                if (index >= this.Course_Picker.Items.Count)
+                {
+                    index = 0;
+                }
                 this.Course_Picker.SelectedIndex = index;
             }
             catch { }
@@ -96,6 +100,10 @@ namespace GAS
             //Wähle wieder den alten LuL aus:
             try
             {
+                if (index >= this.Teacher_Picker.Items.Count)
+                {
+                    index = 0;
+                }
                 this.Teacher_Picker.SelectedIndex = index;
             }
             catch { }
@@ -130,6 +138,10 @@ namespace GAS
             //Wähle wieder den alten SuS aus:
             try
             {
+                if (index >= this.Student_Picker.Items.Count)
+                {
+                    index = 0;
+                }
                 this.Student_Picker.SelectedIndex = index;
             }
             catch { }
@@ -159,14 +171,17 @@ namespace GAS
             new Import_Window(this).Show();
         }
 
-        public void LoadFromFile(string path, int startCol, int endCol, int startRow, int endRow, int rowIDsCourses = -1, int columnNamesStudents = -1, int rowPeriods = -1, int defaultPeriods = 2)
+        public void LoadFromFile(string path, int startCol, int endCol, int startRow, int endRow, int rowIDsCourses = -1, int columnNamesStudents = -1, int rowPeriods = -1, int defaultPeriods = 2, int thresholdCourse = 23)
         {
+            //Lese die Datei ein:
             CSVReader reader = new(path);
 
+            //Erstelle die Elemente für den Stundenplan:
             GroupCourse[] courses = new GroupCourse[endCol - startCol];
             List<Teacher> teachers = new();
             List<Student> students = new();
 
+            //Lese die Kurse ein:
             for (int i = 0; i < endCol - startCol; i++)
             {
                 Teacher[] teacher = new Teacher[1] { new Teacher(new GroupCourse[0], "T" + (i + 1)) };
@@ -183,6 +198,7 @@ namespace GAS
                 teachers.Add(teacher[0]);
             }
 
+            //Lese die Schüler ein:
             for (int i = 0; i < endRow - startRow; i++)
             {
                 Student student = new(new GroupCourse[0], "S" + (i + 1));
@@ -200,6 +216,18 @@ namespace GAS
                 students.Add(student);
             }
 
+            //Füge solange Lehrer hinzu, bis es mit dem Schwellenwert aufgeht:
+            foreach (GroupCourse i in courses)
+            {
+                while (i.Students.Length > thresholdCourse * i.Teachers.Length)
+                {
+                    Teacher teacher = new Teacher(new Course[0], "T" + (teachers.Count() + 1));
+                    i.AddTeacher(teacher);
+                    teachers.Add(teacher);
+                }
+            }
+
+            //Füge die Daten zur Verwaltung hinzu:
             this.Courses.Clear();
             this.Courses.AddRange(courses);
             this.Teachers = teachers;

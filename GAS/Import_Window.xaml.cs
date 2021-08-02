@@ -33,12 +33,14 @@ namespace GAS
         {
             try
             {
+                //Lese die Werte für die Tabelle ein:
                 int colStart = this.ColumnStart.GetValueInt() - 1;
                 int colEnd = this.ColumnEnd.GetValueInt();
                 int rowStart = this.RowStart.GetValueInt() - 1;
                 int rowEnd = this.RowEnd.GetValueInt();
                 string path = this.Path.Text;
 
+                //Lese die optionalen Werte ein:
                 int rowIDsCourses = -1;
                 if (this.ImportIDsCourses.IsChecked == true)
                 {
@@ -57,9 +59,13 @@ namespace GAS
                     rowPeriods = this.RowPeriods.GetValueInt() - 1;
                 }
 
+                //Lese weitere Werte ein:
                 int defaultPeriods = this.DefaultPeriods.GetValueInt();
 
-                this.MainWindow.LoadFromFile(path, colStart, colEnd, rowStart, rowEnd, rowIDsCourses, columnNamesStudents, rowPeriods, defaultPeriods);
+                int thresholdCourse = this.ThresholdCourse.GetValueInt();
+
+                //Lade die Datei im MainWindow und schließe das Fenster:
+                this.MainWindow.LoadFromFile(path, colStart, colEnd, rowStart, rowEnd, rowIDsCourses, columnNamesStudents, rowPeriods, defaultPeriods, thresholdCourse);
 
                 this.Close();
             }
