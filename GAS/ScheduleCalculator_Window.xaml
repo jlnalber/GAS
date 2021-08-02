@@ -18,6 +18,7 @@
             <ComboBoxItem x:Name="TournamentSelectionType" Content="Tournament-Selektion"/>
             <ComboBoxItem x:Name="RouletteSelectionType" Content="Roulette-Wheel-Selektion"/>
         </ComboBox>
+        <Label Content="Warte auf Eingabe..." HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="20,0,0,60" Height="25" x:Name="Status"/>
         <Label Content="Generation:" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="20,0,0,20" Height="25"/>
         <Label HorizontalAlignment="Left" x:Name="Generation" VerticalAlignment="Bottom" Margin="100,0,0,20" Height="25" Content="0"/>
         <Label Content="Fitness:" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="200,0,0,20" Height="25"/>

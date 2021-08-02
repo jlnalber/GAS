@@ -11,6 +11,7 @@ namespace GAS
         private const double MUTATE_INCREMENTAL = 0.9;
         private const double MUTATE_INCREMENTAL_CHANGE_HOUR = 0.6;
         private const double CROSSOVER_CROSS_ONE_PERIOD = 0.5;
+        private const double ADDITION_RANDOM_INSTANCE_CHOICES = 4.0;
 
         public Course[] Courses;
 
@@ -84,12 +85,15 @@ namespace GAS
 
         public override Schedule GetRandomInstance()
         {
+            //Methode, die eine zufällige Instanz zurückgibt
+            //Kopiere den Plan, füge zufällige Stunden hinzu, aber wahrscheinlicher so, dass es 
             Schedule newSchedule = this.GetDeepCopy();
+            Random random = new();
             foreach (Course i in newSchedule.Courses)
             {
                 for (int j = 0; j < i.Periods.Length; j++)
                 {
-                    i.Periods[j] = Period.GetRandomPeriod(i);
+                    i.Periods[j] = Utils.Choices((from p in Period.GetAllPeriods() select (p, i.CanPutItThere(p) ? (random.NextDouble() + ADDITION_RANDOM_INSTANCE_CHOICES) / (i.IssuesWith(p) + 1) : 0.0)).ToArray());
                 }
             }
             return newSchedule;

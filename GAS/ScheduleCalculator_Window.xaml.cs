@@ -1,6 +1,7 @@
 ﻿using GeneticFramework;
 using System;
 using System.Media;
+using System.Threading.Tasks;
 using System.Windows;
 
 namespace GAS
@@ -23,6 +24,7 @@ namespace GAS
         {
             this.Generation.Content = "0";
             this.Fitness.Content = "0";
+            this.Calculate.IsEnabled = false;
             try
             {
                 int initialPopulationSize = this.InitialPopulationSize.GetValueInt();
@@ -43,24 +45,31 @@ namespace GAS
                     selectionType = GeneticAlgorithm<Schedule>.SelectionTypeEnum.Tournament;
                 }
 
+                this.Status.Content = "Erstelle die erste Population...";
+
                 Schedule[] population = new Schedule[initialPopulationSize];
                 for (int i = 0; i < population.Length; i++)
                 {
-                    population[i] = this.Schedule.GetRandomInstance();
+                    population[i] = await Task.Run(() => this.Schedule.GetRandomInstance());
                 }
 
+
+                this.Status.Content = "Suche nach einem Stundenplan...";
                 GeneticAlgorithm<Schedule> geneticAlgorithm = new(population, 1, maxGenerations, mutationChance, crossoverChance, selectionType);
                 geneticAlgorithm.ExtraCondition = (Schedule s) => s.AllApplies();
                 geneticAlgorithm.ForEachGeneration = (int gen, Schedule[] schedules, (Schedule, double) best) => { this.Generation.Content = gen; this.Fitness.Content = best.Item2; };
                 this.Schedule = await geneticAlgorithm.RunAsync();
 
                 new Schedule_Window(this.Schedule).Show();
+
+                this.Status.Content = "Warte auf Eingabe...";
             }
             catch (FormatException) { }
             catch
             {
                 SystemSounds.Asterisk.Play();
             }
+            this.Calculate.IsEnabled = true;
         }
     }
 }

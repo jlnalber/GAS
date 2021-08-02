@@ -59,6 +59,12 @@ namespace GAS
             return issues;
         }
 
+        public int IssuesWith(Period period)
+        {
+            //Methode, die zurückgibt, wie viele Probleme der Kurs wegen einer bestimmten Stunde hat.
+            return Utils.Sum(this.Students, (Student s) => s.IsFreeAt(period, this) ? 0 : 1) + (this.Teacher.IsFreeAt(period, this) ? 0 : 1);
+        }
+
         public bool CanPutItThere(Period period)
         {
             foreach (Period period1 in this.Periods)
@@ -194,6 +200,22 @@ namespace GAS
 
             //Falls nichts gefunden wurde, gib eine Exception aus:
             throw new Schedule.Exceptions.PeriodNotFoundException();
+        }
+
+        public static Period[] GetAllPeriods()
+        {
+            //Erstelle ein Array, mit allen Stunden der Woche.
+            Period[] periods = new Period[5 * 11];
+            for (int i = 1; i <= 5; i++)
+            {
+                for (int j = 1; j <= 11; j++)
+                {
+                    periods[(i - 1) * 11 + j - 1] = new Period((Weekday)i, (Hour)j);
+                }
+            }
+
+            //Rückgabe
+            return periods;
         }
 
         public static bool AreNeighbours(Period period1, Period period2)
