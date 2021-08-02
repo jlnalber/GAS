@@ -390,7 +390,7 @@ namespace GAS
                 //Erstelle ein neues Fenster, um den Stundenplan zu berechnen:
                 new ScheduleCalculator_Window(new Schedule(courses)).Show();
             }
-            catch (Schedule.InvalidIDException)
+            catch (Schedule.Exceptions.InvalidIDException)
             {
                 MessageBox.Show("Eine odere mehrere ID(s) tauchen mehrfach auf!");
             }

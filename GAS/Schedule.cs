@@ -7,22 +7,26 @@ namespace GAS
 {
     public class Schedule : Chromosome
     {
+        //Konstanten für den Zufall:
         private const double MUTATE_INCREMENTAL = 0.9;
         private const double MUTATE_INCREMENTAL_CHANGE_HOUR = 0.6;
+        private const double CROSSOVER_CROSS_ONE_PERIOD = 0.5;
+
         public Course[] Courses;
 
         public Schedule(Course[] courses)
         {
+            //Lege die Kurse fest:
             this.Courses = courses;
 
+            //Überprüfe, ob IDs mehrfach vorkommen, wenn ja löse eine Exception aus:
             HashSet<string> IDs = new();
             HashSet<Person> people = new();
-
             foreach (Course i in this.Courses)
             {
                 if (IDs.Contains(i.ID))
                 {
-                    throw new InvalidIDException();
+                    throw new Exceptions.InvalidIDException();
                 }
                 IDs.Add(i.ID);
 
@@ -32,12 +36,11 @@ namespace GAS
                 }
                 people.Add(i.Teacher);
             }
-
             foreach (Person i in people)
             {
                 if (IDs.Contains(i.ID))
                 {
-                    throw new InvalidIDException();
+                    throw new Exceptions.InvalidIDException();
                 }
                 IDs.Add(i.ID);
             }
@@ -45,6 +48,7 @@ namespace GAS
 
         public override (Chromosome, Chromosome) Crossover(Chromosome chromosome)
         {
+            //Kopiere die Pläne und wähle zufällig Kurse für das Crossover aus.
             Random random = new();
 
             Schedule schedule1 = this.GetDeepCopy();
@@ -53,14 +57,24 @@ namespace GAS
             Course course1 = schedule1.Courses[random.Next(schedule1.Courses.Length)];
             Course course2 = (from i in schedule2.Courses where i.ID == course1.ID select i).First();
 
+            //Vertausche mit einer gewissen Wahrscheinlichkeit zwei Stunden miteinander...
+            if (random.NextDouble() < CROSSOVER_CROSS_ONE_PERIOD)
+            {
+                try
+                {
+                    course1.Periods[random.Next(course1.Periods.Length)] = Period.GetRandomPeriod(course1, course2);
+                    course2.Periods[random.Next(course2.Periods.Length)] = Period.GetRandomPeriod(course2, course1);
+                    return (schedule1, schedule2);
+                }
+                catch { }
+            }
+
+            //... und sonst zwei komplette Zeitpläne für einen Kurs.
             Period[] temp = course1.Periods;
             course1.Periods = course2.Periods;
             course2.Periods = temp;
 
             return (schedule1, schedule2);
-
-
-            //TODO: Nur einzelne Stunden austauschen (VORSICHT: CanPutItThere).
         }
 
         public override double Fitness()
@@ -247,10 +261,38 @@ namespace GAS
             throw new NotImplementedException();
         }
 
-        public class InvalidIDException : Exception
+        public HashSet<Person> GetPeople()
         {
-            public InvalidIDException(string message) : base(message) { }
-            public InvalidIDException() : base() { }
+            HashSet<Person> people = new();
+            foreach (Course c in this.Courses)
+            {
+                people.Add(c.Teacher);
+                foreach (Student s in c.Students)
+                {
+                    people.Add(s);
+                }
+            }
+            return people;
+        }
+
+        public double GetScore()
+        {
+            return Utils.Average(this.GetPeople(), (Person p) => p.GetScore());
+        }
+
+        public class Exceptions
+        {
+            public class InvalidIDException : Exception
+            {
+                public InvalidIDException(string message) : base(message) { }
+                public InvalidIDException() : base() { }
+            }
+
+            public class PeriodNotFoundException : Exception
+            {
+                public PeriodNotFoundException(string message) : base(message) { }
+                public PeriodNotFoundException() : base() { }
+            }
         }
     }
 }

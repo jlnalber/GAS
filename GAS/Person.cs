@@ -69,6 +69,11 @@ namespace GAS
 
             return true;
         }
+
+        public double GetScore()
+        {
+            throw new NotImplementedException();
+        }
     }
 
     public class Teacher : Person

@@ -86,23 +86,27 @@ namespace GAS
             this.Students = Utils.RemoveFromArray(this.Students, student);
             student.Courses = Utils.RemoveFromArray(student.Courses, this);
         }
-
-        public double GetScore()
-        {
-            throw new NotImplementedException();
-        }
     }
 
+    /// <summary>
+    /// Enum for saving a Weekday. Ranges from 1 to (including) 5.
+    /// </summary>
     public enum Weekday
     {
         Monday = 1, Tuesday, Wednesday, Thursday, Friday
     }
 
+    /// <summary>
+    /// Enum for saving an Hour. Ranges from 1 to (including) 11.
+    /// </summary>
     public enum Hour
     {
         First = 1, Second, Third, Fourth, Fifth, Sixth, Seventh, Eighth, Ninth, Tenth, Eleventh
     }
 
+    /// <summary>
+    /// Period contains the data for a period (weekday and hour). Weekday ranges from 1 to (including) 5, Hour from 1 to (including) 11.
+    /// </summary>
     public struct Period
     {
         public Weekday Weekday;
@@ -115,18 +119,47 @@ namespace GAS
 
         public static bool operator ==(Period period1, Period period2)
         {
+            //Vergleiche, ob die beiden Structs gleiche Werte haben.
             return period1.Weekday == period2.Weekday && period1.Hour == period2.Hour;
         }
 
         public static bool operator !=(Period period1, Period period2)
         {
+            //Vergleiche, ob die beiden Structs verschiedene Werte haben.
             return !(period1 == period2);
+        }
+
+        public static bool operator <(Period period1, Period period2)
+        {
+            //Vergleiche welche Stunde zuerst kommt:
+            return (int)period1.Weekday < (int)period2.Weekday || (period1.Weekday == period2.Weekday && (int)period1.Hour < (int)period2.Hour);
+        }
+
+        public static bool operator <=(Period period1, Period period2)
+        {
+            //Vergleiche welche Stunde zuerst kommt:
+            return (int)period1.Weekday < (int)period2.Weekday || (period1.Weekday == period2.Weekday && (int)period1.Hour <= (int)period2.Hour);
+        }
+
+        public static bool operator >(Period period1, Period period2)
+        {
+            //Vergleiche welche Stunde zuerst kommt:
+            return !(period1 <= period2);
+        }
+
+        public static bool operator >=(Period period1, Period period2)
+        {
+            //Vergleiche welche Stunde zuerst kommt:
+            return !(period1 < period2);
         }
 
         public static Period GetRandomPeriod(Course forCourse)
         {
+            //Erstelle eine zufällige Stunde:
             Random random = new();
             Period period = new((Weekday)random.Next(1, 6), (Hour)random.Next(1, 12));
+
+            //Gehe solange durch, bis eine passende Stunde gefunden wurde.
             for (int i = 0; i < 5; i++)
             {
                 for (int j = 0; j < 11; j++)
@@ -139,7 +172,40 @@ namespace GAS
                 }
                 period.Weekday = (Weekday)((int)period.Weekday % 5 + 1);
             }
-            return period; // Unerreichbarer Code in der Praxis.
+
+            //Falls nichts gefunden wurde, gebe eine Exception aus:
+            throw new Schedule.Exceptions.PeriodNotFoundException();// Unerreichbarer Code in der Praxis.
+        }
+
+        public static Period GetRandomPeriod(Course forCourse, Course fromCourse)
+        {
+            //Suche eine zufällige Stunde aus.
+            Random random = new();
+            int index = random.Next(fromCourse.Periods.Length);
+
+            //Gehe solange durch, bis eine passende Stunde gefunden wurde.
+            for (int i = 0; i < fromCourse.Periods.Length; i++)
+            {
+                if (forCourse.CanPutItThere(fromCourse.Periods[(index + i) % fromCourse.Periods.Length]))
+                {
+                    return fromCourse.Periods[(index + i) % fromCourse.Periods.Length];
+                }
+            }
+
+            //Falls nichts gefunden wurde, gib eine Exception aus:
+            throw new Schedule.Exceptions.PeriodNotFoundException();
+        }
+
+        public static bool AreNeighbours(Period period1, Period period2)
+        {
+            //Überprüfe, ob die beiden Stunden aneinander angrenzen:
+            return period1.Weekday == period2.Weekday && Math.Abs((int)period1.Hour - (int)period2.Hour) == 1;
+        }
+
+        public bool IsNeighbourTo(Period period)
+        {
+            //Überprüfe, ob die beiden Stunden aneinander angrenzen:
+            return AreNeighbours(this, period);
         }
 
         public override bool Equals(object obj)
