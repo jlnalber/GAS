@@ -9,9 +9,9 @@
     <Grid>
         <Label FontSize="18" Content="Stundenpläne Berechnen:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,10,0,0"/>
         <Button x:Name="Calculate" Content="Stundenplan Berechnen" HorizontalAlignment="Right" VerticalAlignment="Top" Padding="5" Margin="0,20,20,0" Click="Calculate_Click"/>
-        <local:InputField x:Name="InitialPopulationSize" LabelContent="Größe der Anfangspopulation:" Margin="20,70,0,0" InputText="20"/>
-        <local:InputField x:Name="MaxGenerations" LabelContent="Maximale Generationen:" InputText="100" Margin="20,110,0,0"/>
-        <local:InputField x:Name="MutationChance" LabelContent="Wahrscheinlichkeit Mutation:" InputText="0.01" Margin="20,150,0,0"/>
+        <local:InputField x:Name="InitialPopulationSize" LabelContent="Größe der Anfangspopulation:" Margin="20,70,0,0" InputText="100"/>
+        <local:InputField x:Name="MaxGenerations" LabelContent="Maximale Generationen:" InputText="10000" Margin="20,110,0,0"/>
+        <local:InputField x:Name="MutationChance" LabelContent="Wahrscheinlichkeit Mutation:" InputText="0.3" Margin="20,150,0,0"/>
         <local:InputField x:Name="CrossoverChance" LabelContent="Wahrscheinlichkeit Crossover:" InputText="0.7" Margin="20,190,0,0"/>
         <Label Content="Selektionsmethode:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="20,230,0,0" Height="25"/>
         <ComboBox HorizontalAlignment="Left" x:Name="SelectionType" VerticalAlignment="Top" Margin="250,230,0,0" Height="25" Width="150" SelectedIndex="0">

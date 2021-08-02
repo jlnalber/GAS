@@ -32,7 +32,8 @@ namespace GAS
             for (int i = 0; i < this.Teachers.Length; i++)
             {
                 Teacher teacher = this.Teachers[i];
-                courses[i] = new(this.Periods, new Student[0], teacher, this.ID + "_" + (i + 1));
+                string ID = courses.Length == 1 ? this.ID : this.ID + "_" + (i + 1);
+                courses[i] = new(this.Periods, new Student[0], teacher, ID);
                 teacher.Courses = teacher.Courses.RemoveFromArray(this);
                 teacher.Courses = teacher.Courses.AddToArray(courses[i]);
             }
