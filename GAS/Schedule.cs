@@ -10,7 +10,10 @@ namespace GAS
         //Konstanten für den Zufall:
         private const double MUTATE_INCREMENTAL = 0.9;
         private const double MUTATE_INCREMENTAL_CHANGE_HOUR = 0.6;
+        private const double MUTATE_PARTICIPANTS = 0.1;
         private const double CROSSOVER_CROSS_ONE_PERIOD = 0.5;
+        private const double CROSSOVER_CROSS_PARTICIPANTS = 0.1;
+        private const double CROSSOVER_CROSS_TEACHERS = 0.1;
         private const double ADDITION_RANDOM_INSTANCE_CHOICES = 4.0;
 
         public Course[] Courses;
@@ -58,24 +61,73 @@ namespace GAS
             Course course1 = schedule1.Courses[random.Next(schedule1.Courses.Length)];
             Course course2 = (from i in schedule2.Courses where i.ID == course1.ID select i).First();
 
-            //Vertausche mit einer gewissen Wahrscheinlichkeit zwei Stunden miteinander...
-            if (random.NextDouble() < CROSSOVER_CROSS_ONE_PERIOD)
+            //Crossover mit den Teilnehmern:
+            if (course1.PartnerCourses.Length != 0 && random.NextDouble() < CROSSOVER_CROSS_PARTICIPANTS)
             {
-                try
+                if (random.NextDouble() < CROSSOVER_CROSS_TEACHERS)
                 {
-                    course1.Periods[random.Next(course1.Periods.Length)] = Period.GetRandomPeriod(course1, course2);
-                    course2.Periods[random.Next(course2.Periods.Length)] = Period.GetRandomPeriod(course2, course1);
-                    return (schedule1, schedule2);
+                    //Mache ein Crossover mit den Lehrern:
+                    Teacher[] teachers1 = course1.GetTeachersGroup();
+                    Teacher[] teachers2 = course2.GetTeachersGroup();
+
+                    //Tausche zuerst die eigenen Lehrer aus...
+                    Teacher t = course1.Teacher;
+                    course1.Teacher = (from i in teachers1 where i.ID == course2.Teacher.ID select i).First();
+                    course2.Teacher = (from i in teachers2 where i.ID == t.ID select i).First();
+
+                    //... und dann die der Partnerkurse.
+                    for (int i = 0; i < course1.PartnerCourses.Length; i++)
+                    {
+                        Teacher temp = course1.PartnerCourses[i].Teacher;
+                        course1.PartnerCourses[i].Teacher = (from j in teachers1 where j.ID == course2.PartnerCourses[i].Teacher.ID select j).First();
+                        course2.PartnerCourses[i].Teacher = (from j in teachers2 where j.ID == temp.ID select j).First();
+                    }
                 }
-                catch { }
+                else
+                {
+                    //Mache ein Crossover mit den Schülern:
+                    Student[] students1 = course1.GetStudentsGroup();
+                    Student[] students2 = course2.GetStudentsGroup();
+
+                    //Tausche zuerst die eigenen Schüler aus...
+                    Student[] t = course1.Students;
+                    course1.Students = (from i in students1 where course2.Students.Contains((Student s) => s.ID == i.ID) select i).ToArray();
+                    course2.Students = (from i in students2 where t.Contains((Student s) => s.ID == i.ID) select i).ToArray();
+
+                    //... und dann die der Partnerkurse.
+                    for (int i = 0; i < course1.PartnerCourses.Length; i++)
+                    {
+                        Student[] temp = course1.PartnerCourses[i].Students;
+                        course1.PartnerCourses[i].Students = (from j in students1 where course2.PartnerCourses[i].Students.Contains((Student s) => s.ID == j.ID) select j).ToArray();
+                        course2.PartnerCourses[i].Students = (from j in students2 where temp.Contains((Student s) => s.ID == j.ID) select j).ToArray();
+                    }
+                }
+
+                //Rückgabe
+                return (schedule1, schedule2);
             }
+            //Crossover mit den Stunden:
+            else
+            {
+                //Vertausche mit einer gewissen Wahrscheinlichkeit zwei Stunden miteinander...
+                if (random.NextDouble() < CROSSOVER_CROSS_ONE_PERIOD)
+                {
+                    try
+                    {
+                        course1.Periods[random.Next(course1.Periods.Length)] = Period.GetRandomPeriod(course1, course2);
+                        course2.Periods[random.Next(course2.Periods.Length)] = Period.GetRandomPeriod(course2, course1);
+                        return (schedule1, schedule2);
+                    }
+                    catch { }
+                }
 
-            //... und sonst zwei komplette Zeitpläne für einen Kurs.
-            Period[] temp = course1.Periods;
-            course1.Periods = course2.Periods;
-            course2.Periods = temp;
+                //... und sonst zwei komplette Zeitpläne für einen Kurs.
+                Period[] temp = course1.Periods;
+                course1.Periods = course2.Periods;
+                course2.Periods = temp;
 
-            return (schedule1, schedule2);
+                return (schedule1, schedule2);
+            }
         }
 
         public override double Fitness()

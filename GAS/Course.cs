@@ -1,5 +1,7 @@
 ﻿using GeneticFramework;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace GAS
 {
@@ -63,6 +65,74 @@ namespace GAS
         {
             //Methode, die zurückgibt, wie viele Probleme der Kurs wegen einer bestimmten Stunde hat.
             return Utils.Sum(this.Students, (Student s) => s.IsFreeAt(period, this) ? 0 : 1) + (this.Teacher.IsFreeAt(period, this) ? 0 : 1);
+        }
+
+        public Person[] GetPeopleGroup()
+        {
+            //Schreibe in ein HashSet alle Personen hinein:
+            HashSet<Person> people = new();
+
+            //Schreibe zuerst die eigenen SuS und den eigenen LuL in das HashSet...
+            foreach (Student i in this.Students)
+            {
+                people.Add(i);
+            }
+            people.Add(this.Teacher);
+
+            //... und dann die der Partnerkurse.
+            foreach (Course c in this.PartnerCourses)
+            {
+                foreach (Student s in c.Students)
+                {
+                    people.Add(s);
+                }
+                people.Add(c.Teacher);
+            }
+
+            //Rückgabe
+            return (from n in people select n).ToArray();
+        }
+
+        public Student[] GetStudentsGroup()
+        {
+            //Schreibe in ein HashSet alle SuS hinein:
+            HashSet<Student> students = new();
+
+            //Schreibe zuerst die eigenen SuS in das HashSet...
+            foreach (Student i in this.Students)
+            {
+                students.Add(i);
+            }
+
+            //... und dann die der Partnerkurse.
+            foreach (Course c in this.PartnerCourses)
+            {
+                foreach (Student s in c.Students)
+                {
+                    students.Add(s);
+                }
+            }
+
+            //Rückgabe
+            return (from n in students select n).ToArray();
+        }
+
+        public Teacher[] GetTeachersGroup()
+        {
+            //Schreibe in ein HashSet alle LuL hinein:
+            HashSet<Teacher> teachers = new();
+
+            //Schreibe zuerst den eigenen LuL in das HashSet...
+            teachers.Add(this.Teacher);
+
+            //... und dann die der Partnerkurse.
+            foreach (Course c in this.PartnerCourses)
+            {
+                teachers.Add(c.Teacher);
+            }
+
+            //Rückgabe
+            return (from n in teachers select n).ToArray();
         }
 
         public bool CanPutItThere(Period period)
