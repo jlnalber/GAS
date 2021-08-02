@@ -11,9 +11,9 @@
         <Label Content="Speicherort:" x:Name="Path_Label" Height="25" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="20,70,0,0" VerticalContentAlignment="Center"/>
         <TextBox x:Name="Path" Height="25" Width="300" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="170,70,0,0" VerticalContentAlignment="Center"/>
         <Button Content="..." Height="25" Width="30" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="490,70,0,0" FontSize="15" Click="FileButton_Click"/>
-        <local:InputField x:Name="ColumnStart" Margin="20,120,0,0" LabelContent="Starte in Spalte:" InputText="1" Distance="150"/>
+        <local:InputField x:Name="ColumnStart" Margin="20,120,0,0" LabelContent="Starte in Spalte:" InputText="2" Distance="150"/>
         <local:InputField x:Name="ColumnEnd" Margin="20,160,0,0" LabelContent="Ende in Spalte:" Distance="150"/>
-        <local:InputField x:Name="RowStart" Margin="20,200,0,0" LabelContent="Starte in Zeile:" InputText="1" Distance="150"/>
+        <local:InputField x:Name="RowStart" Margin="20,200,0,0" LabelContent="Starte in Zeile:" InputText="2" Distance="150"/>
         <local:InputField x:Name="RowEnd" Margin="20,240,0,0" LabelContent="Ende in Zeile:" Distance="150"/>
         <local:InputField x:Name="ColumnStudentsNames" Margin="20,280,0,0" LabelContent="Spalte der Namen der Sus:" Distance="150" IsEnabled="False"/>
         <CheckBox x:Name="ImportNamesStudents" Margin="340,280,0,0" Content="Importiere Namen der SuS" Checked="ImportNamesStudents_Checked" Unchecked="ImportNamesStudents_Unchecked" HorizontalAlignment="Left" VerticalAlignment="Top" Height="25" VerticalContentAlignment="Center" IsChecked="False"/>

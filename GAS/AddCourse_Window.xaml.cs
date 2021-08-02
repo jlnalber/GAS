@@ -15,9 +15,10 @@ namespace GAS
     public partial class AddCourse_Window : Window
     {
         private MainWindow MainWindow;
-        private List<(Teacher, ComboBoxItem)> TeachersC;
+        private List<(Teacher, ListBoxItem)> TeachersC;
         private List<(Student, ListBoxItem)> StudentsC;
-        private ListBoxItem LastListBoxItem;
+        private ListBoxItem LastListBoxItemT;
+        private ListBoxItem LastListBoxItemS;
 
         public AddCourse_Window(MainWindow mainWindow)
         {
@@ -30,33 +31,52 @@ namespace GAS
 
             foreach (Teacher i in this.MainWindow.GetTeachers())
             {
-                ComboBoxItem comboBoxItem = new();
-                comboBoxItem.Content = i.Name == "" ? i.ID : i.Name;
-                this.TeachersC.Add((i, comboBoxItem));
-                this.Teacher.Items.Add(comboBoxItem);
-            }
-            if (this.TeachersC.Count != 0)
-            {
-                this.Teacher.SelectedIndex = 0;
+                ListBoxItem listBoxItem = new();
+                listBoxItem.Content = i.Name == "" ? i.ID : i.Name;
+                listBoxItem.MouseDoubleClick += ListBoxItemT_MouseDoubleClick;
+                listBoxItem.LostFocus += ListBoxItemT_LostFocus;
+                this.TeachersC.Add((i, listBoxItem));
+                this.NotSelectedTeachers.Items.Add(listBoxItem);
             }
 
             foreach (Student i in this.MainWindow.GetStudents())
             {
                 ListBoxItem listBoxItem = new();
                 listBoxItem.Content = i.Name == "" ? i.ID : i.Name;
-                listBoxItem.MouseDoubleClick += ListBoxItem_MouseDoubleClick;
-                listBoxItem.LostFocus += ListBoxItem_LostFocus;
+                listBoxItem.MouseDoubleClick += ListBoxItemS_MouseDoubleClick;
+                listBoxItem.LostFocus += ListBoxItemS_LostFocus;
                 this.StudentsC.Add((i, listBoxItem));
                 this.NotSelectedStudents.Items.Add(listBoxItem);
             }
         }
 
-        private void ListBoxItem_LostFocus(object sender, RoutedEventArgs e)
+        private void ListBoxItemT_LostFocus(object sender, RoutedEventArgs e)
         {
-            this.LastListBoxItem = sender as ListBoxItem;
+            this.LastListBoxItemT = sender as ListBoxItem;
         }
 
-        private void ListBoxItem_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        private void ListBoxItemT_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            ListBoxItem listBoxItem = sender as ListBoxItem;
+
+            if (this.SelectedTeachers.Items.Contains(listBoxItem))
+            {
+                this.SelectedTeachers.Items.Remove(listBoxItem);
+                this.NotSelectedTeachers.Items.Add(listBoxItem);
+            }
+            else
+            {
+                this.NotSelectedTeachers.Items.Remove(listBoxItem);
+                this.SelectedTeachers.Items.Add(listBoxItem);
+            }
+        }
+
+        private void ListBoxItemS_LostFocus(object sender, RoutedEventArgs e)
+        {
+            this.LastListBoxItemS = sender as ListBoxItem;
+        }
+
+        private void ListBoxItemS_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             ListBoxItem listBoxItem = sender as ListBoxItem;
 
@@ -85,41 +105,55 @@ namespace GAS
                 {
                     int periods = this.Periods.GetValueInt();
 
-                    Student[] students = new Student[this.SelectedStudents.Items.Count];
-                    for (int i = 0; i < this.SelectedStudents.Items.Count; i++)
-                    {
-                        students[i] = (from j in this.StudentsC where j.Item2 == this.SelectedStudents.Items[i] select j.Item1).First();
-                    }
+                    Student[] students = (from j in this.StudentsC where this.SelectedStudents.Items.Contains(j.Item2) select j.Item1).ToArray();
 
-                    Teacher teacher = (from i in this.TeachersC where i.Item2 == this.Teacher.SelectedItem select i.Item1).First();
+                    if (this.SelectedTeachers.Items.Count == 0) throw new InvalidOperationException();
+                    Teacher[] teachers = (from j in this.TeachersC where this.SelectedTeachers.Items.Contains(j.Item2) select j.Item1).ToArray();
 
                     string ID = this.ID.GetValueString();
 
-                    this.MainWindow.AddCourse(new Course(periods, students, teacher, ID));
+                    this.MainWindow.AddCourse(new GroupCourse(periods, students, teachers, ID));
                     this.Close();
                 }
                 catch (InvalidOperationException)
                 {
                     SystemSounds.Asterisk.Play();
-                    this.TeacherLabel.Foreground = Brushes.Red;
+                    this.TeachersLabel.Foreground = Brushes.Red;
                 }
                 catch (FormatException) { }
             }
         }
 
-        private void SwitchButton_Click(object sender, RoutedEventArgs e)
+        private void SwitchButtonT_Click(object sender, RoutedEventArgs e)
         {
-            if (this.LastListBoxItem != null)
+            if (this.LastListBoxItemT != null)
             {
-                if (this.SelectedStudents.Items.Contains(this.LastListBoxItem))
+                if (this.SelectedTeachers.Items.Contains(this.LastListBoxItemT))
                 {
-                    this.SelectedStudents.Items.Remove(this.LastListBoxItem);
-                    this.NotSelectedStudents.Items.Add(this.LastListBoxItem);
+                    this.SelectedTeachers.Items.Remove(this.LastListBoxItemT);
+                    this.NotSelectedTeachers.Items.Add(this.LastListBoxItemT);
                 }
                 else
                 {
-                    this.NotSelectedStudents.Items.Remove(this.LastListBoxItem);
-                    this.SelectedStudents.Items.Add(this.LastListBoxItem);
+                    this.NotSelectedTeachers.Items.Remove(this.LastListBoxItemT);
+                    this.SelectedTeachers.Items.Add(this.LastListBoxItemT);
+                }
+            }
+        }
+
+        private void SwitchButtonS_Click(object sender, RoutedEventArgs e)
+        {
+            if (this.LastListBoxItemS != null)
+            {
+                if (this.SelectedStudents.Items.Contains(this.LastListBoxItemS))
+                {
+                    this.SelectedStudents.Items.Remove(this.LastListBoxItemS);
+                    this.NotSelectedStudents.Items.Add(this.LastListBoxItemS);
+                }
+                else
+                {
+                    this.NotSelectedStudents.Items.Remove(this.LastListBoxItemS);
+                    this.SelectedStudents.Items.Add(this.LastListBoxItemS);
                 }
             }
         }

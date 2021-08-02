@@ -10,9 +10,9 @@
         <local:InputField LabelContent="ID:" x:Name="ID" Margin="20,20,0,0" Distance="80"/>
         <local:InputField LabelContent="Name:" x:Name="NameS" Margin="20,60,0,0" Distance="80"/>
         <Label HorizontalAlignment="Left" VerticalAlignment="Top" Content="Kurse:" Margin="20,100,0,0" Height="25"/>
-        <ListBox HorizontalAlignment="Left" VerticalAlignment="Top" Width="150" x:Name="SelectedCourses" Margin="100,100,20,20" MinHeight="25" VerticalContentAlignment="Center"></ListBox>
+        <ListBox HorizontalAlignment="Left" VerticalAlignment="Top" Width="150" x:Name="SelectedCourses" Margin="100,100,20,20" MinHeight="25" MaxHeight="100" VerticalContentAlignment="Center"></ListBox>
         <Button HorizontalAlignment="Left" VerticalAlignment="Top" Content="Verschieben" Padding="5" Margin="270,100,0,0" Width="90" Click="SwitchButton_Click"></Button>
-        <ListBox HorizontalAlignment="Left" VerticalAlignment="Top" Width="150" x:Name="NotSelectedCourses" Margin="380,100,20,20" MinHeight="25" VerticalContentAlignment="Center"></ListBox>
+        <ListBox HorizontalAlignment="Left" VerticalAlignment="Top" Width="150" x:Name="NotSelectedCourses" Margin="380,100,20,20" MinHeight="25" MaxHeight="100" VerticalContentAlignment="Center"></ListBox>
         <Button x:Name="Add" Content="SuS Hinzufügen" HorizontalAlignment="Right" VerticalAlignment="Bottom" Padding="5" Margin="0,0,10,10" Click="Add_Click"/>
     </Grid>
 </Window>

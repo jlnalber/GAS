@@ -198,18 +198,29 @@ namespace GAS
                 for (int j = 0; j < students.Length; j++)
                 {
                     Student student = (from s in newStudents where s.ID == this.Courses[i].Students[j].ID select s).First();
-                    student.Courses[Utils.IndexOf(student.Courses, this.Courses[i])] = newCourse;
+                    student.Courses = student.Courses.RemoveFromArray(this.Courses[i]);
+                    student.Courses = student.Courses.AddToArray(newCourse);
                     students[j] = student;
                 }
                 newCourse.Students = students;
 
                 //... und dann den Lehrer.
                 Teacher teacher = (from t in newTeachers where t.ID == this.Courses[i].Teacher.ID select t).First();
-                teacher.Courses[Utils.IndexOf(teacher.Courses, this.Courses[i])] = newCourse;
+                teacher.Courses = teacher.Courses.RemoveFromArray(this.Courses[i]);
+                teacher.Courses = teacher.Courses.AddToArray(newCourse);
                 newCourse.Teacher = teacher;
 
-                //TODO: Students und Teacher überarbeiten, auch Kopien anlegen.
+                //Zuweisung:
                 newCourses[i] = newCourse;
+            }
+            //Kopiere die Partnerkurse:
+            for (int i = 0; i < this.Courses.Length; i++)
+            {
+                newCourses[i].PartnerCourses = new Course[this.Courses[i].PartnerCourses.Length];
+                for (int j = 0; j < this.Courses[i].PartnerCourses.Length; j++)
+                {
+                    newCourses[i].PartnerCourses[j] = (from k in newCourses where k.ID == this.Courses[i].PartnerCourses[j].ID select k).First();
+                }
             }
 
             //Rückgabe

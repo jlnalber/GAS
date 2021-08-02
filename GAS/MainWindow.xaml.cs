@@ -16,10 +16,10 @@ namespace GAS
     /// </summary>
     public partial class MainWindow : Window
     {
-        private List<Course> Courses;
+        private List<GroupCourse> Courses;
         private List<Teacher> Teachers;
         private List<Student> Students;
-        private List<(Course, ComboBoxItem)> CoursesC;
+        private List<(GroupCourse, ComboBoxItem)> CoursesC;
         private List<(Teacher, ComboBoxItem)> TeachersC;
         private List<(Student, ComboBoxItem)> StudentsC;
 
@@ -40,12 +40,15 @@ namespace GAS
         #region
         public void RefreshCourses()
         {
+            //Speichere den Index des ausgewählten Kurses:
             int index = this.Course_Picker.Items.Count != 0 ? this.Course_Picker.SelectedIndex : 0;
 
+            //Leere die Listen:
             this.Course_Picker.Items.Clear();
             this.CoursesC.Clear();
 
-            foreach (Course i in this.Courses)
+            //Erstelle die neuen Items:
+            foreach (GroupCourse i in this.Courses)
             {
                 ComboBoxItem comboBoxItem = new ComboBoxItem();
                 comboBoxItem.Content = i.ID;
@@ -53,6 +56,7 @@ namespace GAS
                 this.Course_Picker.Items.Add(comboBoxItem);
             }
 
+            //Wähle wieder den alten Kurs aus:
             try
             {
                 this.Course_Picker.SelectedIndex = index;
@@ -61,9 +65,11 @@ namespace GAS
 
             if (this.Course_Picker.Items.Count == 0)
             {
+                //Leere alles, falls es keine Kurse gibt:
                 this.ID_Course.Content = "";
                 this.Periods_Course.InputText = "";
-                this.Teacher_Course.Items.Clear();
+                this.SelectedTeachers_Course.Items.Clear();
+                this.NotSelectedTeachers_Course.Items.Clear();
                 this.SelectedStudents_Course.Items.Clear();
                 this.NotSelectedStudents_Course.Items.Clear();
             }
@@ -71,11 +77,14 @@ namespace GAS
 
         public void RefreshTeachers()
         {
+            //Speichere den Index des ausgewählten LuL:
             int index = this.Teacher_Picker.Items.Count != 0 ? this.Teacher_Picker.SelectedIndex : 0;
 
+            //Leere die Listen:
             this.Teacher_Picker.Items.Clear();
             this.TeachersC.Clear();
 
+            //Erstelle die neuen Items:
             foreach (Teacher i in this.Teachers)
             {
                 ComboBoxItem comboBoxItem = new ComboBoxItem();
@@ -84,6 +93,7 @@ namespace GAS
                 this.Teacher_Picker.Items.Add(comboBoxItem);
             }
 
+            //Wähle wieder den alten LuL aus:
             try
             {
                 this.Teacher_Picker.SelectedIndex = index;
@@ -92,6 +102,7 @@ namespace GAS
 
             if (this.Teacher_Picker.Items.Count == 0)
             {
+                //Leere alles, falls es keine LuL gibt:
                 this.ID_Teacher.Content = "";
                 this.Name_Teacher.InputText = "";
                 this.Courses_Teacher.Items.Clear();
@@ -100,11 +111,14 @@ namespace GAS
 
         public void RefreshStudents()
         {
+            //Speichere den Index des ausgewählten SuS:
             int index = this.Student_Picker.Items.Count != 0 ? this.Student_Picker.SelectedIndex : 0;
 
+            //Leere die Listen:
             this.Student_Picker.Items.Clear();
             this.StudentsC.Clear();
 
+            //Erstelle die neuen Items:
             foreach (Student i in this.Students)
             {
                 ComboBoxItem comboBoxItem = new ComboBoxItem();
@@ -113,6 +127,7 @@ namespace GAS
                 this.Student_Picker.Items.Add(comboBoxItem);
             }
 
+            //Wähle wieder den alten SuS aus:
             try
             {
                 this.Student_Picker.SelectedIndex = index;
@@ -121,6 +136,7 @@ namespace GAS
 
             if (this.Student_Picker.Items.Count == 0)
             {
+                //Leere alles, falls es keine SuS gibt:
                 this.ID_Student.Content = "";
                 this.Name_Student.InputText = "";
                 this.SelectedCourses_Student.Items.Clear();
@@ -147,13 +163,13 @@ namespace GAS
         {
             CSVReader reader = new(path);
 
-            Course[] courses = new Course[endCol - startCol];
+            GroupCourse[] courses = new GroupCourse[endCol - startCol];
             List<Teacher> teachers = new();
             List<Student> students = new();
 
             for (int i = 0; i < endCol - startCol; i++)
             {
-                Teacher teacher = new Teacher(new Course[0], "T" + (i + 1));
+                Teacher[] teacher = new Teacher[1] { new Teacher(new GroupCourse[0], "T" + (i + 1)) };
                 string ID = rowIDsCourses == -1 ? "C" + (i + 1) : reader[i + startCol, rowIDsCourses];
                 int periods = defaultPeriods;
                 try
@@ -161,15 +177,15 @@ namespace GAS
                     periods = int.Parse(reader[i + startCol, rowPeriods]);
                 }
                 catch { }
-                Course course = new(periods, new Student[0], teacher, ID);
-                teacher.Courses = new Course[1] { course };
+                GroupCourse course = new(periods, new Student[0], teacher, ID);
+                teacher[0].Courses = new GroupCourse[1] { course };
                 courses[i] = course;
-                teachers.Add(teacher);
+                teachers.Add(teacher[0]);
             }
 
             for (int i = 0; i < endRow - startRow; i++)
             {
-                Student student = new(new Course[0], "S" + (i + 1));
+                Student student = new(new GroupCourse[0], "S" + (i + 1));
                 if (columnNamesStudents != -1)
                 {
                     student.Name = reader[columnNamesStudents, i + startRow];
@@ -212,18 +228,20 @@ namespace GAS
 
         public void ExportToFile(string path)
         {
+            //Erstelle eine Tabelle:
             CSVWriter csvWriter = new(this.Courses.Count + 1, this.Students.Count + 1);
 
             csvWriter[0, 0] = "-";
 
+            //Schreibe die IDs der Kurse in die Tabelle:
             for (int i = 0; i < this.Courses.Count; i++)
             {
                 csvWriter[i + 1, 0] = this.Courses[i].ID;
             }
-
+            //Schreibe die Namen der Schüler und deren Informationen in die Tabelle:
             for (int i = 0; i < this.Students.Count; i++)
             {
-                csvWriter[0, i + 1] = this.Students[i].Name;
+                csvWriter[0, i + 1] = this.Students[i].Name == "" ? this.Students[i].ID : this.Students[i].Name;
 
                 for (int j = 0; j < this.Courses.Count; j++)
                 {
@@ -236,6 +254,7 @@ namespace GAS
                 }
             }
 
+            //Speicher die Tabelle in einer Datei:
             csvWriter.Save(path);
         }
         #endregion
@@ -260,7 +279,7 @@ namespace GAS
 
         //Methoden für die Verwaltung der Kurse, Lehrer und Eltern:
         #region
-        public List<Course> GetCourses()
+        public List<GroupCourse> GetCourses()
         {
             return this.Courses;
         }
@@ -275,15 +294,18 @@ namespace GAS
             return this.Students;
         }
 
-        public void AddCourse(Course course)
+        public void AddCourse(GroupCourse course)
         {
+            //Füge den Kurs hinzu.
             this.Courses.Add(course);
 
-            course.Teacher.Courses = Utils.AddToArray(course.Teacher.Courses, course);
-
+            foreach (Teacher t in course.Teachers)
+            {
+                t.Courses = t.Courses.AddToArray(course);
+            }
             foreach (Student s in course.Students)
             {
-                s.Courses = Utils.AddToArray(s.Courses, course);
+                s.Courses = s.Courses.AddToArray(course);
             }
 
             this.RefreshAll();
@@ -291,12 +313,12 @@ namespace GAS
 
         public void AddTeacher(Teacher teacher)
         {
+            //Füge den Lehrer hinzu.
             this.Teachers.Add(teacher);
 
-            foreach (Course c in teacher.Courses)
+            foreach (GroupCourse c in teacher.Courses)
             {
-                c.Teacher.Courses = Utils.RemoveFromArray(c.Teacher.Courses, c);
-                c.Teacher = teacher;
+                c.Teachers = c.Teachers.AddToArray(teacher);
             }
 
             this.RefreshAll();
@@ -304,11 +326,12 @@ namespace GAS
 
         public void AddStudent(Student student)
         {
+            //Füge den Schüler hinzu.
             this.Students.Add(student);
 
-            foreach (Course c in student.Courses)
+            foreach (GroupCourse c in student.Courses)
             {
-                c.Students = Utils.AddToArray(c.Students, student);
+                c.Students = c.Students.AddToArray(student);
             }
 
             this.RefreshAll();
@@ -319,7 +342,25 @@ namespace GAS
         {
             try
             {
-                new ScheduleCalculator_Window(new Schedule(this.Courses.ToArray())).Show();
+                //Erstelle eine Kopie von den Kursen:
+                GroupCourse[] groupCourses = GroupCourse.GetDeepCopy(this.Courses.ToArray());
+
+                //Erstelle eine Array für die neu verteilten Kurse:
+                Course[] courses = new Course[Utils.Sum(groupCourses, (GroupCourse c) => c.Teachers.Length)];
+
+                //Verteile die Kurse und weise sie dem Array zu:
+                int counter = 0;
+                for (int i = 0; i < groupCourses.Length; i++)
+                {
+                    foreach (Course c in groupCourses[i].Split())
+                    {
+                        courses[counter] = c;
+                        counter++;
+                    }
+                }
+
+                //Erstelle ein neues Fenster, um den Stundenplan zu berechnen:
+                new ScheduleCalculator_Window(new Schedule(courses)).Show();
             }
             catch (Schedule.InvalidIDException)
             {
@@ -329,33 +370,51 @@ namespace GAS
 
         //Methoden für das Bearbeiten der Kurse:
         #region
-        private List<(Teacher, ComboBoxItem)> TeachersC_Course = new();
+        private List<(Teacher, ListBoxItem)> TeachersC_Course = new();
         private List<(Student, ListBoxItem)> StudentsC_Course = new();
-        private ListBoxItem LastListBoxItem_Course;
+        private ListBoxItem LastListBoxItemT_Course;
+        private ListBoxItem LastListBoxItemS_Course;
 
         private void Course_Picker_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             try
             {
-                Course course = (from i in this.CoursesC where i.Item2 == this.Course_Picker.SelectedItem select i.Item1).First();
+                GroupCourse course = (from i in this.CoursesC where i.Item2 == this.Course_Picker.SelectedItem select i.Item1).First();
                 this.DisplayCourse(course);
             }
             catch { }
         }
 
-        private void SwitchButton1_Click(object sender, RoutedEventArgs e)
+        private void SwitchButton1T_Click(object sender, RoutedEventArgs e)
         {
-            if (this.LastListBoxItem_Course != null)
+            if (this.LastListBoxItemT_Course != null)
             {
-                if (this.SelectedStudents_Course.Items.Contains(this.LastListBoxItem_Course))
+                if (this.SelectedTeachers_Course.Items.Contains(this.LastListBoxItemT_Course))
                 {
-                    this.SelectedStudents_Course.Items.Remove(this.LastListBoxItem_Course);
-                    this.NotSelectedStudents_Course.Items.Add(this.LastListBoxItem_Course);
+                    this.SelectedTeachers_Course.Items.Remove(this.LastListBoxItemT_Course);
+                    this.NotSelectedTeachers_Course.Items.Add(this.LastListBoxItemT_Course);
                 }
                 else
                 {
-                    this.NotSelectedStudents_Course.Items.Remove(this.LastListBoxItem_Course);
-                    this.SelectedStudents_Course.Items.Add(this.LastListBoxItem_Course);
+                    this.NotSelectedTeachers_Course.Items.Remove(this.LastListBoxItemT_Course);
+                    this.SelectedTeachers_Course.Items.Add(this.LastListBoxItemT_Course);
+                }
+            }
+        }
+
+        private void SwitchButton1S_Click(object sender, RoutedEventArgs e)
+        {
+            if (this.LastListBoxItemS_Course != null)
+            {
+                if (this.SelectedStudents_Course.Items.Contains(this.LastListBoxItemS_Course))
+                {
+                    this.SelectedStudents_Course.Items.Remove(this.LastListBoxItemS_Course);
+                    this.NotSelectedStudents_Course.Items.Add(this.LastListBoxItemS_Course);
+                }
+                else
+                {
+                    this.NotSelectedStudents_Course.Items.Remove(this.LastListBoxItemS_Course);
+                    this.SelectedStudents_Course.Items.Add(this.LastListBoxItemS_Course);
                 }
             }
         }
@@ -365,7 +424,7 @@ namespace GAS
             this.ResetColors_Course();
             try
             {
-                Course course = (from i in this.CoursesC where i.Item2 == this.Course_Picker.SelectedItem select i.Item1).First();
+                GroupCourse course = (from i in this.CoursesC where i.Item2 == this.Course_Picker.SelectedItem select i.Item1).First();
 
                 //Aktualisiere die ID.
                 course.ID = this.ID_Course.GetValueString();
@@ -373,9 +432,16 @@ namespace GAS
                 //Aktualisiere die Stundenanzahl.
                 course.Periods = new Period[this.Periods_Course.GetValueInt()];
 
-                //Aktualisiere den LuL.
-                Teacher newTeacher = (from i in this.TeachersC_Course where i.Item2 == this.Teacher_Course.SelectedItem select i.Item1).First();
-                course.Teacher.RemoveFromCourse(course, newTeacher);
+                //Aktualisiere die LuL.
+                if (this.SelectedTeachers_Course.Items.Count == 0) throw new InvalidOperationException();
+                foreach (Teacher i in from s in TeachersC_Course where this.SelectedTeachers_Course.Items.Contains(s.Item2) && !course.Teachers.Contains(s.Item1) select s.Item1)
+                {
+                    course.AddTeacher(i);
+                }
+                foreach (Teacher i in from s in TeachersC_Course where this.NotSelectedTeachers_Course.Items.Contains(s.Item2) && course.Teachers.Contains(s.Item1) select s.Item1)
+                {
+                    course.RemoveTeacher(i);
+                }
 
                 //Aktualisiere die SuS.
                 foreach (Student i in from s in StudentsC_Course where this.SelectedStudents_Course.Items.Contains(s.Item2) && !course.Students.Contains(s.Item1) select s.Item1)
@@ -395,40 +461,48 @@ namespace GAS
             catch (InvalidOperationException)
             {
                 SystemSounds.Asterisk.Play();
-                this.TeacherLabel_Course.Foreground = Brushes.Red;
+                this.TeachersLabel_Course.Foreground = Brushes.Red;
             }
         }
 
         private void ResetColors_Course()
         {
             this.Periods_Course.Label.Foreground = Brushes.Black;
-            this.TeacherLabel_Course.Foreground = Brushes.Black;
+            this.TeachersLabel_Course.Foreground = Brushes.Black;
         }
 
-        private void DisplayCourse(Course course)
+        private void DisplayCourse(GroupCourse course)
         {
             this.ResetColors_Course();
 
+            //Lade die InputFields neu:
             this.ID_Course.InputText = course.ID;
 
             this.Periods_Course.InputText = course.Periods.Length.ToString();
 
+            //Stelle die LuL dar:
             this.TeachersC_Course.Clear();
-            this.Teacher_Course.Items.Clear();
-            ComboBoxItem boxItem = new();
+            this.SelectedTeachers_Course.Items.Clear();
+            this.NotSelectedTeachers_Course.Items.Clear();
             foreach (Teacher i in this.Teachers)
             {
-                ComboBoxItem comboBoxItem = new ComboBoxItem();
-                comboBoxItem.Content = i.Name == "" ? i.ID : i.Name;
-                this.TeachersC_Course.Add((i, comboBoxItem));
-                this.Teacher_Course.Items.Add(comboBoxItem);
-                if (i == course.Teacher)
+                ListBoxItem listBoxItem = new ListBoxItem();
+                listBoxItem.Content = i.Name == "" ? i.ID : i.Name;
+                listBoxItem.MouseDoubleClick += ListBoxItemT_MouseDoubleClick;
+                listBoxItem.LostFocus += ListBoxItemT_LostFocus;
+                this.TeachersC_Course.Add((i, listBoxItem));
+
+                if (course.Teachers.Contains(i))
                 {
-                    boxItem = comboBoxItem;
+                    this.SelectedTeachers_Course.Items.Add(listBoxItem);
+                }
+                else
+                {
+                    this.NotSelectedTeachers_Course.Items.Add(listBoxItem);
                 }
             }
-            this.Teacher_Course.SelectedItem = boxItem;
 
+            //Stelle die SuS dar:
             this.StudentsC_Course.Clear();
             this.SelectedStudents_Course.Items.Clear();
             this.NotSelectedStudents_Course.Items.Clear();
@@ -436,8 +510,8 @@ namespace GAS
             {
                 ListBoxItem listBoxItem = new();
                 listBoxItem.Content = i.Name == "" ? i.ID : i.Name;
-                listBoxItem.MouseDoubleClick += ListBoxItem_Course_MouseDoubleClick;
-                listBoxItem.LostFocus += ListBoxItem_Course_LostFocus;
+                listBoxItem.MouseDoubleClick += ListBoxItemS_Course_MouseDoubleClick;
+                listBoxItem.LostFocus += ListBoxItemS_Course_LostFocus;
                 this.StudentsC_Course.Add((i, listBoxItem));
 
                 if (course.Students.Contains(i))
@@ -451,12 +525,33 @@ namespace GAS
             }
         }
 
-        private void ListBoxItem_Course_LostFocus(object sender, RoutedEventArgs e)
+        private void ListBoxItemT_LostFocus(object sender, RoutedEventArgs e)
         {
-            this.LastListBoxItem_Course = sender as ListBoxItem;
+            this.LastListBoxItemT_Course = sender as ListBoxItem;
         }
 
-        private void ListBoxItem_Course_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        private void ListBoxItemT_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            ListBoxItem listBoxItem = sender as ListBoxItem;
+
+            if (this.SelectedTeachers_Course.Items.Contains(listBoxItem))
+            {
+                this.SelectedTeachers_Course.Items.Remove(listBoxItem);
+                this.NotSelectedTeachers_Course.Items.Add(listBoxItem);
+            }
+            else
+            {
+                this.NotSelectedTeachers_Course.Items.Remove(listBoxItem);
+                this.SelectedTeachers_Course.Items.Add(listBoxItem);
+            }
+        }
+
+        private void ListBoxItemS_Course_LostFocus(object sender, RoutedEventArgs e)
+        {
+            this.LastListBoxItemS_Course = sender as ListBoxItem;
+        }
+
+        private void ListBoxItemS_Course_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             ListBoxItem listBoxItem = sender as ListBoxItem;
 
@@ -476,17 +571,25 @@ namespace GAS
         {
             try
             {
-                Course course = (from i in this.CoursesC where i.Item2 == this.Course_Picker.SelectedItem select i.Item1).First();
+                //Suche den Kurs:
+                GroupCourse course = (from i in this.CoursesC where i.Item2 == this.Course_Picker.SelectedItem select i.Item1).First();
 
+                //Entferne den Kurs aus den SuS:
                 foreach (Student i in course.Students)
                 {
-                    i.Courses = Utils.RemoveFromArray(i.Courses, course);
+                    i.Courses = i.Courses.RemoveFromArray(course);
                 }
 
-                course.Teacher.Courses = Utils.RemoveFromArray(course.Teacher.Courses, course);
+                //Entferne den Kurs aus den LuL:
+                foreach (Teacher i in course.Teachers)
+                {
+                    i.Courses = i.Courses.RemoveFromArray(course);
+                }
 
+                //Entferne den Kurs:
                 this.Courses.Remove(course);
 
+                //Aktualisieren
                 this.RefreshAll();
             }
             catch
@@ -537,7 +640,7 @@ namespace GAS
             this.Name_Teacher.InputText = teacher.Name;
 
             this.Courses_Teacher.Items.Clear();
-            foreach (Course i in teacher.Courses)
+            foreach (GroupCourse i in teacher.Courses)
             {
                 ListBoxItem listBoxItem = new();
                 listBoxItem.Content = i.ID;
@@ -555,17 +658,21 @@ namespace GAS
                 }
                 else
                 {
+                    //Suche nach dem LuL:
                     Teacher teacher = (from i in this.TeachersC where i.Item2 == this.Teacher_Picker.SelectedItem select i.Item1).First();
 
-                    Teacher replaceBy = Utils.Filter(this.Teachers.ToArray(), (Teacher t) => t != teacher)[0];
-                    foreach (Course i in teacher.Courses)
+                    //Ersetze den LuL mit einem anderen:
+                    Teacher replaceBy = this.Teachers.ToArray().Filter((Teacher t) => t != teacher)[0];
+                    foreach (GroupCourse i in teacher.Courses)
                     {
-                        i.Teacher = replaceBy;
-                        replaceBy.Courses = Utils.AddToArray(replaceBy.Courses, i);
+                        i.Teachers[Array.IndexOf(i.Teachers, i)] = replaceBy;
+                        replaceBy.Courses = replaceBy.Courses.AddToArray(i);
                     }
 
+                    //Entferne den LuL:
                     this.Teachers.Remove(teacher);
 
+                    //Aktualisieren
                     this.RefreshAll();
                 }
             }
@@ -621,13 +728,13 @@ namespace GAS
                 student.Name = this.Name_Student.GetValueString();
 
                 //Aktualisiere die Kurse.
-                foreach (Course i in from c in CoursesC_Student where this.SelectedCourses_Student.Items.Contains(c.Item2) && !student.Courses.Contains(c.Item1) select c.Item1)
+                foreach (GroupCourse i in from c in CoursesC_Student where this.SelectedCourses_Student.Items.Contains(c.Item2) && !student.Courses.Contains(c.Item1) select c.Item1)
                 {
-                    student.AddToCourse(i);
+                    i.AddStudent(student);
                 }
-                foreach (Course i in from c in CoursesC_Student where this.NotSelectedCourses_Student.Items.Contains(c.Item2) && student.Courses.Contains(c.Item1) select c.Item1)
+                foreach (GroupCourse i in from c in CoursesC_Student where this.NotSelectedCourses_Student.Items.Contains(c.Item2) && student.Courses.Contains(c.Item1) select c.Item1)
                 {
-                    student.RemoveFromCourse(i);
+                    i.RemoveStudent(student);
                 }
 
                 //Aktualisiere die anderen Tabs.
@@ -642,14 +749,16 @@ namespace GAS
 
         private void DisplayStudent(Student student)
         {
+            //Lade die InputViews neu:
             this.ID_Student.InputText = student.ID;
 
             this.Name_Student.InputText = student.Name;
 
+            //Stelle die Kurse dar:
             this.CoursesC_Student.Clear();
             this.SelectedCourses_Student.Items.Clear();
             this.NotSelectedCourses_Student.Items.Clear();
-            foreach (Course i in this.Courses)
+            foreach (GroupCourse i in this.Courses)
             {
                 ListBoxItem listBoxItem = new();
                 listBoxItem.Content = i.ID;
@@ -693,13 +802,16 @@ namespace GAS
         {
             try
             {
+                //Suche den SuS:
                 Student student = (from i in this.StudentsC where i.Item2 == this.Student_Picker.SelectedItem select i.Item1).First();
 
-                foreach (Course i in student.Courses)
+                //Entferne den SuS aus dem Kurs:
+                foreach (GroupCourse i in student.Courses)
                 {
-                    i.Students = Utils.RemoveFromArray(i.Students, student);
+                    i.Students = i.Students.RemoveFromArray(student);
                 }
 
+                //Entferne den SuS:
                 this.Students.Remove(student);
 
                 this.RefreshAll();

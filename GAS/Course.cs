@@ -9,6 +9,7 @@ namespace GAS
         public Student[] Students;
         public Teacher Teacher;
         public string ID;
+        public Course[] PartnerCourses;
 
         public Course(int periods, Student[] students, Teacher teacher, string ID)
         {
@@ -16,6 +17,7 @@ namespace GAS
             this.Students = students;
             this.Teacher = teacher;
             this.ID = ID;
+            this.PartnerCourses = new Course[0];
         }
 
         public Course(Period[] periods, Student[] students, Teacher teacher, string ID)
@@ -24,6 +26,7 @@ namespace GAS
             this.Students = students;
             this.Teacher = teacher;
             this.ID = ID;
+            this.PartnerCourses = new Course[0];
         }
 
         public bool AppliesForAll()
@@ -82,6 +85,11 @@ namespace GAS
         {
             this.Students = Utils.RemoveFromArray(this.Students, student);
             student.Courses = Utils.RemoveFromArray(student.Courses, this);
+        }
+
+        public double GetScore()
+        {
+            throw new NotImplementedException();
         }
     }
 

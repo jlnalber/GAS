@@ -13,7 +13,7 @@ namespace GAS
     /// </summary>
     public partial class AddTeacher_Window : Window
     {
-        private List<(Course, ListBoxItem)> CoursesC;
+        private List<(GroupCourse, ListBoxItem)> CoursesC;
         MainWindow MainWindow;
         private ListBoxItem LastListBoxItem;
 
@@ -25,7 +25,7 @@ namespace GAS
 
             this.CoursesC = new();
 
-            foreach (Course i in this.MainWindow.GetCourses())
+            foreach (GroupCourse i in this.MainWindow.GetCourses())
             {
                 ListBoxItem listBoxItem = new();
                 listBoxItem.Content = i.ID;
@@ -66,19 +66,19 @@ namespace GAS
             }
             else
             {
-                Course[] courses = new Course[this.SelectedCourses.Items.Count];
-                for (int i = 0; i < this.SelectedCourses.Items.Count; i++)
-                {
-                    courses[i] = (from j in this.CoursesC where j.Item2 == this.SelectedCourses.Items[i] select j.Item1).First();
-                }
+                //Lade die ausgewählten Kurse:
+                GroupCourse[] courses = (from j in this.CoursesC where this.SelectedCourses.Items.Contains(j.Item2) select j.Item1).ToArray();
 
+                //Lade die Informationen aus den InputViews:
                 string ID = this.ID.GetValueString();
 
                 string name = this.NameT.GetValueString();
 
+                //Erstelle den Lehree:
                 Teacher teacher = new(courses, ID);
                 teacher.Name = name;
 
+                //Füge den Lehrer hinzu und schieße das Fenster:
                 this.MainWindow.AddTeacher(teacher);
                 this.Close();
             }

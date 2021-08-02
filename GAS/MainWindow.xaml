@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:GAS"
         mc:Ignorable="d"
-        Title="GAS" MinHeight="300" MinWidth="600" Height="450" Width="800" WindowStartupLocation="CenterScreen" WindowState="Maximized">
+        Title="GAS" MinHeight="400" MinWidth="600" Height="500" Width="800" WindowStartupLocation="CenterScreen" WindowState="Maximized">
     <DockPanel>
         <Menu VerticalAlignment="Top" DockPanel.Dock="Top">
             <MenuItem Header="Datei">
@@ -32,12 +32,15 @@
 
                     <local:InputField x:Name="ID_Course" Margin="20,80,0,0" Distance="80" LabelContent="ID:"/>
                     <local:InputField LabelContent="Stunden:" Distance="80" Margin="20,120,0,0" x:Name="Periods_Course"/>
-                    <Label HorizontalAlignment="Left" VerticalAlignment="Top" Content="LuL:" Margin="20,160,0,0" Height="25" x:Name="TeacherLabel_Course"/>
-                    <ComboBox HorizontalAlignment="Left" VerticalAlignment="Top" Width="150" x:Name="Teacher_Course" Margin="100,160,0,0" Height="25" VerticalContentAlignment="Center"></ComboBox>
-                    <Label HorizontalAlignment="Left" VerticalAlignment="Top" Content="SuS:" Margin="20,200,0,0" Height="25"/>
-                    <ListBox HorizontalAlignment="Left" VerticalAlignment="Top" Width="150" x:Name="SelectedStudents_Course" Margin="100,200,20,20" MinHeight="25" VerticalContentAlignment="Center"></ListBox>
-                    <Button HorizontalAlignment="Left" VerticalAlignment="Top" Content="Verschieben" Padding="5" Margin="270,200,0,0" Width="90" Click="SwitchButton1_Click"></Button>
-                    <ListBox HorizontalAlignment="Left" VerticalAlignment="Top" Width="150" x:Name="NotSelectedStudents_Course" Margin="380,200,20,20" MinHeight="25" VerticalContentAlignment="Center"></ListBox>
+                    <Label HorizontalAlignment="Left" VerticalAlignment="Top" Content="LuL:" Margin="20,160,0,0" Height="25" x:Name="TeachersLabel_Course"/>
+                    <!--<ComboBox HorizontalAlignment="Left" VerticalAlignment="Top" Width="150" x:Name="Teacher_Course" Margin="100,160,0,0" Height="25" VerticalContentAlignment="Center"></ComboBox>-->
+                    <ListBox HorizontalAlignment="Left" VerticalAlignment="Top" Width="150" x:Name="SelectedTeachers_Course" Margin="100,160,20,20" MinHeight="25" MaxHeight="100" VerticalContentAlignment="Center"></ListBox>
+                    <Button HorizontalAlignment="Left" VerticalAlignment="Top" Content="Verschieben" Padding="5" Margin="270,160,0,0" Width="90" Click="SwitchButton1T_Click"></Button>
+                    <ListBox HorizontalAlignment="Left" VerticalAlignment="Top" Width="150" x:Name="NotSelectedTeachers_Course" Margin="380,160,20,20" MinHeight="25" MaxHeight="100" VerticalContentAlignment="Center"></ListBox>
+                    <Label HorizontalAlignment="Left" VerticalAlignment="Top" Content="SuS:" Margin="20,275,0,0" Height="25"/>
+                    <ListBox HorizontalAlignment="Left" VerticalAlignment="Top" Width="150" x:Name="SelectedStudents_Course" Margin="100,275,20,20" MinHeight="25" MaxHeight="100" VerticalContentAlignment="Center"></ListBox>
+                    <Button HorizontalAlignment="Left" VerticalAlignment="Top" Content="Verschieben" Padding="5" Margin="270,275,0,0" Width="90" Click="SwitchButton1S_Click"></Button>
+                    <ListBox HorizontalAlignment="Left" VerticalAlignment="Top" Width="150" x:Name="NotSelectedStudents_Course" Margin="380,275,20,20" MinHeight="25" MaxHeight="100" VerticalContentAlignment="Center"></ListBox>
 
                     <Button Content="Löschen" HorizontalAlignment="Right" VerticalAlignment="Bottom" Padding="5" Margin="0,0,100,10" Click="DeleteCourse_Click"/>
                     <Button Content="Speichern" HorizontalAlignment="Right" VerticalAlignment="Bottom" Padding="5" Margin="0,0,10,10" Click="SaveCourse_Click"/>
@@ -52,7 +55,7 @@
                     <local:InputField x:Name="ID_Teacher" LabelContent="ID:" Margin="20,80,0,0" Distance="80"/>
                     <local:InputField x:Name="Name_Teacher" LabelContent="Name:" Distance="80" Margin="20,120,0,0"/>
                     <Label HorizontalAlignment="Left" VerticalAlignment="Top" Content="Kurse:" Margin="20,160,0,0" Height="25"/>
-                    <ListBox HorizontalAlignment="Left" VerticalAlignment="Top" Width="150" x:Name="Courses_Teacher" Margin="100,160,20,20" MinHeight="25" VerticalContentAlignment="Center"></ListBox>
+                    <ListBox HorizontalAlignment="Left" VerticalAlignment="Top" Width="150" x:Name="Courses_Teacher" Margin="100,160,20,20" MinHeight="25" MaxHeight="100" VerticalContentAlignment="Center"></ListBox>
 
                     <Button Content="Löschen" HorizontalAlignment="Right" VerticalAlignment="Bottom" Padding="5" Margin="0,0,100,10" Click="DeleteTeacher_Click"/>
                     <Button Content="Speichern" HorizontalAlignment="Right" VerticalAlignment="Bottom" Padding="5" Margin="0,0,10,10" Click="SaveTeacher_Click"/>
@@ -67,9 +70,9 @@
                     <local:InputField x:Name="ID_Student" LabelContent="ID:" Distance="80" Margin="20,80,0,0"/>
                     <local:InputField x:Name="Name_Student" LabelContent="Name:" Distance="80" Margin="20,120,0,0"/>
                     <Label HorizontalAlignment="Left" VerticalAlignment="Top" Content="Kurse:" Margin="20,160,0,0" Height="25"/>
-                    <ListBox HorizontalAlignment="Left" VerticalAlignment="Top" Width="150" x:Name="SelectedCourses_Student" Margin="100,160,20,20" MinHeight="25" VerticalContentAlignment="Center"></ListBox>
+                    <ListBox HorizontalAlignment="Left" VerticalAlignment="Top" Width="150" x:Name="SelectedCourses_Student" Margin="100,160,20,20" MinHeight="25" MaxHeight="100" VerticalContentAlignment="Center"></ListBox>
                     <Button HorizontalAlignment="Left" VerticalAlignment="Top" Content="Verschieben" Padding="5" Margin="270,160,0,0" Width="90" Click="SwitchButton3_Click"></Button>
-                    <ListBox HorizontalAlignment="Left" VerticalAlignment="Top" Width="150" x:Name="NotSelectedCourses_Student" Margin="380,160,20,20" MinHeight="25" VerticalContentAlignment="Center"></ListBox>
+                    <ListBox HorizontalAlignment="Left" VerticalAlignment="Top" Width="150" x:Name="NotSelectedCourses_Student" Margin="380,160,20,20" MinHeight="25" MaxHeight="100" VerticalContentAlignment="Center"></ListBox>
 
                     <Button Content="Löschen" HorizontalAlignment="Right" VerticalAlignment="Bottom" Padding="5" Margin="0,0,100,10" Click="DeleteStudent_Click"/>
                     <Button Content="Speichern" HorizontalAlignment="Right" VerticalAlignment="Bottom" Padding="5" Margin="0,0,10,10" Click="SaveStudent_Click"/>
