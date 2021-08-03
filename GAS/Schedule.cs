@@ -211,46 +211,43 @@ namespace GAS
             //Mutiere die Teilnehmer...
             if (course.PartnerCourses.Length != 0 && random.NextDouble() < MUTATE_PARTICIPANTS)
             {
+                //Tausche Lehrer:
                 if (random.NextDouble() < MUTATE_TEACHERS)
                 {
-                    //TODO: Ursprünglicher LuL wird nicht aus den alten Kursen entfernt, (GetCopy() auslassen?) wegen pass by reference aufpassen...
-                    //Speichere den Lehrer ab.
-                    Teacher curT = course.Teacher.GetCopy();
-                    curT.RemoveFromCourse(course, new Teacher(new Course[0], ""));
+                    //Wähle einen zufälligen Partnerkurs aus und speichere seinen Lehrer temporär ab:
+                    Course course2 = course.PartnerCourses[random.Next(course.PartnerCourses.Length)];
+                    Teacher temp = course2.Teacher;
 
-                    //Erstelle eine Liste mit den noch nicht abgearbeitetnen Kursen:
-                    List<Course> courses = new();
-                    courses.AddRange(course.PartnerCourses);
+                    //Tausche die beiden Lehrer aus:
+                    temp.RemoveFromCourse(course2, course.Teacher);
+                    course.Teacher.RemoveFromCourse(course, temp);
 
-                    //Reiche den Lehrer durch, am Ende bleibt noch einer übrig, das ist der für den ursprünglichen Kurs:
-                    while (courses.Count != 0)
-                    {
-                        Course curC = courses[random.Next(courses.Count)];
-
-                        Teacher temp = curC.Teacher.GetCopy();
-                        temp.RemoveFromCourse(curC, curT);
-                        curT = temp;
-
-                        courses.Remove(curC);
-                    }
-                    curT.AddToCourse(course);
+                    //TODO: Komplett neue Zuweisung der Lehrer in den Partnerkursen.
                 }
+                //Tausche Schüler:
                 else
                 {
+                    //Mache eine komplett neue Zuteilung der Schüler:
                     if (random.NextDouble() < MUTATE_STUDENTS_NEW_COURSE)
                     {
-
+                        //TODO
                     }
+                    //Tausche zwei Schüler miteinander:
                     else
                     {
-                        //Tausche zwei zufällige Schüler in den Kursen aus:
-                        Course pCourse = course.PartnerCourses[random.Next(course.PartnerCourses.Length)];
-                        int index1 = random.Next(course.Students.Length);
-                        int index2 = random.Next(pCourse.Students.Length);
+                        //Wähle einen zufälligen Partnerkurs aus wähle zwei zufällige Schüler aus Kurs und Partnerkurs:
+                        Course course2 = course.PartnerCourses[random.Next(course.PartnerCourses.Length)];
+                        Student student1 = course.Students[random.Next(course.Students.Length)];
+                        Student student2 = course2.Students[random.Next(course2.Students.Length)];
 
-                        Student temp = course.Students[index1].GetCopy();
-                        course.Students[]
+                        //Tausche die Schüler miteinander aus:
+                        student1.RemoveFromCourse(course);
+                        student1.AddToCourse(course2);
+                        student2.RemoveFromCourse(course2);
+                        student2.AddToCourse(course);
                     }
+
+                    //TODO: Überschreiben von Schülern, ohne das ein Tausch stattfindet (mit den Größen der Kurse spielen)? --> muss sehr unwahrscheinlich sein, außerdem nicht gut, weil sonst die Kurs-Größen zu weit auseinander gehen, Verarbeitung davon in den Score-Funktionen...
                 }
             }
             //... oder die Stunden.
