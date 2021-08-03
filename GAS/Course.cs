@@ -117,6 +117,30 @@ namespace GAS
             return (from n in students select n).ToArray();
         }
 
+        public (Course, Student)[] GetStudentsGroupPairs()
+        {
+            //Schreibe in eine Liste alle Schüler hinein:
+            List<(Course, Student)> students = new();
+
+            //Schreibe zuerst die eigenen SuS in die Liste...
+            foreach (Student i in this.Students)
+            {
+                students.Add((this, i));
+            }
+
+            //... und dann die der Partnerkurse.
+            foreach (Course c in this.PartnerCourses)
+            {
+                foreach (Student s in c.Students)
+                {
+                    students.Add((c, s));
+                }
+            }
+
+            //Rückgabe
+            return students.ToArray();
+        }
+
         public Teacher[] GetTeachersGroup()
         {
             //Schreibe in ein HashSet alle LuL hinein:

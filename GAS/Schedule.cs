@@ -230,7 +230,7 @@ namespace GAS
                         }
 
                         //Mische die Kurse und Lehrer neu und füge die Lehrer zu ihren neuen Kursen hinzu:
-                        (Course, Teacher)[] newTupels = Utils.SchuffleTupels(oldTupels);
+                        (Course, Teacher)[] newTupels = Utils.ShuffleTupels(oldTupels);
                         foreach ((Course, Teacher) i in newTupels)
                         {
                             i.Item2.AddToCourse(i.Item1);
@@ -254,7 +254,19 @@ namespace GAS
                     //Mache eine komplett neue Zuteilung der Schüler:
                     if (random.NextDouble() < MUTATE_STUDENTS_NEW_COURSE)
                     {
-                        //TODO
+                        //Erstelle die Tupel (jeweils jeder Schüler mit seinem Kurs in der Gruppe), entferne die SuS aus den Kursen:
+                        (Course, Student)[] oldTupels = course.GetStudentsGroupPairs();
+                        foreach ((Course, Student) i in oldTupels)
+                        {
+                            i.Item2.RemoveFromCourse(i.Item1);
+                        }
+
+                        //Vermische die Kurse und die SuS, füge dann nach der neuen Zuordnung die Schüler ihren neuen Kursen hinzu:
+                        (Course, Student)[] newTupels = Utils.ShuffleTupels(oldTupels);
+                        foreach ((Course, Student) i in newTupels)
+                        {
+                            i.Item2.AddToCourse(i.Item1);
+                        }
                     }
                     //Tausche je zwei Schüler miteinander aus:
                     else
