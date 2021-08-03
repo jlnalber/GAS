@@ -12,7 +12,8 @@ namespace GAS
         private const double MUTATE_INCREMENTAL_CHANGE_HOUR = 0.6;
         private const double MUTATE_PARTICIPANTS = 0.1;
         private const double MUTATE_TEACHERS = 0.1;
-        private const double MUTATE_STUDENTS_NEW_COURSE = 0.05; 
+        private const double MUTATE_TEACHERS_NEW_COURSE = 0.2;
+        private const double MUTATE_STUDENTS_NEW_COURSE = 0.2; 
         private const double CROSSOVER_CROSS_ONE_PERIOD = 0.5;
         private const double CROSSOVER_CROSS_PARTICIPANTS = 0.1;
         private const double CROSSOVER_CROSS_TEACHERS = 0.1;
@@ -214,15 +215,38 @@ namespace GAS
                 //Tausche Lehrer:
                 if (random.NextDouble() < MUTATE_TEACHERS)
                 {
-                    //Wähle einen zufälligen Partnerkurs aus und speichere seinen Lehrer temporär ab:
-                    Course course2 = course.PartnerCourses[random.Next(course.PartnerCourses.Length)];
-                    Teacher temp = course2.Teacher;
+                    //Mache eine komplett neue Zuteilung der Lehrer:
+                    if (random.NextDouble() < MUTATE_TEACHERS_NEW_COURSE)
+                    {
+                        //Hole die Gruppe von Kursen und erstelle einen Platzhalter-Lehrer:
+                        Course[] courses = course.GetGroup();
+                        Teacher dummy = new Teacher(new Course[0], "");
 
-                    //Tausche die beiden Lehrer aus:
-                    temp.RemoveFromCourse(course2, course.Teacher);
-                    course.Teacher.RemoveFromCourse(course, temp);
+                        //Erstelle jeweils Paare aus Kurs und dazugehörogen Lehrer, entferne die Lehrer aus ihren Kursen:
+                        (Course, Teacher)[] oldTupels = (from i in courses select (i, i.Teacher)).ToArray();
+                        foreach((Course, Teacher) i in oldTupels)
+                        {
+                            i.Item2.RemoveFromCourse(i.Item1, dummy);
+                        }
 
-                    //TODO: Komplett neue Zuweisung der Lehrer in den Partnerkursen.
+                        //Mische die Kurse und Lehrer neu und füge die Lehrer zu ihren neuen Kursen hinzu:
+                        (Course, Teacher)[] newTupels = Utils.SchuffleTupels(oldTupels);
+                        foreach ((Course, Teacher) i in newTupels)
+                        {
+                            i.Item2.AddToCourse(i.Item1);
+                        }
+                    }
+                    //Tausche je zwei Lehrer miteinander aus:
+                    else
+                    {
+                        //Wähle einen zufälligen Partnerkurs aus und speichere seinen Lehrer temporär ab:
+                        Course course2 = course.PartnerCourses[random.Next(course.PartnerCourses.Length)];
+                        Teacher temp = course2.Teacher;
+
+                        //Tausche die beiden Lehrer aus:
+                        temp.RemoveFromCourse(course2, course.Teacher);
+                        course.Teacher.RemoveFromCourse(course, temp);
+                    }
                 }
                 //Tausche Schüler:
                 else
@@ -232,7 +256,7 @@ namespace GAS
                     {
                         //TODO
                     }
-                    //Tausche zwei Schüler miteinander:
+                    //Tausche je zwei Schüler miteinander aus:
                     else
                     {
                         //Wähle einen zufälligen Partnerkurs aus wähle zwei zufällige Schüler aus Kurs und Partnerkurs:
