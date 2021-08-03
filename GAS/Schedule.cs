@@ -56,13 +56,13 @@ namespace GAS
 
         public override (Chromosome, Chromosome) Crossover(Chromosome chromosome)
         {
-            //Kopiere die Pläne und wähle zufällig Kurse für das Crossover aus.
+            //Kopiere die Pläne und wähle zufällig Kurse mit vielen Issues für das Crossover aus.
             Random random = new();
 
             Schedule schedule1 = this.GetDeepCopy();
             Schedule schedule2 = (chromosome as Schedule).GetDeepCopy();
 
-            Course course1 = schedule1.Courses[random.Next(schedule1.Courses.Length)];
+            Course course1 = Utils.Choices((from i in schedule1.Courses select (i, i.Issues() * (random.NextDouble() + ADDITION_RANDOM_INSTANCE_CHOICES))).ToArray());
             Course course2 = (from i in schedule2.Courses where i.ID == course1.ID select i).First();
 
             //Crossover mit den Teilnehmern:
@@ -205,9 +205,9 @@ namespace GAS
 
         public override void Mutate()
         {
-            //Erstelle eine Zufallsvariable und wähle einen Kurs aus:
+            //Erstelle eine Zufallsvariable und wähle einen Kurs je nach Issues aus:
             Random random = new();
-            Course course = this.Courses[random.Next(this.Courses.Length)];
+            Course course = Utils.Choices((from i in this.Courses select (i, i.Issues() * (random.NextDouble() + ADDITION_RANDOM_INSTANCE_CHOICES))).ToArray());
 
             //Mutiere die Teilnehmer...
             if (course.PartnerCourses.Length != 0 && random.NextDouble() < MUTATE_PARTICIPANTS)
@@ -441,11 +441,13 @@ namespace GAS
 
         public bool AllApplies()
         {
+            //Überprüfe, ob es keine Issues mehr gibt:
             return this.Issues() == 0;
         }
 
         public int Issues()
         {
+            //Zähle die Issues der Kurse und gebe sie zurück:
             int issues = 0;
             foreach (Course i in this.Courses)
             {
@@ -461,6 +463,7 @@ namespace GAS
 
         public HashSet<Person> GetPeople()
         {
+            //Sammle alle Teilnehmer des Stundenplans in einem HashSet und gebe es zurück:
             HashSet<Person> people = new();
             foreach (Course c in this.Courses)
             {
@@ -475,6 +478,7 @@ namespace GAS
 
         public double GetScore()
         {
+            //Berechne einen Durchschnitts Score:
             return Utils.Average(this.GetPeople(), (Person p) => p.GetScore());
         }
 

@@ -11,6 +11,7 @@
         <Button x:Name="Calculate" Content="Stundenplan Berechnen" HorizontalAlignment="Right" VerticalAlignment="Top" Padding="5" Margin="0,20,20,0" Click="Calculate_Click"/>
         <local:InputField x:Name="InitialPopulationSize" LabelContent="Größe der Anfangspopulation:" Margin="20,70,0,0" InputText="100"/>
         <local:InputField x:Name="MaxGenerations" LabelContent="Maximale Generationen:" InputText="10000" Margin="20,110,0,0"/>
+        <CheckBox x:Name="UnlimitedGenerations" Content="Unbegrenzt viele Generationen" IsChecked="False" Margin="420,110,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Height="25" Checked="UnlimitedGenerations_Checked" Unchecked="UnlimitedGenerations_Unchecked" VerticalContentAlignment="Center"/>
         <local:InputField x:Name="MutationChance" LabelContent="Wahrscheinlichkeit Mutation:" InputText="0.3" Margin="20,150,0,0"/>
         <local:InputField x:Name="CrossoverChance" LabelContent="Wahrscheinlichkeit Crossover:" InputText="0.7" Margin="20,190,0,0"/>
         <Label Content="Selektionsmethode:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="20,230,0,0" Height="25"/>
@@ -23,5 +24,6 @@
         <Label HorizontalAlignment="Left" x:Name="Generation" VerticalAlignment="Bottom" Margin="100,0,0,20" Height="25" Content="0"/>
         <Label Content="Fitness:" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="200,0,0,20" Height="25"/>
         <Label HorizontalAlignment="Left" x:Name="Fitness" VerticalAlignment="Bottom" Margin="280,0,0,20" Height="25" Content="0"/>
+        <Button x:Name="OpenBest" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,20,20" Content="Öffne den bislang besten Stundenplan" Padding="5" Click="OpenBest_Click" IsEnabled="False"/>
     </Grid>
 </Window>
