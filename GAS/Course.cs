@@ -135,6 +135,20 @@ namespace GAS
             return (from n in teachers select n).ToArray();
         }
 
+        public Course[] GetGroup()
+        {
+            //Sammle alle Partnerkurse und sich selbst in einer Array:
+            Course[] courses = new Course[this.PartnerCourses.Length + 1];
+            for (int i = 0; i < this.PartnerCourses.Length; i++)
+            {
+                courses[i] = this.PartnerCourses[i];
+            }
+            courses[this.PartnerCourses.Length] = this;
+
+            //Rückgabe
+            return courses;
+        }
+
         public bool CanPutItThere(Period period)
         {
             foreach (Period period1 in this.Periods)

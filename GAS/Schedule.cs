@@ -11,11 +11,14 @@ namespace GAS
         private const double MUTATE_INCREMENTAL = 0.9;
         private const double MUTATE_INCREMENTAL_CHANGE_HOUR = 0.6;
         private const double MUTATE_PARTICIPANTS = 0.1;
+        private const double MUTATE_TEACHERS = 0.1;
+        private const double MUTATE_STUDENTS_NEW_COURSE = 0.05; 
         private const double CROSSOVER_CROSS_ONE_PERIOD = 0.5;
         private const double CROSSOVER_CROSS_PARTICIPANTS = 0.1;
         private const double CROSSOVER_CROSS_TEACHERS = 0.1;
         private const double ADDITION_RANDOM_INSTANCE_CHOICES = 4.0;
 
+        //Die Kurse:
         public Course[] Courses;
 
         public Schedule(Course[] courses)
@@ -70,17 +73,39 @@ namespace GAS
                     Teacher[] teachers1 = course1.GetTeachersGroup();
                     Teacher[] teachers2 = course2.GetTeachersGroup();
 
-                    //Tausche zuerst die eigenen Lehrer aus...
-                    Teacher t = course1.Teacher;
-                    course1.Teacher = (from i in teachers1 where i.ID == course2.Teacher.ID select i).First();
-                    course2.Teacher = (from i in teachers2 where i.ID == t.ID select i).First();
+                    //Sammle die ganzen Kurse in einer Gruppe:
+                    Course[] courses1 = course1.GetGroup();
+                    Course[] courses2 = course2.GetGroup();
 
-                    //... und dann die der Partnerkurse.
-                    for (int i = 0; i < course1.PartnerCourses.Length; i++)
+                    //Speichere von beiden Gruppen die IDs ab:
+                    (string, string)[] ID1 = new (string, string)[courses1.Length];
+                    (string, string)[] ID2 = new (string, string)[courses2.Length];//In der Praxis sind die beiden Arrays gleich lang, weil immer die korrespondierenden Kurse ausgewählt wurden...
+                    for (int i = 0; i < courses1.Length; i++)
                     {
-                        Teacher temp = course1.PartnerCourses[i].Teacher;
-                        course1.PartnerCourses[i].Teacher = (from j in teachers1 where j.ID == course2.PartnerCourses[i].Teacher.ID select j).First();
-                        course2.PartnerCourses[i].Teacher = (from j in teachers2 where j.ID == temp.ID select j).First();
+                        ID1[i] = (courses1[i].ID, courses1[i].Teacher.ID);
+                        ID2[i] = (courses2[i].ID, courses2[i].Teacher.ID);
+                    }
+
+                    //Tausche die LuL aus, so wie es jeweils beim korrespondierenden Kurs der Fall ist:
+                    foreach ((string, string) IDs in ID2)
+                    {
+                        //curCourse ist der jetzige Kurs, teacher der jetzige Lehrer, oldCourse ist der alte Kurs in den Partnerkursen von course1, in dem teacher war.
+                        Course curCourse = (from i in courses1 where i.ID == IDs.Item1 select i).First();
+                        Teacher teacher = (from i in teachers1 where i.ID == IDs.Item2 select i).First();
+                        Course oldCourse = (from i in courses1 where i.Teacher == teacher select i).First();
+
+                        teacher.RemoveFromCourse(oldCourse, curCourse.Teacher);
+                        teacher.AddToCourse(curCourse);
+                    }
+                    foreach ((string, string) IDs in ID1)
+                    {
+                        //curCourse ist der jetzige Kurs, teacher der jetzige Lehrer, oldCourse ist der alte Kurs in den Partnerkursen von course1, in dem teacher war.
+                        Course curCourse = (from i in courses2 where i.ID == IDs.Item1 select i).First();
+                        Teacher teacher = (from i in teachers2 where i.ID == IDs.Item2 select i).First();
+                        Course oldCourse = (from i in courses2 where i.Teacher == teacher select i).First();
+
+                        teacher.RemoveFromCourse(oldCourse, curCourse.Teacher);
+                        teacher.AddToCourse(curCourse);
                     }
                 }
                 else
@@ -89,17 +114,43 @@ namespace GAS
                     Student[] students1 = course1.GetStudentsGroup();
                     Student[] students2 = course2.GetStudentsGroup();
 
-                    //Tausche zuerst die eigenen Schüler aus...
-                    Student[] t = course1.Students;
-                    course1.Students = (from i in students1 where course2.Students.Contains((Student s) => s.ID == i.ID) select i).ToArray();
-                    course2.Students = (from i in students2 where t.Contains((Student s) => s.ID == i.ID) select i).ToArray();
+                    //Sammle die ganzen Kurse in einer Gruppe:
+                    Course[] courses1 = course1.GetGroup();
+                    Course[] courses2 = course2.GetGroup();
 
-                    //... und dann die der Partnerkurse.
-                    for (int i = 0; i < course1.PartnerCourses.Length; i++)
+                    //Speichere die IDs der Schüler ab:
+                    (string, string[])[] ID1 = new (string, string[])[courses1.Length];
+                    (string, string[])[] ID2 = new (string, string[])[courses2.Length];//In der Praxis sind die beiden Arrays gleich lang, weil immer die korrespondierenden Kurse ausgewählt wurden...
+                    for (int i = 0; i < courses1.Length; i++)
                     {
-                        Student[] temp = course1.PartnerCourses[i].Students;
-                        course1.PartnerCourses[i].Students = (from j in students1 where course2.PartnerCourses[i].Students.Contains((Student s) => s.ID == j.ID) select j).ToArray();
-                        course2.PartnerCourses[i].Students = (from j in students2 where temp.Contains((Student s) => s.ID == j.ID) select j).ToArray();
+                        ID1[i] = (courses1[i].ID, courses1[i].Students.Transform((Student s) => s.ID));
+                        ID2[i] = (courses2[i].ID, courses2[i].Students.Transform((Student s) => s.ID));
+                    }
+
+                    //Tausche die SuS aus, so wie es jeweils beim korrespondierenden Kurs der Fall ist:
+                    foreach ((string, string[]) IDs in ID2)
+                    {
+                        Course curCourse = (from i in courses1 where i.ID == IDs.Item1 select i).First();
+                        Student[] students = (from i in students1 where IDs.Item2.Contains(i.ID) select i).ToArray();
+
+                        foreach (Student s in students)
+                        {
+                            Course oldCourse = (from i in s.Courses where courses1.Contains(i) select i).First();
+                            s.RemoveFromCourse(oldCourse);
+                            s.AddToCourse(curCourse);
+                        }
+                    }
+                    foreach ((string, string[]) IDs in ID1)
+                    {
+                        Course curCourse = (from i in courses2 where i.ID == IDs.Item1 select i).First();
+                        Student[] students = (from i in students2 where IDs.Item2.Contains(i.ID) select i).ToArray();
+
+                        foreach (Student s in students)
+                        {
+                            Course oldCourse = (from i in s.Courses where courses2.Contains(i) select i).First();
+                            s.RemoveFromCourse(oldCourse);
+                            s.AddToCourse(curCourse);
+                        }
                     }
                 }
 
@@ -153,57 +204,115 @@ namespace GAS
 
         public override void Mutate()
         {
+            //Erstelle eine Zufallsvariable und wähle einen Kurs aus:
             Random random = new();
+            Course course = this.Courses[random.Next(this.Courses.Length)];
 
-            if (random.NextDouble() < MUTATE_INCREMENTAL)
+            //Mutiere die Teilnehmer...
+            if (course.PartnerCourses.Length != 0 && random.NextDouble() < MUTATE_PARTICIPANTS)
             {
-                Course course = this.Courses[random.Next(this.Courses.Length)];
-                int pos = random.Next(course.Periods.Length);
-                if (random.NextDouble() < 0.5)
+                if (random.NextDouble() < MUTATE_TEACHERS)
                 {
-                    if (random.NextDouble() < MUTATE_INCREMENTAL_CHANGE_HOUR)
+                    //TODO: Ursprünglicher LuL wird nicht aus den alten Kursen entfernt, (GetCopy() auslassen?) wegen pass by reference aufpassen...
+                    //Speichere den Lehrer ab.
+                    Teacher curT = course.Teacher.GetCopy();
+                    curT.RemoveFromCourse(course, new Teacher(new Course[0], ""));
+
+                    //Erstelle eine Liste mit den noch nicht abgearbeitetnen Kursen:
+                    List<Course> courses = new();
+                    courses.AddRange(course.PartnerCourses);
+
+                    //Reiche den Lehrer durch, am Ende bleibt noch einer übrig, das ist der für den ursprünglichen Kurs:
+                    while (courses.Count != 0)
                     {
-                        Period newPeriod = new(course.Periods[pos].Weekday, (Hour)((int)course.Periods[pos].Hour % 11 + 1));
-                        if (course.CanPutItThere(newPeriod))
-                        {
-                            course.Periods[pos] = newPeriod;
-                        }
+                        Course curC = courses[random.Next(courses.Count)];
+
+                        Teacher temp = curC.Teacher.GetCopy();
+                        temp.RemoveFromCourse(curC, curT);
+                        curT = temp;
+
+                        courses.Remove(curC);
                     }
-                    else
-                    {
-                        Period newPeriod = new((Weekday)((int)course.Periods[pos].Weekday % 5 + 1), course.Periods[pos].Hour);
-                        if (course.CanPutItThere(newPeriod))
-                        {
-                            course.Periods[pos] = newPeriod;
-                        }
-                    }
+                    curT.AddToCourse(course);
                 }
                 else
                 {
-                    if (random.NextDouble() < MUTATE_INCREMENTAL_CHANGE_HOUR)
+                    if (random.NextDouble() < MUTATE_STUDENTS_NEW_COURSE)
                     {
-                        int temp = (int)course.Periods[pos].Hour - 1;
-                        Period newPeriod = new(course.Periods[pos].Weekday, temp == 0 ? Hour.Eleventh : (Hour)temp);
-                        if (course.CanPutItThere(newPeriod))
-                        {
-                            course.Periods[pos] = newPeriod;
-                        }
+
                     }
                     else
                     {
-                        int temp = (int)course.Periods[pos].Weekday - 1;
-                        Period newPeriod = new(temp == 0 ? Weekday.Friday : (Weekday)temp, course.Periods[pos].Hour);
-                        if (course.CanPutItThere(newPeriod))
-                        {
-                            course.Periods[pos] = newPeriod;
-                        }
+                        //Tausche zwei zufällige Schüler in den Kursen aus:
+                        Course pCourse = course.PartnerCourses[random.Next(course.PartnerCourses.Length)];
+                        int index1 = random.Next(course.Students.Length);
+                        int index2 = random.Next(pCourse.Students.Length);
+
+                        Student temp = course.Students[index1].GetCopy();
+                        course.Students[]
                     }
                 }
             }
+            //... oder die Stunden.
             else
             {
-                Course course = this.Courses[random.Next(this.Courses.Length)];
-                course.Periods[random.Next(course.Periods.Length)] = Period.GetRandomPeriod(course);
+                //Verschiebe Kurse jeweils um 1 hin und her...
+                if (random.NextDouble() < MUTATE_INCREMENTAL)
+                {
+                    int pos = random.Next(course.Periods.Length);
+
+                    //Verschiebe die Stunde nach vorne um eins:
+                    if (random.NextDouble() < 0.5)
+                    {
+                        //Um eine Stunde:
+                        if (random.NextDouble() < MUTATE_INCREMENTAL_CHANGE_HOUR)
+                        {
+                            Period newPeriod = new(course.Periods[pos].Weekday, (Hour)((int)course.Periods[pos].Hour % 11 + 1));
+                            if (course.CanPutItThere(newPeriod))
+                            {
+                                course.Periods[pos] = newPeriod;
+                            }
+                        }
+                        //Um einen Tag:
+                        else
+                        {
+                            Period newPeriod = new((Weekday)((int)course.Periods[pos].Weekday % 5 + 1), course.Periods[pos].Hour);
+                            if (course.CanPutItThere(newPeriod))
+                            {
+                                course.Periods[pos] = newPeriod;
+                            }
+                        }
+                    }
+                    //Verschiebe die Stunde nach hinten um eins:
+                    else
+                    {
+                        //Um eine Stunde:
+                        if (random.NextDouble() < MUTATE_INCREMENTAL_CHANGE_HOUR)
+                        {
+                            int temp = (int)course.Periods[pos].Hour - 1;
+                            Period newPeriod = new(course.Periods[pos].Weekday, temp == 0 ? Hour.Eleventh : (Hour)temp);
+                            if (course.CanPutItThere(newPeriod))
+                            {
+                                course.Periods[pos] = newPeriod;
+                            }
+                        }
+                        //Um einen Tag:
+                        else
+                        {
+                            int temp = (int)course.Periods[pos].Weekday - 1;
+                            Period newPeriod = new(temp == 0 ? Weekday.Friday : (Weekday)temp, course.Periods[pos].Hour);
+                            if (course.CanPutItThere(newPeriod))
+                            {
+                                course.Periods[pos] = newPeriod;
+                            }
+                        }
+                    }
+                }
+                //... oder verschiebe sie an eine ganz neue Stelle.
+                else
+                {
+                    course.Periods[random.Next(course.Periods.Length)] = Period.GetRandomPeriod(course);
+                }
             }
         }
 
