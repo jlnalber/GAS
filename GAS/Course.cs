@@ -12,6 +12,8 @@ namespace GAS
         public Teacher Teacher;
         public string ID;
         public Course[] PartnerCourses;
+        public bool FixParticipants;
+        public bool FixPeriods;
 
         public Course(int periods, Student[] students, Teacher teacher, string ID)
         {
@@ -20,6 +22,8 @@ namespace GAS
             this.Teacher = teacher;
             this.ID = ID;
             this.PartnerCourses = new Course[0];
+            this.FixParticipants = false;
+            this.FixPeriods = false;
         }
 
         public Course(Period[] periods, Student[] students, Teacher teacher, string ID)
@@ -29,15 +33,19 @@ namespace GAS
             this.Teacher = teacher;
             this.ID = ID;
             this.PartnerCourses = new Course[0];
+            this.FixParticipants = false;
+            this.FixPeriods = false;
         }
 
         public bool AppliesForAll()
         {
+            //Überprüfe, ob für den Kurs alles zutrifft:
             return this.Issues() == 0;
         }
 
         public int Issues()
         {
+            //Berechne die Konflikte zuerst bei den SuS...
             int issues = 0;
             foreach (Student i in this.Students)
             {
@@ -50,6 +58,7 @@ namespace GAS
                 }
             }
 
+            //... und dann beim LuL:
             foreach (Period i in this.Periods)
             {
                 if (!this.Teacher.IsFreeAt(i, this))
@@ -58,6 +67,7 @@ namespace GAS
                 }
             }
 
+            //Rückgabe
             return issues;
         }
 
@@ -175,6 +185,7 @@ namespace GAS
 
         public bool CanPutItThere(Period period)
         {
+            //Überprüfe, ob man dort eine Stunde hin machen kann:
             foreach (Period period1 in this.Periods)
             {
                 try
@@ -186,17 +197,19 @@ namespace GAS
                 }
                 catch { }
             }
-            return true;
+            return true && !this.FixPeriods;
         }
 
         public void AddStudent(Student student)
         {
+            //Füge einen Schüler hinzu:
             this.Students = Utils.AddToArray(this.Students, student);
             student.Courses = Utils.AddToArray(student.Courses, this);
         }
 
         public void RemoveStudent(Student student)
         {
+            //Entferne einen Schüler:
             this.Students = Utils.RemoveFromArray(this.Students, student);
             student.Courses = Utils.RemoveFromArray(student.Courses, this);
         }
@@ -346,6 +359,36 @@ namespace GAS
         public override int GetHashCode()
         {
             return base.GetHashCode();
+        }
+
+        public override string ToString()
+        {
+            //Gebe eine string mit dem Wochentag und der Stunde zurück:
+            string str = this.Weekday switch
+            {
+                Weekday.Monday => "Montags, ",
+                Weekday.Tuesday => "Dienstags, ",
+                Weekday.Wednesday => "Mittwochs, ",
+                Weekday.Thursday => "Donnerstags, ",
+                Weekday.Friday => "Freitags, ",
+                _ => "Unbekannt"
+            };
+            str += this.Hour switch
+            {
+                Hour.First => "1",
+                Hour.Second => "2",
+                Hour.Third => "3",
+                Hour.Fourth => "4",
+                Hour.Fifth => "5",
+                Hour.Sixth => "6",
+                Hour.Seventh => "7",
+                Hour.Eighth => "8",
+                Hour.Ninth => "9",
+                Hour.Tenth => "10",
+                Hour.Eleventh => "11",
+                _ => "Unbekannt"
+            } + ". Stunde";
+            return str;
         }
     }
 }

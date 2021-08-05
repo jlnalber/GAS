@@ -76,6 +76,8 @@ namespace GAS
                 this.NotSelectedTeachers_Course.Items.Clear();
                 this.SelectedStudents_Course.Items.Clear();
                 this.NotSelectedStudents_Course.Items.Clear();
+                this.PeriodsSelection_Course.Items.Clear();
+                this.FixPeriods_Course.IsChecked = false;
             }
         }
 
@@ -400,8 +402,10 @@ namespace GAS
         #region
         private List<(Teacher, ListBoxItem)> TeachersC_Course = new();
         private List<(Student, ListBoxItem)> StudentsC_Course = new();
+        private List<(Period, ListBoxItem)> PeriodsC_Course = new();
         private ListBoxItem LastListBoxItemT_Course;
         private ListBoxItem LastListBoxItemS_Course;
+        private ListBoxItem LastListBoxItemP_Course;
 
         private void Course_Picker_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
@@ -457,8 +461,17 @@ namespace GAS
                 //Aktualisiere die ID.
                 course.ID = this.ID_Course.GetValueString();
 
-                //Aktualisiere die Stundenanzahl.
-                course.Periods = new Period[this.Periods_Course.GetValueInt()];
+                //Aktualisiere die Stunden.
+                if (this.FixPeriods_Course.IsChecked == true)
+                {
+                    course.FixPeriods = true;
+                    course.Periods = (from i in this.PeriodsC_Course where this.PeriodsSelection_Course.Items.Contains(i.Item2) select i.Item1).ToArray();
+                }
+                else
+                {
+                    course.FixPeriods = false;
+                    course.Periods = new Period[this.Periods_Course.GetValueInt()];
+                }
 
                 //Aktualisiere die LuL.
                 if (this.SelectedTeachers_Course.Items.Count == 0) throw new InvalidOperationException();
@@ -507,6 +520,20 @@ namespace GAS
             this.ID_Course.InputText = course.ID;
 
             this.Periods_Course.InputText = course.Periods.Length.ToString();
+            this.FixPeriods_Course.IsChecked = course.FixPeriods;
+            this.PeriodsC_Course.Clear();
+            this.PeriodsSelection_Course.Items.Clear();
+            if (course.FixPeriods)
+            {
+                foreach (Period i in course.Periods)
+                {
+                    ListBoxItem listBoxItem = new();
+                    listBoxItem.Content = i.ToString();
+                    listBoxItem.LostFocus += ListBoxItemP_Course_LostFocus;
+                    this.PeriodsSelection_Course.Items.Add(listBoxItem);
+                    this.PeriodsC_Course.Add((i, listBoxItem));
+                }
+            }
 
             //Stelle die LuL dar:
             this.TeachersC_Course.Clear();
@@ -624,6 +651,50 @@ namespace GAS
             {
                 SystemSounds.Asterisk.Play();
             }
+        }
+
+        private void FixPeriods_Course_Checked(object sender, RoutedEventArgs e)
+        {
+            this.Periods_Course.IsEnabled = false;
+            this.PeriodsSelection_Course.IsEnabled = true;
+            this.AddPeriod_Course.IsEnabled = true;
+            this.RemovePeriod_Course.IsEnabled = true;
+        }
+
+        private void FixPeriods_Course_Unchecked(object sender, RoutedEventArgs e)
+        {
+            this.Periods_Course.IsEnabled = true;
+            this.PeriodsSelection_Course.IsEnabled = false;
+            this.AddPeriod_Course.IsEnabled = false;
+            this.RemovePeriod_Course.IsEnabled = false;
+        }
+
+        private void AddPeriod_Click(object sender, RoutedEventArgs e)
+        {
+            AddPeriod_Window addPeriod_Window = new AddPeriod_Window();
+            if (addPeriod_Window.ShowDialog() == true)
+            {
+                ListBoxItem listBoxItem = new();
+                listBoxItem.Content = addPeriod_Window.Period.ToString();
+                listBoxItem.LostFocus += ListBoxItemP_Course_LostFocus;
+                this.PeriodsSelection_Course.Items.Add(listBoxItem);
+                this.PeriodsC_Course.Add((addPeriod_Window.Period, listBoxItem));
+            }
+        }
+
+        private void ListBoxItemP_Course_LostFocus(object sender, RoutedEventArgs e)
+        {
+            this.LastListBoxItemP_Course = sender as ListBoxItem;
+        }
+
+        private void RemovePeriod_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                this.PeriodsSelection_Course.Items.Remove(this.LastListBoxItemP_Course);
+                this.PeriodsC_Course.Remove((from i in this.PeriodsC_Course where i.Item2 == this.LastListBoxItemP_Course select i).First());
+            }
+            catch { }
         }
         #endregion
 

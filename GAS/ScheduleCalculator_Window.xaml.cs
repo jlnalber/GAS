@@ -60,7 +60,7 @@ namespace GAS
 
                 this.OpenBest.IsEnabled = true;
                 this.Status.Content = "Suche nach einem Stundenplan...";
-                GeneticAlgorithm<Schedule> geneticAlgorithm = new(population, 1, maxGenerations, mutationChance, crossoverChance, selectionType);
+                GeneticAlgorithm<Schedule> geneticAlgorithm = new(population, 1, maxGenerations, mutationChance, crossoverChance, selectionType: selectionType);
                 geneticAlgorithm.ExtraCondition = (Schedule s) => s.AllApplies();
                 geneticAlgorithm.ForEachGeneration = (int gen, Schedule[] schedules, (Schedule, double) best) => { this.Generation.Content = gen + 1; this.Fitness.Content = best.Item2; this.BestSchedule = best.Item1; };
                 this.Schedule = await geneticAlgorithm.RunAsync();
@@ -73,7 +73,7 @@ namespace GAS
                 this.Status.Content = "Warte auf Eingabe...";
             }
             catch (FormatException) { }
-            catch (Exception f)
+            catch
             {
                 SystemSounds.Asterisk.Play();
             }

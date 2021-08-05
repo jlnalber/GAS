@@ -13,6 +13,11 @@ namespace GAS
             this.Teachers = teachers;
         }
 
+        public GroupCourse(Period[] periods, Student[] students, Teacher[] teachers, string ID) : base(periods, students, teachers[0], ID)
+        {
+            this.Teachers = teachers;
+        }
+
         public void AddTeacher(Teacher teacher)
         {
             this.Teachers = this.Teachers.AddToArray(teacher);
@@ -40,6 +45,8 @@ namespace GAS
             for (int i = 0; i < courses.Length; i++)
             {
                 courses[i].PartnerCourses = courses.Filter((Course c) => c != courses[i]);
+                courses[i].FixParticipants = this.FixParticipants;
+                courses[i].FixPeriods = this.FixPeriods;
             }
 
             //Verteile die SuS:
@@ -107,6 +114,16 @@ namespace GAS
             {
                 GroupCourse newCourse = new GroupCourse(courses[i].Periods.Length, null, new Teacher[1] { new Teacher(null, null) }, courses[i].ID);
 
+                //Kopiere die Daten...
+                newCourse.FixPeriods = courses[i].FixPeriods;
+                newCourse.FixParticipants = courses[i].FixParticipants;
+
+                //... dann die Stunden...
+                for (int j = 0; j < courses[i].Periods.Length; j++)
+                {
+                    newCourse.Periods[j] = courses[i].Periods[j];
+                }
+
                 //... dann die Schüler...
                 Student[] students = new Student[courses[i].Students.Length];
                 for (int j = 0; j < students.Length; j++)
@@ -118,7 +135,7 @@ namespace GAS
                 }
                 newCourse.Students = students;
 
-                //... und dann den Lehrer.
+                //... und dann die Lehrer.
                 Teacher[] teachers = new Teacher[courses[i].Teachers.Length];
                 for (int j = 0; j < teachers.Length; j++)
                 {

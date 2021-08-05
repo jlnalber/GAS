@@ -70,6 +70,23 @@ namespace GAS
             return true;
         }
 
+        public int Issues
+        {
+            get
+            {
+                //Berechne, wieviele Stunden in Konflikt kommen:
+                int sum = 0;
+                foreach (Course c in this.Courses)
+                {
+                    foreach (Period p in c.Periods)
+                    {
+                        if (!this.IsFreeAt(p, c)) sum++;
+                    }
+                }
+                return sum / 2;
+            }
+        }
+
         public double GetScore()
         {
             throw new NotImplementedException();

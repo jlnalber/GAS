@@ -17,8 +17,10 @@ namespace GAS
         private MainWindow MainWindow;
         private List<(Teacher, ListBoxItem)> TeachersC;
         private List<(Student, ListBoxItem)> StudentsC;
+        private List<(Period, ListBoxItem)> PeriodsC;
         private ListBoxItem LastListBoxItemT;
         private ListBoxItem LastListBoxItemS;
+        private ListBoxItem LastListBoxItemP;
 
         public AddCourse_Window(MainWindow mainWindow)
         {
@@ -28,6 +30,7 @@ namespace GAS
 
             this.TeachersC = new();
             this.StudentsC = new();
+            this.PeriodsC = new();
 
             foreach (Teacher i in this.MainWindow.GetTeachers())
             {
@@ -103,8 +106,6 @@ namespace GAS
             {
                 try
                 {
-                    int periods = this.Periods.GetValueInt();
-
                     Student[] students = (from j in this.StudentsC where this.SelectedStudents.Items.Contains(j.Item2) select j.Item1).ToArray();
 
                     if (this.SelectedTeachers.Items.Count == 0) throw new InvalidOperationException();
@@ -112,7 +113,21 @@ namespace GAS
 
                     string ID = this.ID.GetValueString();
 
-                    this.MainWindow.AddCourse(new GroupCourse(periods, students, teachers, ID));
+                    if (this.FixPeriods.IsChecked == true)
+                    {
+                        Period[] periods = (from i in this.PeriodsC where this.PeriodsSelection.Items.Contains(i.Item2) select i.Item1).ToArray();
+
+                        GroupCourse groupCourse = new(periods, students, teachers, ID);
+                        groupCourse.FixPeriods = true;
+
+                        this.MainWindow.AddCourse(groupCourse);
+                    }
+                    else
+                    {
+                        int periods = this.Periods.GetValueInt();
+
+                        this.MainWindow.AddCourse(new GroupCourse(periods, students, teachers, ID));
+                    }
                     this.Close();
                 }
                 catch (InvalidOperationException)
@@ -156,6 +171,50 @@ namespace GAS
                     this.SelectedStudents.Items.Add(this.LastListBoxItemS);
                 }
             }
+        }
+
+        private void FixPeriods_Checked(object sender, RoutedEventArgs e)
+        {
+            this.Periods.IsEnabled = false;
+            this.PeriodsSelection.IsEnabled = true;
+            this.AddPeriod.IsEnabled = true;
+            this.RemovePeriod.IsEnabled = true;
+        }
+
+        private void FixPeriods_Unchecked(object sender, RoutedEventArgs e)
+        {
+            this.Periods.IsEnabled = true;
+            this.PeriodsSelection.IsEnabled = false;
+            this.AddPeriod.IsEnabled = false;
+            this.RemovePeriod.IsEnabled = false;
+        }
+
+        private void AddPeriod_Click(object sender, RoutedEventArgs e)
+        {
+            AddPeriod_Window addPeriod_Window = new AddPeriod_Window();
+            if (addPeriod_Window.ShowDialog() == true)
+            {
+                ListBoxItem listBoxItem = new();
+                listBoxItem.Content = addPeriod_Window.Period.ToString();
+                listBoxItem.LostFocus += ListBoxItemP_LostFocus;
+                this.PeriodsSelection.Items.Add(listBoxItem);
+                this.PeriodsC.Add((addPeriod_Window.Period, listBoxItem));
+            }
+        }
+
+        private void ListBoxItemP_LostFocus(object sender, RoutedEventArgs e)
+        {
+            this.LastListBoxItemP = sender as ListBoxItem;
+        }
+
+        private void RemovePeriod_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                this.PeriodsSelection.Items.Remove(this.LastListBoxItemP);
+                this.PeriodsC.Remove((from i in this.PeriodsC where i.Item2 == this.LastListBoxItemP select i).First());
+            }
+            catch { }
         }
     }
 }

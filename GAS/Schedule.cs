@@ -18,6 +18,9 @@ namespace GAS
         private const double CROSSOVER_CROSS_PARTICIPANTS = 0.1;
         private const double CROSSOVER_CROSS_TEACHERS = 0.1;
         private const double ADDITION_RANDOM_INSTANCE_CHOICES = 4.0;
+        private const double ADDITION_CHOOSE_COURSE = 5.0;
+        private const double ADDITION_CHOOSE_TEACHER_STUDENT = 2.0;
+        private const double ADDITION_CHOOSE_PERIOD = 1.0;
 
         //Die Kurse:
         public Course[] Courses;
@@ -62,11 +65,11 @@ namespace GAS
             Schedule schedule1 = this.GetDeepCopy();
             Schedule schedule2 = (chromosome as Schedule).GetDeepCopy();
 
-            Course course1 = Utils.Choices((from i in schedule1.Courses select (i, i.Issues() * (random.NextDouble() + ADDITION_RANDOM_INSTANCE_CHOICES))).ToArray());
+            Course course1 = Utils.Choices((from i in schedule1.Courses select (i, (i.Issues() + 1.0) * (random.NextDouble() + ADDITION_CHOOSE_COURSE))).ToArray());
             Course course2 = (from i in schedule2.Courses where i.ID == course1.ID select i).First();
 
             //Crossover mit den Teilnehmern:
-            if (course1.PartnerCourses.Length != 0 && random.NextDouble() < CROSSOVER_CROSS_PARTICIPANTS)
+            if ((course1.PartnerCourses.Length != 0 && random.NextDouble() < CROSSOVER_CROSS_PARTICIPANTS && !course1.FixParticipants) || (!course1.FixParticipants && course1.FixPeriods && course1.PartnerCourses.Length != 0))
             {
                 if (random.NextDouble() < CROSSOVER_CROSS_TEACHERS)
                 {
@@ -154,12 +157,9 @@ namespace GAS
                         }
                     }
                 }
-
-                //Rückgabe
-                return (schedule1, schedule2);
             }
             //Crossover mit den Stunden:
-            else
+            else if (!course1.FixPeriods)
             {
                 //Vertausche mit einer gewissen Wahrscheinlichkeit zwei Stunden miteinander...
                 if (random.NextDouble() < CROSSOVER_CROSS_ONE_PERIOD)
@@ -177,9 +177,10 @@ namespace GAS
                 Period[] temp = course1.Periods;
                 course1.Periods = course2.Periods;
                 course2.Periods = temp;
-
-                return (schedule1, schedule2);
             }
+
+            //Rückgabe
+            return (schedule1, schedule2);
         }
 
         public override double Fitness()
@@ -195,7 +196,7 @@ namespace GAS
             Random random = new();
             foreach (Course i in newSchedule.Courses)
             {
-                for (int j = 0; j < i.Periods.Length; j++)
+                for (int j = 0; j < i.Periods.Length && !i.FixPeriods; j++)
                 {
                     i.Periods[j] = Utils.Choices((from p in Period.GetAllPeriods() select (p, i.CanPutItThere(p) ? (random.NextDouble() + ADDITION_RANDOM_INSTANCE_CHOICES) / (i.IssuesWith(p) + 1) : 0.0)).ToArray());
                 }
@@ -207,10 +208,10 @@ namespace GAS
         {
             //Erstelle eine Zufallsvariable und wähle einen Kurs je nach Issues aus:
             Random random = new();
-            Course course = Utils.Choices((from i in this.Courses select (i, i.Issues() * (random.NextDouble() + ADDITION_RANDOM_INSTANCE_CHOICES))).ToArray());
+            Course course = Utils.Choices((from i in this.Courses select (i, (i.Issues() + 1.0) * (random.NextDouble() + ADDITION_CHOOSE_COURSE))).ToArray());
 
             //Mutiere die Teilnehmer...
-            if (course.PartnerCourses.Length != 0 && random.NextDouble() < MUTATE_PARTICIPANTS)
+            if ((course.PartnerCourses.Length != 0 && random.NextDouble() < MUTATE_PARTICIPANTS && !course.FixParticipants) || (!course.FixParticipants && course.FixPeriods && course.PartnerCourses.Length != 0))
             {
                 //Tausche Lehrer:
                 if (random.NextDouble() < MUTATE_TEACHERS)
@@ -240,7 +241,7 @@ namespace GAS
                     else
                     {
                         //Wähle einen zufälligen Partnerkurs aus und speichere seinen Lehrer temporär ab:
-                        Course course2 = course.PartnerCourses[random.Next(course.PartnerCourses.Length)];
+                        Course course2 = Utils.Choices((from i in course.PartnerCourses select (i, i.Teacher.Issues + ADDITION_CHOOSE_TEACHER_STUDENT)).ToArray());
                         Teacher temp = course2.Teacher;
 
                         //Tausche die beiden Lehrer aus:
@@ -273,8 +274,8 @@ namespace GAS
                     {
                         //Wähle einen zufälligen Partnerkurs aus wähle zwei zufällige Schüler aus Kurs und Partnerkurs:
                         Course course2 = course.PartnerCourses[random.Next(course.PartnerCourses.Length)];
-                        Student student1 = course.Students[random.Next(course.Students.Length)];
-                        Student student2 = course2.Students[random.Next(course2.Students.Length)];
+                        Student student1 = Utils.Choices((from i in course.Students select (i, i.Issues + ADDITION_CHOOSE_TEACHER_STUDENT)).ToArray());
+                        Student student2 = Utils.Choices((from i in course2.Students select (i, i.Issues + ADDITION_CHOOSE_TEACHER_STUDENT)).ToArray());
 
                         //Tausche die Schüler miteinander aus:
                         student1.RemoveFromCourse(course);
@@ -282,17 +283,16 @@ namespace GAS
                         student2.RemoveFromCourse(course2);
                         student2.AddToCourse(course);
                     }
-
-                    //TODO: Überschreiben von Schülern, ohne das ein Tausch stattfindet (mit den Größen der Kurse spielen)? --> muss sehr unwahrscheinlich sein, außerdem nicht gut, weil sonst die Kurs-Größen zu weit auseinander gehen, Verarbeitung davon in den Score-Funktionen...
                 }
             }
             //... oder die Stunden.
-            else
+            else if (!course.FixPeriods)
             {
                 //Verschiebe Kurse jeweils um 1 hin und her...
                 if (random.NextDouble() < MUTATE_INCREMENTAL)
                 {
-                    int pos = random.Next(course.Periods.Length);
+                    //Wähle eine Stunde aus:
+                    int pos = course.Periods.IndexOf(Utils.Choices((from i in course.Periods select (i, course.IssuesWith(i) + ADDITION_CHOOSE_PERIOD)).ToArray()));
 
                     //Verschiebe die Stunde nach vorne um eins:
                     if (random.NextDouble() < 0.5)
@@ -344,7 +344,7 @@ namespace GAS
                 //... oder verschiebe sie an eine ganz neue Stelle.
                 else
                 {
-                    course.Periods[random.Next(course.Periods.Length)] = Period.GetRandomPeriod(course);
+                    course.Periods[course.Periods.IndexOf(Utils.Choices((from i in course.Periods select (i, course.IssuesWith(i) + ADDITION_CHOOSE_PERIOD)).ToArray()))] = Period.GetRandomPeriod(course);
                 }
             }
         }
@@ -396,6 +396,10 @@ namespace GAS
             for (int i = 0; i < this.Courses.Length; i++)
             {
                 Course newCourse = new Course(this.Courses[i].Periods.Length, null, null, this.Courses[i].ID);
+
+                //Kopiere die Daten über die fixen Stunden und die fixen SuS:
+                newCourse.FixPeriods = this.Courses[i].FixPeriods;
+                newCourse.FixParticipants = this.Courses[i].FixParticipants;
 
                 //Zuerst die Zeitpläne...
                 Period[] periods = new Period[this.Courses[i].Periods.Length];
