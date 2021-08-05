@@ -5,22 +5,22 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:GAS"
         mc:Ignorable="d"
-        Title="GAS - Kurs Hinzufügen" Height="450" Width="800" MinHeight="400" MinWidth="700">
+        Title="GAS - Kurs Hinzufügen" Height="450" Width="850" MinHeight="400" MinWidth="800">
     <Grid>
         <local:InputField x:Name="ID" LabelContent="ID:" Margin="20,20,0,0" Distance="80"/>
         <local:InputField x:Name="Periods" LabelContent="Stunden:" Margin="20,60,0,0" Distance="80"/>
         <CheckBox Content="Verwende fixe Stunden" Height="25" HorizontalAlignment="Left" VerticalAlignment="Top" VerticalContentAlignment="Center" Margin="270,60,0,0" x:Name="FixPeriods" Checked="FixPeriods_Checked" Unchecked="FixPeriods_Unchecked" IsChecked="False"/>
-        <ListBox x:Name="PeriodsSelection" Margin="450,60,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Height="25" Width="150" IsEnabled="False"/>
-        <Button Margin="620,60,0,0" Width="25" Height="25" Content="+" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" HorizontalAlignment="Left" VerticalAlignment="Top" x:Name="AddPeriod" Click="AddPeriod_Click" IsEnabled="False"/>
-        <Button Margin="665,60,0,0" Width="25" Height="25" Content="-" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" HorizontalAlignment="Left" VerticalAlignment="Top" x:Name="RemovePeriod" Click="RemovePeriod_Click" IsEnabled="False"/>
-        <Label HorizontalAlignment="Left" VerticalAlignment="Top" Content="LuL:" Margin="20,100,0,0" Height="25" x:Name="TeachersLabel"/>
-        <ListBox HorizontalAlignment="Left" VerticalAlignment="Top" Width="150" x:Name="SelectedTeachers" Margin="100,100,20,20" MinHeight="25" MaxHeight="100" VerticalContentAlignment="Center"></ListBox>
-        <Button HorizontalAlignment="Left" VerticalAlignment="Top" Content="Verschieben" Padding="5" Margin="270,100,0,0" Width="90" Click="SwitchButtonT_Click"></Button>
-        <ListBox HorizontalAlignment="Left" VerticalAlignment="Top" Width="150" x:Name="NotSelectedTeachers" Margin="380,100,20,20" MinHeight="25" MaxHeight="100" VerticalContentAlignment="Center"></ListBox>
-        <Label HorizontalAlignment="Left" VerticalAlignment="Top" Content="SuS:" Margin="20,215,0,0" Height="25"/>
-        <ListBox HorizontalAlignment="Left" VerticalAlignment="Top" Width="150" x:Name="SelectedStudents" Margin="100,215,20,20" MinHeight="25" MaxHeight="100" VerticalContentAlignment="Center"></ListBox>
-        <Button HorizontalAlignment="Left" VerticalAlignment="Top" Content="Verschieben" Padding="5" Margin="270,215,0,0" Width="90" Click="SwitchButtonS_Click"></Button>
-        <ListBox HorizontalAlignment="Left" VerticalAlignment="Top" Width="150" x:Name="NotSelectedStudents" Margin="380,215,20,20" MinHeight="25" MaxHeight="100" VerticalContentAlignment="Center"></ListBox>
+        <ListBox x:Name="PeriodsSelection" Margin="450,60,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"  MinHeight="25" MaxHeight="50" Width="200" IsEnabled="False"/>
+        <Button Margin="670,60,0,0" Width="25" Height="25" Content="+" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" HorizontalAlignment="Left" VerticalAlignment="Top" x:Name="AddPeriod" Click="AddPeriod_Click" IsEnabled="False"/>
+        <Button Margin="715,60,0,0" Width="25" Height="25" Content="-" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" HorizontalAlignment="Left" VerticalAlignment="Top" x:Name="RemovePeriod" Click="RemovePeriod_Click" IsEnabled="False"/>
+        <Label HorizontalAlignment="Left" VerticalAlignment="Top" Content="LuL:" Margin="20,125,0,0" Height="25" x:Name="TeachersLabel"/>
+        <ListBox HorizontalAlignment="Left" VerticalAlignment="Top" Width="150" x:Name="SelectedTeachers" Margin="100,125,20,20" MinHeight="25" MaxHeight="100" VerticalContentAlignment="Center"></ListBox>
+        <Button HorizontalAlignment="Left" VerticalAlignment="Top" Content="Verschieben" Padding="5" Margin="270,125,0,0" Width="90" Click="SwitchButtonT_Click"></Button>
+        <ListBox HorizontalAlignment="Left" VerticalAlignment="Top" Width="150" x:Name="NotSelectedTeachers" Margin="380,125,20,20" MinHeight="25" MaxHeight="100" VerticalContentAlignment="Center"></ListBox>
+        <Label HorizontalAlignment="Left" VerticalAlignment="Top" Content="SuS:" Margin="20,240,0,0" Height="25"/>
+        <ListBox HorizontalAlignment="Left" VerticalAlignment="Top" Width="150" x:Name="SelectedStudents" Margin="100,240,20,20" MinHeight="25" MaxHeight="100" VerticalContentAlignment="Center"></ListBox>
+        <Button HorizontalAlignment="Left" VerticalAlignment="Top" Content="Verschieben" Padding="5" Margin="270,240,0,0" Width="90" Click="SwitchButtonS_Click"></Button>
+        <ListBox HorizontalAlignment="Left" VerticalAlignment="Top" Width="150" x:Name="NotSelectedStudents" Margin="380,240,20,20" MinHeight="25" MaxHeight="100" VerticalContentAlignment="Center"></ListBox>
         <Button x:Name="Add" Content="Kurs Hinzufügen" HorizontalAlignment="Right" VerticalAlignment="Bottom" Padding="5" Margin="0,0,10,10" Click="Add_Click"/>
     </Grid>
 </Window>

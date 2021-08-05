@@ -13,7 +13,7 @@ namespace GAS
         private const double MUTATE_PARTICIPANTS = 0.1;
         private const double MUTATE_TEACHERS = 0.1;
         private const double MUTATE_TEACHERS_NEW_COURSE = 0.2;
-        private const double MUTATE_STUDENTS_NEW_COURSE = 0.2; 
+        private const double MUTATE_STUDENTS_NEW_COURSE = 0.2;
         private const double CROSSOVER_CROSS_ONE_PERIOD = 0.5;
         private const double CROSSOVER_CROSS_PARTICIPANTS = 0.1;
         private const double CROSSOVER_CROSS_TEACHERS = 0.1;
@@ -225,7 +225,7 @@ namespace GAS
 
                         //Erstelle jeweils Paare aus Kurs und dazugehörogen Lehrer, entferne die Lehrer aus ihren Kursen:
                         (Course, Teacher)[] oldTupels = (from i in courses select (i, i.Teacher)).ToArray();
-                        foreach((Course, Teacher) i in oldTupels)
+                        foreach ((Course, Teacher) i in oldTupels)
                         {
                             i.Item2.RemoveFromCourse(i.Item1, dummy);
                         }
