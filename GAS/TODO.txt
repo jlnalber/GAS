@@ -1,7 +1,7 @@
 Gesetzte Schienen (implementiert),
 Mittwochs keine Mittagsschule (Freitags eigentlich auch nicht) (kann verwendet werden durch hinzufügen der Schüler zu einem Kurs "AGs oder Frei")
 In der 7. Stunde kein Unterricht (wie bei der Mittagsschule)
-Nur Doppelstunden an einem Kurs (3 hintereinander geht auch) --> nicht mehrere Stunden auseinander an einem Tag von einem Kurs
+Nur Doppelstunden an einem Kurs (3 hintereinander geht auch) --> nicht mehrere Stunden auseinander an einem Tag von einem Kurs (implementiert, 3 Stunden hintereinander zunächst ungültig)
 
 
 Für Optimierung:

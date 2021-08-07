@@ -22,6 +22,7 @@ namespace GAS
         private List<(GroupCourse, ComboBoxItem)> CoursesC;
         private List<(Teacher, ComboBoxItem)> TeachersC;
         private List<(Student, ComboBoxItem)> StudentsC;
+        private string Files;
 
         public MainWindow()
         {
@@ -34,6 +35,14 @@ namespace GAS
             this.CoursesC = new();
             this.TeachersC = new();
             this.StudentsC = new();
+
+            //Lese die Aufrufeparamter aus:
+            Files = Environment.GetCommandLineArgs()[0].Replace("bin\\Debug\\net5.0-windows\\GAS.dll", "");
+            Files = Files.Replace("bin\\Debug\\net5.0-windows\\GAS.exe", "");
+            Files = Files.Replace("bin\\Release\\net5.0-windows\\GAS.dll", "");
+            Files = Files.Replace("bin\\Release\\net5.0-windows\\GAS.exe", "");
+            Files = Files.Replace("GAS.exe", "");
+            Files = Files.Replace("GAS.dll", "");
         }
 
         //Methoden zum Neuladen der Kurse, Lehrer und Schüler:
@@ -925,5 +934,36 @@ namespace GAS
             }
         }
         #endregion
+
+        private void Hilfe_Click(object sender, RoutedEventArgs e)
+        {
+            //Diese Methode wird ausgeführt, wenn das MenuItem "HilfeDatei" geklickt wird
+            string path = "";
+            try
+            {
+                //Öffne die Hilfe-Datei im Verzeichnis "Hilfe" mit dem Namen "Hilfe.pdf" mit dem Standardprogramm
+                if (Files.Contains("GAS.exe"))
+                {
+                    path = Files.Substring(0, Files.LastIndexOf(@"\GAS.exe")) + @"\Hilfe\Hilfe.pdf";
+                }
+                else
+                {
+                    path = Files + @"Hilfe\Hilfe.pdf";
+                }
+                //System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(@"\Hilfe\Hilfe.pdf"));
+                new System.Diagnostics.Process
+                {
+                    StartInfo = new System.Diagnostics.ProcessStartInfo(path)
+                    {
+                        UseShellExecute = true
+                    }
+                }.Start();
+                //System.Diagnostics.Process.Start(path);
+            }
+            catch (Exception f)
+            {
+                MessageBox.Show(f.Message + " " + path);
+            }
+        }
     }
 }

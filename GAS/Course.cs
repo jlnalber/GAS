@@ -45,7 +45,7 @@ namespace GAS
 
         public int Issues()
         {
-            //Berechne die Konflikte zuerst bei den SuS...
+            /*//Berechne die Konflikte zuerst bei den SuS...
             int issues = 0;
             foreach (Student i in this.Students)
             {
@@ -65,16 +65,25 @@ namespace GAS
                 {
                     issues++;
                 }
+
+                //Überprüfe, ob das mit den Doppelstunden geht:
+                
             }
 
             //Rückgabe
+            return issues;*/
+            int issues = 0;
+            foreach (Period p in this.Periods)
+            {
+                issues += this.IssuesWith(p);
+            }
             return issues;
         }
 
         public int IssuesWith(Period period)
         {
             //Methode, die zurückgibt, wie viele Probleme der Kurs wegen einer bestimmten Stunde hat.
-            return Utils.Sum(this.Students, (Student s) => s.IsFreeAt(period, this) ? 0 : 1) + (this.Teacher.IsFreeAt(period, this) ? 0 : 1);
+            return Utils.Sum(this.Students, (Student s) => s.IsFreeAt(period, this) ? 0 : 1) + (this.Teacher.IsFreeAt(period, this) ? 0 : 1) + Utils.Sum(this.Periods, (Period p) => this.WorksWith(p, p) ? 0 : 1) / 2;
         }
 
         public Person[] GetPeopleGroup()
@@ -183,7 +192,7 @@ namespace GAS
             return courses;
         }
 
-        public bool CanPutItThere(Period period)
+        public bool IsNotDouble(Period period)
         {
             //Überprüfe, ob man dort eine Stunde hin machen kann:
             foreach (Period period1 in this.Periods)
@@ -198,6 +207,69 @@ namespace GAS
                 catch { }
             }
             return true && !this.FixPeriods;
+        }
+
+        public bool IsValidAdjacent(Period period)
+        {
+            //Überprüfe, ob die Stunde benachbart ist mit einer anderen oder allein an dem Tag (schließt auch mehr als Doppelstunden aus):
+            foreach (Period period1 in this.Periods)
+            {
+                try
+                {
+                    if (period1.Weekday == period.Weekday && !period1.IsNeighbourTo(period))
+                    {
+                        return false;
+                    }
+                }
+                catch { }
+            }
+            return true && !this.FixPeriods;
+        }
+
+        public bool IsNotDouble(Period period, Period exceptFor)
+        {
+            //Überprüfe, ob man dort eine Stunde hin machen kann:
+            foreach (Period period1 in this.Periods)
+            {
+                try
+                {
+                    if (period1 == period && period1 != exceptFor)
+                    {
+                        return false;
+                    }
+                }
+                catch { }
+            }
+            return true && !this.FixPeriods;
+        }
+
+        public bool IsValidAdjacent(Period period, Period exceptFor)
+        {
+            //Überprüfe, ob die Stunde benachbart ist mit einer anderen oder allein an dem Tag (schließt auch mehr als Doppelstunden aus):
+            foreach (Period period1 in this.Periods)
+            {
+                try
+                {
+                    if (period1.Weekday == period.Weekday && period1 != exceptFor && !period1.IsNeighbourTo(period))
+                    {
+                        return false;
+                    }
+                }
+                catch { }
+            }
+            return true && !this.FixPeriods;
+        }
+
+        public bool WorksWith(Period period)
+        {
+            //Überprüfe, ob die Stunde funktioniert:
+            return IsNotDouble(period) && IsValidAdjacent(period);
+        }
+
+        public bool WorksWith(Period period, Period exceptFor)
+        {
+            //Überprüfe, ob die Stunde funktioniert:
+            return IsNotDouble(period, exceptFor) && IsValidAdjacent(period, exceptFor);
         }
 
         public void AddStudent(Student student)
@@ -285,19 +357,28 @@ namespace GAS
             //Erstelle eine zufällige Stunde:
             Random random = new();
             Period period = new((Weekday)random.Next(1, 6), (Hour)random.Next(1, 12));
+            Period bestPeriod = period;
 
             //Gehe solange durch, bis eine passende Stunde gefunden wurde.
             for (int i = 0; i < 5; i++)
             {
                 for (int j = 0; j < 11; j++)
                 {
-                    if (forCourse.CanPutItThere(period))
+                    if (forCourse.IsNotDouble(period))
                     {
-                        return period;
+                        if (forCourse.IsValidAdjacent(period))
+                        {
+                            return period;
+                        }
+                        bestPeriod = period;
                     }
                     period.Hour = (Hour)((int)period.Hour % 11 + 1);
                 }
                 period.Weekday = (Weekday)((int)period.Weekday % 5 + 1);
+            }
+            if (forCourse.IsNotDouble(bestPeriod))
+            {
+                return bestPeriod;
             }
 
             //Falls nichts gefunden wurde, gebe eine Exception aus:
@@ -309,14 +390,24 @@ namespace GAS
             //Suche eine zufällige Stunde aus.
             Random random = new();
             int index = random.Next(fromCourse.Periods.Length);
+            Period bestPeriod = fromCourse.Periods[index];
 
             //Gehe solange durch, bis eine passende Stunde gefunden wurde.
             for (int i = 0; i < fromCourse.Periods.Length; i++)
             {
-                if (forCourse.CanPutItThere(fromCourse.Periods[(index + i) % fromCourse.Periods.Length]))
+                Period p = fromCourse.Periods[(index + i) % fromCourse.Periods.Length];
+                if (forCourse.IsNotDouble(p))
                 {
-                    return fromCourse.Periods[(index + i) % fromCourse.Periods.Length];
+                    if (forCourse.IsValidAdjacent(p))
+                    {
+                        return p;
+                    }
+                    bestPeriod = p;
                 }
+            }
+            if (forCourse.IsNotDouble(bestPeriod))
+            {
+                return bestPeriod;
             }
 
             //Falls nichts gefunden wurde, gib eine Exception aus:

@@ -1,0 +1,511 @@
+SaveBest:
+
+Anfangspopulation: 50
+Mutation: 0.3
+Crossover: 0.7
+Selektionsmethode: T
+SaveBest: true (2.0)
+
+Ergebnisse:
+73, 92, 173, 186, 945, 1358 --> ca. 417
+
+
+-------------------------------------------------------------
+Anfangspopulation: 50
+Mutation: 0.3
+Crossover: 0.7
+Selektionsmethode: T
+SaveBest: false
+
+Ergebnisse:
+58, 87, 163, 163, 185, 183 --> ca. 140
+
+
+-------------------------------------------------------------
+Anfangspopulation: 50
+Mutation: 0.3
+Crossover: 0.7
+Selektionsmethode: T
+SaveBest: true (1.0)
+
+Ergebnisse:
+69, 110, 116, 135, 155, 156 --> ca. 124
+
+
+-------------------------------------------------------------
+Anfangspopulation: 50
+Mutation: 0.3
+Crossover: 0.7
+Selektionsmethode: T
+SaveBest: true (0.5)
+
+Ergebnisse:
+90, 96, 212, 213, 219, 275 --> ca. 184
+
+
+-------------------------------------------------------------
+
+Ergebnis SaveBest: Entweder mit Multiplikator 1.0 oder ganz ohne.
+
+Finale erforderlich:
+
+-------------------------------------------------------------
+Anfangspopulation: 50
+Mutation: 0.3
+Crossover: 0.7
+Selektionsmethode: T
+SaveBest: false
+
+Ergebnisse:
+75, 80, 96, 102, 111, 137, 156, 157, 195 --> ca. 123 --> Insgesamt: ca. 130
+
+-------------------------------------------------------------
+Anfangspopulation: 50
+Mutation: 0.3
+Crossover: 0.7
+Selektionsmethode: T
+SaveBest: true (1.0)
+
+Ergebnisse:
+66, 72, 140, 142, 146, 154, 240, 310, 430 --> ca. 189 --> Insgesamt: ca. 163
+
+-------------------------------------------------------------
+
+Ergebnis: Knappe Entscheidung, aber false für SaveBest scheint im Durchschnitt und in der Größe des Felds besser zu sein. Kann eventuell noch offen gelassen werden, falls die größeren Datensätze und neue Funktionen / Beschränkungen neues aufweisen.
+
+
+SaveBest: false
+
+
+
+
+
+-------------------------------------------------------------
+-------------------------------------------------------------
+-------------------------------------------------------------
+
+
+Anfangspopulation:
+
+
+Anfangspopulation: 10
+Mutation: 0.3
+Crossover: 0.7
+Selektionsmethode: T
+SaveBest: false
+
+Ergebnisse:
+4.960, 5.170, 7.580, 7.900, 1.7340, 2.6040 --> ca. 11.498/9.498
+
+-------------------------------------------------------------
+Anfangspopulation: 20
+Mutation: 0.3
+Crossover: 0.7
+Selektionsmethode: T
+SaveBest: false
+
+Ergebnisse:
+2.200, 3.260, 4.500, 4.760, 5.500, [200.000] --> ca. 36.703/4.505
+
+-------------------------------------------------------------
+Anfangspopulation: 35
+Mutation: 0.3
+Crossover: 0.7
+Selektionsmethode: T
+SaveBest: false
+
+Ergebnisse:
+3.955, 4.970, 5.635, 7.245, 10.115, 10.500 --> ca. 7.070/6.991
+
+-------------------------------------------------------------
+Anfangspopulation: 50
+Mutation: 0.3
+Crossover: 0.7
+Selektionsmethode: T
+SaveBest: false
+
+Ergebnisse:
+3.850, 3.950, 4.300, 4.650, 14.250, 19.600 --> ca. 8.433/6.788
+
+-------------------------------------------------------------
+Anfangspopulation: 70
+Mutation: 0.3
+Crossover: 0.7
+Selektionsmethode: T
+SaveBest: false
+
+Ergebnisse:
+4.200, 4.200, 7.700, 7.980, 8.820, 11.200 --> ca. 7.350/7.175
+
+-------------------------------------------------------------
+Anfangspopulation: 100
+Mutation: 0.3
+Crossover: 0.7
+Selektionsmethode: T
+SaveBest: false
+
+Ergebnisse:
+4.200, 6.300, 6.900, 7.800, 7.800, 8.800 --> ca. 6.967/7.200
+
+-------------------------------------------------------------
+Anfangspopulation: 150
+Mutation: 0.3
+Crossover: 0.7
+Selektionsmethode: T
+SaveBest: false
+
+Ergebnisse:
+5.550, 6.300, 8.100, 8.700, 10.050, 10.650 --> ca. 8.225/8.288
+
+-------------------------------------------------------------
+Anfangspopulation: 200
+Mutation: 0.3
+Crossover: 0.7
+Selektionsmethode: T
+SaveBest: false
+
+Ergebnisse:
+9.400, 10.000, 10.000, 10.600, 21.000, 21.000 --> ca. 13.667/12.900
+
+-------------------------------------------------------------
+
+Ergebnis: 100 scheint der beste Wert zu sein, es gibt keine großen Abweichungen und auch der Durchschnittswert ist nicht schlecht.
+
+Generelles Ergebnis: Je kleiner die Anfangspopulation, desto mehr Risiko und Abweichung, aber in der Regel bei mehreren Durchläufen auch einen besseren Top-Wert. Je größer die Anfangspopulation, desto weniger Risiko und weniger Abweichung, aber keine absoluten Top-Werte.
+
+
+
+Anfangspopulation: 100
+
+
+
+
+
+-------------------------------------------------------------
+-------------------------------------------------------------
+-------------------------------------------------------------
+
+
+Selektionsmethode:
+
+Anfangspopulation: 100
+Mutation: 0.3
+Crossover: 0.7
+Selektionsmethode: T
+SaveBest: false
+
+Ergebnisse:
+50, 52, 80, 86, 91, 135
+
+-------------------------------------------------------------
+Anfangspopulation: 100
+Mutation: 0.3
+Crossover: 0.7
+Selektionsmethode: R
+SaveBest: false
+
+Ergebnisse:
+Kein Ergebnis bis 1000, ist zudem langsam und extrem divers auseinander.
+
+-------------------------------------------------------------
+
+Ergebnis: Auf jeden Fall eher Tournament.
+
+
+Selektionsmethode: Tournament
+
+
+
+
+
+-------------------------------------------------------------
+-------------------------------------------------------------
+-------------------------------------------------------------
+
+
+Selektionsmethode in Crossover und Mutation:
+
+Anfangspopulation: 100
+Mutation: 0.3
+Crossover: 0.7
+Selektionsmethode: T
+SaveBest: false
+Selektionsmethode in Crossover und Mutation: T
+Selektionsmethode in GetRandomInstance: T
+
+Ergebnisse:
+Kleiner Test: Deutlich besserer Start als mit R, dann bereits bis Generation 10 fertig.
+Großer Test: 330, 330, 332, 333, 339, 342
+
+-------------------------------------------------------------
+Anfangspopulation: 100
+Mutation: 0.3
+Crossover: 0.7
+Selektionsmethode: R
+SaveBest: false
+Selektionsmethode in Crossover und Mutation: R
+Selektionsmethode in GetRandomInstance: T
+
+Ergebnisse:
+Kleiner Test: Wie immer.
+Großer Test: 304, 306, 309, 313, 313, 327
+
+-------------------------------------------------------------
+
+Ergebnis:  Roulette-Wheel-Selektion ist nicht nur schneller, sondern liefert auch zunächst bessere Ergebnisse.
+
+
+Selektionsmethode in Crossover und Mutation: Roulette-Wheel-Selektion
+
+
+
+
+
+-------------------------------------------------------------
+-------------------------------------------------------------
+-------------------------------------------------------------
+
+
+Selektionsmethode in GetRandomInstance:
+
+Anfangspopulation: 100
+Mutation: 0.3
+Crossover: 0.7
+Selektionsmethode: T
+SaveBest: false
+Selektionsmethode in GetRandomInstance: T
+
+Ergebnisse:
+Kleiner Test: Deutlich besserer Start als mit R, dann bereits bis Generation 10 fertig.
+
+-------------------------------------------------------------
+Anfangspopulation: 100
+Mutation: 0.3
+Crossover: 0.7
+Selektionsmethode: R
+SaveBest: false
+Selektionsmethode in GetRandomInstance: R
+
+Ergebnisse:
+Kleiner Test: Wie immer.
+
+-------------------------------------------------------------
+
+Ergebnis: Tournament bringt eine bessere Anfangspopulation, der genetische Algorithmus hat es dann leichter in weniger Generationen eine Lösung zu finden.
+
+Selektionsmethode in GetRandomInstance: T
+
+
+
+
+
+-------------------------------------------------------------
+-------------------------------------------------------------
+-------------------------------------------------------------
+
+
+Wahrscheinlichkeit Mutation:
+
+
+Anfangspopulation: 100
+Mutation: 0.1
+Crossover: 0.7
+Selektionsmethode: T
+
+Ergebnisse:
+136, 513, 677, 1034, 1261, 1271 --> ca. 815/871
+
+-------------------------------------------------------------
+Anfangspopulation: 100
+Mutation: 0.3
+Crossover: 0.7
+Selektionsmethode: T
+
+Ergebnisse:
+101, 303, 514, 719, 882, 3002 --> ca. 920/605
+
+-------------------------------------------------------------
+Anfangspopulation: 100
+Mutation: 0.5
+Crossover: 0.7
+Selektionsmethode: T
+
+Ergebnisse:
+288, 351, 354, 634, 694, 987 --> ca. 551/508
+
+-------------------------------------------------------------
+Anfangspopulation: 100
+Mutation: 0.7
+Crossover: 0.7
+Selektionsmethode: T
+
+Ergebnisse:
+287, 390, 392, 676, 706, 767 --> ca. 536/541
+
+-------------------------------------------------------------
+Anfangspopulation: 100
+Mutation: 0.9
+Crossover: 0.7
+Selektionsmethode: T
+
+Ergebnisse:
+380, 503, 867, 1120, 1205, 1253 --> ca. 888/924
+
+-------------------------------------------------------------
+
+Ergebnis: Es ist ein knappes Ergebnis, aber 0.5 und 0.7 schneiden am besten ab. 0.5 scheint ein wenig schneller zu sein, dafür aber weiter auseinander zu gehen als 0.7.
+
+
+
+Wahrscheinlichkeit Mutation: 0.6
+
+
+
+
+
+-------------------------------------------------------------
+-------------------------------------------------------------
+-------------------------------------------------------------
+
+
+Selektionsmethode in Crossover und Mutation:
+
+Anfangspopulation: 100
+Mutation: 0.3
+Crossover: 0.7
+Selektionsmethode: T
+SaveBest: false
+Selektionsmethode in Crossover und Mutation: true (mit Zufall)
+
+Ergebnisse:
+24, 43, 105, 192, 256, 841 --> ca. 244/149
+
+-------------------------------------------------------------
+Anfangspopulation: 100
+Mutation: 0.3
+Crossover: 0.7
+Selektionsmethode: T
+SaveBest: false
+Selektionsmethode in Crossover und Mutation: true (ohne Zufall)
+
+Ergebnisse:
+51, 82, 119, 128, 152, 197 --> ca. 122/120
+
+-------------------------------------------------------------
+Anfangspopulation: 100
+Mutation: 0.3
+Crossover: 0.7
+Selektionsmethode: R
+SaveBest: false
+Selektionsmethode in Crossover und Mutation: false
+
+Ergebnisse:
+56, 71, 200, 209, 525, 568 --> ca. 272/251
+
+-------------------------------------------------------------
+
+Ergebnis: Die stärkste Lösung ist eindeutig die, die ohne Zufall eine Selektionsmethode in Crossover und Mutation nimmt.
+
+
+Selektionsmethode in Crossover und Mutation: true (ohne Zufall)
+
+
+
+
+
+-------------------------------------------------------------
+-------------------------------------------------------------
+-------------------------------------------------------------
+
+
+Wahrscheinlichkeit Crossover:
+
+
+Anfangspopulation: 100
+Mutation: 0.6
+Crossover: 0.1
+Selektionsmethode: T
+
+Ergebnisse:
+107, 123, 142, 144, 220, 1039 --> ca. 296/157
+
+-------------------------------------------------------------
+Anfangspopulation: 100
+Mutation: 0.6
+Crossover: 0.3
+Selektionsmethode: T
+
+Ergebnisse:
+83, 84, 106, 114, 469, 999 --> ca. 309/193
+
+-------------------------------------------------------------
+Anfangspopulation: 100
+Mutation: 0.6
+Crossover: 0.5
+Selektionsmethode: T
+
+Ergebnisse:
+77, 92, 110, 112, 139, 149 --> ca. 113/113
+
+-------------------------------------------------------------
+Anfangspopulation: 100
+Mutation: 0.6
+Crossover: 0.7
+Selektionsmethode: T
+
+Ergebnisse:
+63, 122, 146, 158, 189, 833 --> ca. 252/154
+
+-------------------------------------------------------------
+Anfangspopulation: 100
+Mutation: 0.6
+Crossover: 0.9
+Selektionsmethode: T
+
+Ergebnisse:
+91, 109, 116, 117, 135, 352 --> ca. 153/119
+
+-------------------------------------------------------------
+
+Ergebnis: Dominieren tut hier eindeutig 0.5, auch wenn nicht ganz klar ist wie viel davon Zufall/Glück und wie viel wirklich der Algorithmus war.
+
+
+
+Wahrscheinlichkeit Crossover: 0.5
+
+
+
+
+
+-------------------------------------------------------------
+-------------------------------------------------------------
+-------------------------------------------------------------
+
+
+Selektionsmethode in GetRandomInstance:
+
+Anfangspopulation: 100
+Mutation: 0.6
+Crossover: 0.5
+Selektionsmethode: T (ohne Zufall)
+SaveBest: false
+
+Ergebnisse:
+46, 48, 49, 53, 57, 60 --> ca. 52/52
+
+-------------------------------------------------------------
+Anfangspopulation: 100
+Mutation: 0.6
+Crossover: 0.5
+Selektionsmethode: T (mit Zufall)
+SaveBest: false
+
+Ergebnisse:
+50, 51, 51, 51, 52, 55 --> ca. 52/51
+
+-------------------------------------------------------------
+
+Ergebnis: Mit Zufall scheint eine bessere und vor allem konstantere Leistung aufzubringen.
+
+
+Selektionsmethode in GetRandomInstance: T (mit Zufall)

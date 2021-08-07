@@ -65,7 +65,7 @@ namespace GAS
             Schedule schedule1 = this.GetDeepCopy();
             Schedule schedule2 = (chromosome as Schedule).GetDeepCopy();
 
-            Course course1 = Utils.Choices((from i in schedule1.Courses select (i, (i.Issues() + 1.0) * (random.NextDouble() + ADDITION_CHOOSE_COURSE))).ToArray());
+            Course course1 = Utils.PickRoulette((from i in schedule1.Courses select (i, i.Issues() + ADDITION_CHOOSE_COURSE)).ToArray());
             Course course2 = (from i in schedule2.Courses where i.ID == course1.ID select i).First();
 
             //Crossover mit den Teilnehmern:
@@ -168,15 +168,16 @@ namespace GAS
                     {
                         course1.Periods[random.Next(course1.Periods.Length)] = Period.GetRandomPeriod(course1, course2);
                         course2.Periods[random.Next(course2.Periods.Length)] = Period.GetRandomPeriod(course2, course1);
-                        return (schedule1, schedule2);
                     }
-                    catch { }
+                    catch (Exceptions.PeriodNotFoundException) { }
                 }
-
-                //... und sonst zwei komplette Zeitpläne für einen Kurs.
-                Period[] temp = course1.Periods;
-                course1.Periods = course2.Periods;
-                course2.Periods = temp;
+                else
+                {
+                    //... und sonst zwei komplette Zeitpläne für einen Kurs.
+                    Period[] temp = course1.Periods;
+                    course1.Periods = course2.Periods;
+                    course2.Periods = temp;
+                }
             }
 
             //Rückgabe
@@ -185,7 +186,7 @@ namespace GAS
 
         public override double Fitness()
         {
-            return 1.0 / (this.Issues() / 2 + 1);
+            return 1.0 / (this.Issues() + 1);
         }
 
         public override Schedule GetRandomInstance()
@@ -198,7 +199,7 @@ namespace GAS
             {
                 for (int j = 0; j < i.Periods.Length && !i.FixPeriods; j++)
                 {
-                    i.Periods[j] = Utils.Choices((from p in Period.GetAllPeriods() select (p, i.CanPutItThere(p) ? (random.NextDouble() + ADDITION_RANDOM_INSTANCE_CHOICES) / (i.IssuesWith(p) + 1) : 0.0)).ToArray());
+                    i.Periods[j] = Utils.PickTournament((from p in Period.GetAllPeriods() select (p, i.IsNotDouble(p) ? (random.NextDouble() + ADDITION_RANDOM_INSTANCE_CHOICES) / (i.IssuesWith(p) + 1) : 0.0)).ToArray());
                 }
             }
             return newSchedule;
@@ -208,7 +209,7 @@ namespace GAS
         {
             //Erstelle eine Zufallsvariable und wähle einen Kurs je nach Issues aus:
             Random random = new();
-            Course course = Utils.Choices((from i in this.Courses select (i, (i.Issues() + 1.0) * (random.NextDouble() + ADDITION_CHOOSE_COURSE))).ToArray());
+            Course course = Utils.PickRoulette((from i in this.Courses select (i, i.Issues() + ADDITION_CHOOSE_COURSE)).ToArray());
 
             //Mutiere die Teilnehmer...
             if ((course.PartnerCourses.Length != 0 && random.NextDouble() < MUTATE_PARTICIPANTS && !course.FixParticipants) || (!course.FixParticipants && course.FixPeriods && course.PartnerCourses.Length != 0))
@@ -241,7 +242,7 @@ namespace GAS
                     else
                     {
                         //Wähle einen zufälligen Partnerkurs aus und speichere seinen Lehrer temporär ab:
-                        Course course2 = Utils.Choices((from i in course.PartnerCourses select (i, i.Teacher.Issues + ADDITION_CHOOSE_TEACHER_STUDENT)).ToArray());
+                        Course course2 = Utils.PickRoulette((from i in course.PartnerCourses select (i, i.Teacher.Issues + ADDITION_CHOOSE_TEACHER_STUDENT)).ToArray());
                         Teacher temp = course2.Teacher;
 
                         //Tausche die beiden Lehrer aus:
@@ -273,9 +274,9 @@ namespace GAS
                     else
                     {
                         //Wähle einen zufälligen Partnerkurs aus wähle zwei zufällige Schüler aus Kurs und Partnerkurs:
-                        Course course2 = course.PartnerCourses[random.Next(course.PartnerCourses.Length)];
-                        Student student1 = Utils.Choices((from i in course.Students select (i, i.Issues + ADDITION_CHOOSE_TEACHER_STUDENT)).ToArray());
-                        Student student2 = Utils.Choices((from i in course2.Students select (i, i.Issues + ADDITION_CHOOSE_TEACHER_STUDENT)).ToArray());
+                        Course course2 = Utils.PickRoulette((from i in course.PartnerCourses select (i, i.Issues() + ADDITION_CHOOSE_COURSE)).ToArray());
+                        Student student1 = Utils.PickRoulette((from i in course.Students select (i, i.Issues + ADDITION_CHOOSE_TEACHER_STUDENT)).ToArray());
+                        Student student2 = Utils.PickRoulette((from i in course2.Students select (i, i.Issues + ADDITION_CHOOSE_TEACHER_STUDENT)).ToArray());
 
                         //Tausche die Schüler miteinander aus:
                         student1.RemoveFromCourse(course);
@@ -292,7 +293,7 @@ namespace GAS
                 if (random.NextDouble() < MUTATE_INCREMENTAL)
                 {
                     //Wähle eine Stunde aus:
-                    int pos = course.Periods.IndexOf(Utils.Choices((from i in course.Periods select (i, course.IssuesWith(i) + ADDITION_CHOOSE_PERIOD)).ToArray()));
+                    int pos = course.Periods.IndexOf(Utils.PickRoulette((from i in course.Periods select (i, course.IssuesWith(i) + ADDITION_CHOOSE_PERIOD)).ToArray()));
 
                     //Verschiebe die Stunde nach vorne um eins:
                     if (random.NextDouble() < 0.5)
@@ -301,7 +302,7 @@ namespace GAS
                         if (random.NextDouble() < MUTATE_INCREMENTAL_CHANGE_HOUR)
                         {
                             Period newPeriod = new(course.Periods[pos].Weekday, (Hour)((int)course.Periods[pos].Hour % 11 + 1));
-                            if (course.CanPutItThere(newPeriod))
+                            if (course.IsNotDouble(newPeriod))
                             {
                                 course.Periods[pos] = newPeriod;
                             }
@@ -310,7 +311,7 @@ namespace GAS
                         else
                         {
                             Period newPeriod = new((Weekday)((int)course.Periods[pos].Weekday % 5 + 1), course.Periods[pos].Hour);
-                            if (course.CanPutItThere(newPeriod))
+                            if (course.IsNotDouble(newPeriod))
                             {
                                 course.Periods[pos] = newPeriod;
                             }
@@ -324,7 +325,7 @@ namespace GAS
                         {
                             int temp = (int)course.Periods[pos].Hour - 1;
                             Period newPeriod = new(course.Periods[pos].Weekday, temp == 0 ? Hour.Eleventh : (Hour)temp);
-                            if (course.CanPutItThere(newPeriod))
+                            if (course.IsNotDouble(newPeriod))
                             {
                                 course.Periods[pos] = newPeriod;
                             }
@@ -334,7 +335,7 @@ namespace GAS
                         {
                             int temp = (int)course.Periods[pos].Weekday - 1;
                             Period newPeriod = new(temp == 0 ? Weekday.Friday : (Weekday)temp, course.Periods[pos].Hour);
-                            if (course.CanPutItThere(newPeriod))
+                            if (course.IsNotDouble(newPeriod))
                             {
                                 course.Periods[pos] = newPeriod;
                             }
@@ -344,7 +345,11 @@ namespace GAS
                 //... oder verschiebe sie an eine ganz neue Stelle.
                 else
                 {
-                    course.Periods[course.Periods.IndexOf(Utils.Choices((from i in course.Periods select (i, course.IssuesWith(i) + ADDITION_CHOOSE_PERIOD)).ToArray()))] = Period.GetRandomPeriod(course);
+                    try
+                    {
+                        course.Periods[course.Periods.IndexOf(Utils.PickRoulette((from i in course.Periods select (i, course.IssuesWith(i) + ADDITION_CHOOSE_PERIOD)).ToArray()))] = Period.GetRandomPeriod(course);
+                    }
+                    catch (Exceptions.PeriodNotFoundException) { }
                 }
             }
         }
@@ -457,7 +462,7 @@ namespace GAS
             {
                 issues += i.Issues();
             }
-            return issues;
+            return issues / 2;
         }
 
         public void Optimize()
