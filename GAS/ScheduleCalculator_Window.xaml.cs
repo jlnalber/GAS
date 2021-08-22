@@ -66,8 +66,8 @@ namespace GAS
                 geneticAlgorithm.UseBest = this.UseBest.IsChecked == true;
                 this.Schedule = await geneticAlgorithm.RunAsync();
 
-                /*this.Status.Content = "Optimiere die Lösung...";
-                await Task.Run(() => this.Schedule.Optimize());*/
+                this.Status.Content = "Optimiere die Lösung...";
+                this.Schedule = await this.Schedule.OptimizeAsync(mutationChance, crossoverChance, selectionType, initialPopulation: initialPopulationSize, generations: this.GenerationsOptimizing.GetValueInt());
 
                 new Schedule_Window(this.Schedule).Show();
 

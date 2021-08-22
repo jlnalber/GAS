@@ -4,7 +4,7 @@ In der 7. Stunde kein Unterricht (wie bei der Mittagsschule)
 Nur Doppelstunden an einem Kurs (3 hintereinander geht auch) --> nicht mehrere Stunden auseinander an einem Tag von einem Kurs (implementiert, 3 Stunden hintereinander zunächst ungültig)
 
 
-Für Optimierung:
+Für Optimierung (diese Punkte sind soweit implementiert, fragwürdig nur, ob sie wirklich etwas machen, vor allem bei einem komplizierten Stundenplan scheint es unmöglich eine zweite Lösung zu finden, ausgehend von der gerade berechneten...):
 Wenig Hohlstunden
 Bestenfalls am Vormittag Unterricht
 Selten Einzelstunden

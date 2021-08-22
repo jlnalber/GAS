@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GeneticFramework;
+using System;
 using System.Media;
 using System.Windows;
 using System.Windows.Controls;
@@ -47,6 +48,21 @@ namespace GAS
             }
         }
 
+        private bool allowLetterConversion = false;
+        public bool AllowLetterConversion
+        {
+            get
+            {
+                return allowLetterConversion;
+            }
+            set
+            {
+                this.allowLetterConversion = value;
+            }
+        }
+
+        private const string Alphabet = "abcdefghijklmnopqrstuvwxyz";
+
         public InputField()
         {
             InitializeComponent();
@@ -66,8 +82,21 @@ namespace GAS
             }
             catch
             {
-                SystemSounds.Asterisk.Play();
-                this.Label.Foreground = Brushes.Red;
+                if (this.AllowLetterConversion)
+                {
+                    int num = 0;
+                    string content = this.Input.Text.Replace(" ", "").Replace(";", "").Replace(".", "").Replace(",", "").Replace(":", "").Reverse().ToLower();
+                    for (int i = 0; i < content.Length; i++)
+                    {
+                        num += (Alphabet.IndexOf(content[i]) + 1) * (int)Math.Pow(26, i);
+                    }
+                    return num;
+                }
+                else
+                {
+                    SystemSounds.Asterisk.Play();
+                    this.Label.Foreground = Brushes.Red;
+                }
             }
             throw new FormatException();
         }

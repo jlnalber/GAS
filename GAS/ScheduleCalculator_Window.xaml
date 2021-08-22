@@ -12,14 +12,15 @@
         <local:InputField x:Name="InitialPopulationSize" LabelContent="Größe der Anfangspopulation:" Margin="20,70,0,0" InputText="100"/>
         <local:InputField x:Name="MaxGenerations" LabelContent="Maximale Generationen:" InputText="10000" Margin="20,110,0,0"/>
         <CheckBox x:Name="UnlimitedGenerations" Content="Unbegrenzt viele Generationen" IsChecked="False" Margin="420,110,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Height="25" Checked="UnlimitedGenerations_Checked" Unchecked="UnlimitedGenerations_Unchecked" VerticalContentAlignment="Center"/>
-        <local:InputField x:Name="MutationChance" LabelContent="Wahrscheinlichkeit Mutation:" InputText="0.6" Margin="20,150,0,0"/>
-        <local:InputField x:Name="CrossoverChance" LabelContent="Wahrscheinlichkeit Crossover:" InputText="0.5" Margin="20,190,0,0"/>
-        <Label Content="Selektionsmethode:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="20,230,0,0" Height="25"/>
-        <ComboBox HorizontalAlignment="Left" x:Name="SelectionType" VerticalAlignment="Top" Margin="250,230,0,0" Height="25" Width="150" SelectedIndex="0">
+        <local:InputField x:Name="GenerationsOptimizing" LabelContent="Generationen Optimierung:" InputText="100" Margin="20,150,0,0"/>
+        <local:InputField x:Name="MutationChance" LabelContent="Wahrscheinlichkeit Mutation:" InputText="0.6" Margin="20,190,0,0"/>
+        <local:InputField x:Name="CrossoverChance" LabelContent="Wahrscheinlichkeit Crossover:" InputText="0.5" Margin="20,230,0,0"/>
+        <Label Content="Selektionsmethode:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="20,270,0,0" Height="25"/>
+        <ComboBox HorizontalAlignment="Left" x:Name="SelectionType" VerticalAlignment="Top" Margin="250,270,0,0" Height="25" Width="150" SelectedIndex="0">
             <ComboBoxItem x:Name="TournamentSelectionType" Content="Tournament-Selektion"/>
             <ComboBoxItem x:Name="RouletteSelectionType" Content="Roulette-Wheel-Selektion"/>
         </ComboBox>
-        <CheckBox x:Name="UseBest" Content="Besten Stundenplan wiederverwenden" IsChecked="False" HorizontalAlignment="Left" Height="25" VerticalAlignment="Top" VerticalContentAlignment="Center" Margin="20,270,0,0"/>
+        <CheckBox x:Name="UseBest" Content="Besten Stundenplan wiederverwenden" IsChecked="False" HorizontalAlignment="Left" Height="25" VerticalAlignment="Top" VerticalContentAlignment="Center" Margin="20,310,0,0"/>
 
         <Label Content="Warte auf Eingabe..." HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="20,0,0,60" Height="25" x:Name="Status"/>
         <Label Content="Generation:" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="20,0,0,20" Height="25"/>

@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace GAS
 {
@@ -465,9 +466,20 @@ namespace GAS
             return issues / 2;
         }
 
-        public void Optimize()
+        public async Task<Schedule> OptimizeAsync(double mutationChance, double crossoverChance, GeneticAlgorithm<Schedule>.SelectionTypeEnum selectionType, int generations = 100, int initialPopulation = 20, bool useBest = true)
         {
-            throw new NotImplementedException();
+            //Optimiere den Stundenplan durch einen zweiten genetischen Algorithmus:
+            Schedule[] population = new Schedule[initialPopulation];
+            for (int i = 0; i < population.Length; i++)
+            {
+                population[i] = await Task.Run(() => this.GetDeepCopy());
+            }
+
+            GeneticAlgorithm<Schedule> geneticAlgorithm = new(population, double.MaxValue, generations, mutationChance, crossoverChance, selectionType: selectionType);
+            geneticAlgorithm.ExtraCondition = s => s.AllApplies();
+            geneticAlgorithm.UseBest = useBest;
+            geneticAlgorithm.Fitness = t => t.GetScore();
+            return await geneticAlgorithm.RunAsync();
         }
 
         public HashSet<Person> GetPeople()
@@ -488,7 +500,7 @@ namespace GAS
         public double GetScore()
         {
             //Berechne einen Durchschnitts Score:
-            return Utils.Average(this.GetPeople(), (Person p) => p.GetScore());
+            return Utils.Average(this.GetPeople(), p => p.GetScore());
         }
 
         public class Exceptions
