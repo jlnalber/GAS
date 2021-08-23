@@ -1,7 +1,7 @@
-﻿using GeneticFramework;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Utils;
 
 namespace GAS
 {
@@ -96,7 +96,7 @@ namespace GAS
         {
             //Berechne einen Score anhand von den Sunden:
             var periods = this.GetPeriods();
-            return RATE_FREEDAYS * this.GetFreeDays() + RATE_PERIODS * periods.Average(p => RatePeriod(p, periods)) + RATE_RANGES / this.GetAverageRange();
+            return RATE_FREEDAYS * this.GetFreeDays() + RATE_PERIODS * IEnumerableExt.Average(periods, p => RatePeriod(p, periods)) + RATE_RANGES / this.GetAverageRange();
         }
 
         public static double RatePeriod(Period period, Period[] periods)
@@ -132,7 +132,7 @@ namespace GAS
                 catch { }
             }
 
-            return ranges.Sum(t => t.Item2 - t.Item1) / (5.0 - this.GetFreeDays());
+            return ArrayExt.Sum(ranges, t => t.Item2 - t.Item1) / (5.0 - this.GetFreeDays());
         }
 
         private Period[] GetPeriods()

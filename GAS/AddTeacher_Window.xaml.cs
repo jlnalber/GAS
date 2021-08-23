@@ -62,7 +62,7 @@ namespace GAS
             if (this.ID.InputText.Replace(" ", "") == "")
             {
                 SystemSounds.Asterisk.Play();
-                this.ID.Label.Foreground = Brushes.Red;
+                this.ID.SetLabelColor(Brushes.Red);
             }
             else
             {

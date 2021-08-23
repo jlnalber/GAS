@@ -25,6 +25,7 @@ namespace GAS
                     TextBlock textBlock = new TextBlock();
                     textBlock.Text = string.Join(", ", from k in schedule.Courses where k.Periods.Contains(new Period((Weekday)i, (Hour)j)) select k.ID);
                     textBlock.TextAlignment = TextAlignment.Center;
+                    textBlock.TextWrapping = TextWrapping.WrapWithOverflow;
 
                     Grid.SetColumn(textBlock, i);
                     Grid.SetRow(textBlock, j);
@@ -45,6 +46,7 @@ namespace GAS
                     TextBlock textBlock = new TextBlock();
                     textBlock.Text = string.Join(", ", from k in person.Courses where k.Periods.Contains(new Period((Weekday)i, (Hour)j)) select k.ID);
                     textBlock.TextAlignment = TextAlignment.Center;
+                    textBlock.TextWrapping = TextWrapping.WrapWithOverflow;
 
                     Grid.SetColumn(textBlock, i);
                     Grid.SetRow(textBlock, j);

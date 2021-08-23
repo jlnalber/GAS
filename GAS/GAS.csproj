@@ -17,6 +17,12 @@
     <Reference Include="GeneticFramework">
       <HintPath>..\..\GeneticFramework\bin\Release\net5.0\GeneticFramework.dll</HintPath>
     </Reference>
+    <Reference Include="Utils">
+      <HintPath>..\..\Utils\Utils\bin\Debug\net5.0\Utils.dll</HintPath>
+    </Reference>
+    <Reference Include="WPFUtils">
+      <HintPath>..\..\WPFUtils\WPFUtils\bin\Debug\net5.0-windows\WPFUtils.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
   <ItemGroup>

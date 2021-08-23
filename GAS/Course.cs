@@ -1,7 +1,7 @@
-﻿using GeneticFramework;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Utils;
 
 namespace GAS
 {
@@ -83,7 +83,7 @@ namespace GAS
         public int IssuesWith(Period period)
         {
             //Methode, die zurückgibt, wie viele Probleme der Kurs wegen einer bestimmten Stunde hat.
-            return Utils.Sum(this.Students, (Student s) => s.IsFreeAt(period, this) ? 0 : 1) + (this.Teacher.IsFreeAt(period, this) ? 0 : 1) + Utils.Sum(this.Periods, (Period p) => this.WorksWith(p, p) ? 0 : 1) / 2;
+            return ArrayExt.Sum(this.Students, (Student s) => s.IsFreeAt(period, this) ? 0 : 1) + (this.Teacher.IsFreeAt(period, this) ? 0 : 1) + ArrayExt.Sum(this.Periods, (Period p) => this.WorksWith(p, p) ? 0 : 1) / 2;
         }
 
         public Person[] GetPeopleGroup()
@@ -275,15 +275,15 @@ namespace GAS
         public void AddStudent(Student student)
         {
             //Füge einen Schüler hinzu:
-            this.Students = Utils.AddToArray(this.Students, student);
-            student.Courses = Utils.AddToArray(student.Courses, this);
+            this.Students = this.Students.AddToArray(student);
+            student.Courses = student.Courses.AddToArray(this);
         }
 
         public void RemoveStudent(Student student)
         {
             //Entferne einen Schüler:
-            this.Students = Utils.RemoveFromArray(this.Students, student);
-            student.Courses = Utils.RemoveFromArray(student.Courses, this);
+            this.Students = this.Students.RemoveFromArray(student);
+            student.Courses = student.Courses.RemoveFromArray(this);
         }
     }
 

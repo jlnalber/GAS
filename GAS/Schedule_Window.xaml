@@ -5,10 +5,21 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:GAS"
         mc:Ignorable="d"
-        Title="GAS - Stundenplan" Height="450" Width="800">
-    <Grid x:Name="Grid">
-        <Label Content="Aus der Sicht von:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="20,20,0,0" Height="25"/>
-        <ComboBox x:Name="PersonPicker" VerticalAlignment="Top" Margin="150,20,20,0" Height="25" SelectionChanged="PersonPicker_SelectionChanged"/>
-        <local:Timetabel Margin="20,80,20,20" x:Name="Timetable"/>
-    </Grid>
+        Title="GAS - Stundenplan" Height="700" Width="1000">
+    <TabControl Margin="5,5,5,5">
+        <TabItem Header="Stundenplan" Width="100" Padding="3">
+            <Grid x:Name="GridSchedules">
+                <Label Content="Aus der Sicht von:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="20,20,0,0" Height="25"/>
+                <ComboBox x:Name="PersonPicker" VerticalAlignment="Top" Margin="150,20,20,0" Height="25" SelectionChanged="PersonPicker_SelectionChanged"/>
+                <local:Timetabel Margin="20,80,20,20" x:Name="Timetable"/>
+            </Grid>
+        </TabItem>
+        <TabItem Header="Kurse" Padding="3" Width="100">
+            <Grid x:Name="GridCourses">
+                <Label Content="Aus der Sicht von:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="20,20,0,0" Height="25"/>
+                <ComboBox x:Name="CoursePicker" VerticalAlignment="Top" Margin="150,20,20,0" Height="25" SelectionChanged="CoursePicker_SelectionChanged"/>
+                <local:ShowCourse Margin="20,80,20,20" x:Name="Course"/>
+            </Grid>
+        </TabItem>
+    </TabControl>
 </Window>

@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Utils;
 
 namespace GAS
 {
@@ -66,7 +67,7 @@ namespace GAS
             Schedule schedule1 = this.GetDeepCopy();
             Schedule schedule2 = (chromosome as Schedule).GetDeepCopy();
 
-            Course course1 = Utils.PickRoulette((from i in schedule1.Courses select (i, i.Issues() + ADDITION_CHOOSE_COURSE)).ToArray());
+            Course course1 = RandomExt.PickRoulette((from i in schedule1.Courses select (i, i.Issues() + ADDITION_CHOOSE_COURSE)).ToArray()).Item1;
             Course course2 = (from i in schedule2.Courses where i.ID == course1.ID select i).First();
 
             //Crossover mit den Teilnehmern:
@@ -200,7 +201,7 @@ namespace GAS
             {
                 for (int j = 0; j < i.Periods.Length && !i.FixPeriods; j++)
                 {
-                    i.Periods[j] = Utils.PickTournament((from p in Period.GetAllPeriods() select (p, i.IsNotDouble(p) ? (random.NextDouble() + ADDITION_RANDOM_INSTANCE_CHOICES) / (i.IssuesWith(p) + 1) : 0.0)).ToArray());
+                    i.Periods[j] = RandomExt.PickTournament((from p in Period.GetAllPeriods() select (p, i.IsNotDouble(p) ? (random.NextDouble() + ADDITION_RANDOM_INSTANCE_CHOICES) / (i.IssuesWith(p) + 1) : 0.0)).ToArray()).Item1;
                 }
             }
             return newSchedule;
@@ -210,7 +211,7 @@ namespace GAS
         {
             //Erstelle eine Zufallsvariable und wähle einen Kurs je nach Issues aus:
             Random random = new();
-            Course course = Utils.PickRoulette((from i in this.Courses select (i, i.Issues() + ADDITION_CHOOSE_COURSE)).ToArray());
+            Course course = RandomExt.PickRoulette((from i in this.Courses select (i, i.Issues() + ADDITION_CHOOSE_COURSE)).ToArray()).Item1;
 
             //Mutiere die Teilnehmer...
             if ((course.PartnerCourses.Length != 0 && random.NextDouble() < MUTATE_PARTICIPANTS && !course.FixParticipants) || (!course.FixParticipants && course.FixPeriods && course.PartnerCourses.Length != 0))
@@ -233,7 +234,7 @@ namespace GAS
                         }
 
                         //Mische die Kurse und Lehrer neu und füge die Lehrer zu ihren neuen Kursen hinzu:
-                        (Course, Teacher)[] newTupels = Utils.ShuffleTupels(oldTupels);
+                        (Course, Teacher)[] newTupels = ArrayExt.ShuffleTupels(oldTupels);
                         foreach ((Course, Teacher) i in newTupels)
                         {
                             i.Item2.AddToCourse(i.Item1);
@@ -243,7 +244,7 @@ namespace GAS
                     else
                     {
                         //Wähle einen zufälligen Partnerkurs aus und speichere seinen Lehrer temporär ab:
-                        Course course2 = Utils.PickRoulette((from i in course.PartnerCourses select (i, i.Teacher.Issues + ADDITION_CHOOSE_TEACHER_STUDENT)).ToArray());
+                        Course course2 = RandomExt.PickRoulette((from i in course.PartnerCourses select (i, i.Teacher.Issues + ADDITION_CHOOSE_TEACHER_STUDENT)).ToArray()).Item1;
                         Teacher temp = course2.Teacher;
 
                         //Tausche die beiden Lehrer aus:
@@ -265,7 +266,7 @@ namespace GAS
                         }
 
                         //Vermische die Kurse und die SuS, füge dann nach der neuen Zuordnung die Schüler ihren neuen Kursen hinzu:
-                        (Course, Student)[] newTupels = Utils.ShuffleTupels(oldTupels);
+                        (Course, Student)[] newTupels = ArrayExt.ShuffleTupels(oldTupels);
                         foreach ((Course, Student) i in newTupels)
                         {
                             i.Item2.AddToCourse(i.Item1);
@@ -275,9 +276,9 @@ namespace GAS
                     else
                     {
                         //Wähle einen zufälligen Partnerkurs aus wähle zwei zufällige Schüler aus Kurs und Partnerkurs:
-                        Course course2 = Utils.PickRoulette((from i in course.PartnerCourses select (i, i.Issues() + ADDITION_CHOOSE_COURSE)).ToArray());
-                        Student student1 = Utils.PickRoulette((from i in course.Students select (i, i.Issues + ADDITION_CHOOSE_TEACHER_STUDENT)).ToArray());
-                        Student student2 = Utils.PickRoulette((from i in course2.Students select (i, i.Issues + ADDITION_CHOOSE_TEACHER_STUDENT)).ToArray());
+                        Course course2 = RandomExt.PickRoulette((from i in course.PartnerCourses select (i, i.Issues() + ADDITION_CHOOSE_COURSE)).ToArray()).Item1;
+                        Student student1 = RandomExt.PickRoulette((from i in course.Students select (i, i.Issues + ADDITION_CHOOSE_TEACHER_STUDENT)).ToArray()).Item1;
+                        Student student2 = RandomExt.PickRoulette((from i in course2.Students select (i, i.Issues + ADDITION_CHOOSE_TEACHER_STUDENT)).ToArray()).Item1;
 
                         //Tausche die Schüler miteinander aus:
                         student1.RemoveFromCourse(course);
@@ -294,7 +295,7 @@ namespace GAS
                 if (random.NextDouble() < MUTATE_INCREMENTAL)
                 {
                     //Wähle eine Stunde aus:
-                    int pos = course.Periods.IndexOf(Utils.PickRoulette((from i in course.Periods select (i, course.IssuesWith(i) + ADDITION_CHOOSE_PERIOD)).ToArray()));
+                    int pos = course.Periods.IndexOf(RandomExt.PickRoulette((from i in course.Periods select (i, course.IssuesWith(i) + ADDITION_CHOOSE_PERIOD)).ToArray()).Item1);
 
                     //Verschiebe die Stunde nach vorne um eins:
                     if (random.NextDouble() < 0.5)
@@ -348,7 +349,7 @@ namespace GAS
                 {
                     try
                     {
-                        course.Periods[course.Periods.IndexOf(Utils.PickRoulette((from i in course.Periods select (i, course.IssuesWith(i) + ADDITION_CHOOSE_PERIOD)).ToArray()))] = Period.GetRandomPeriod(course);
+                        course.Periods[course.Periods.IndexOf(RandomExt.PickRoulette((from i in course.Periods select (i, course.IssuesWith(i) + ADDITION_CHOOSE_PERIOD)).ToArray()).Item1)] = Period.GetRandomPeriod(course);
                     }
                     catch (Exceptions.PeriodNotFoundException) { }
                 }
@@ -500,7 +501,7 @@ namespace GAS
         public double GetScore()
         {
             //Berechne einen Durchschnitts Score:
-            return Utils.Average(this.GetPeople(), p => p.GetScore());
+            return IEnumerableExt.Average(this.GetPeople(), p => p.GetScore());
         }
 
         public class Exceptions

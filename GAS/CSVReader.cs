@@ -1,7 +1,7 @@
-﻿using GeneticFramework;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Utils;
 
 namespace GAS
 {
@@ -18,7 +18,7 @@ namespace GAS
                 lines.Add(streamReader.ReadLine());
             }
 
-            string[][] csv = (from line in lines select line.Split(';').ToArray().Modify((string s) => s.Replace("\"", ""))).ToArray();
+            string[][] csv = (from line in lines select line.Split(';').ToArray().Map((string s) => s.Replace("\"", ""))).ToArray();
 
             this.Table = new string[csv[0].Length, csv.Length];
 

@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:GAS"
+        xmlns:WPFUtils="clr-namespace:WPFUtils;assembly=WPFUtils"
         mc:Ignorable="d"
         Title="GAS - Daten Importieren" MinHeight="550" MinWidth="700" Height="550" Width="800">
     <Grid>
@@ -11,18 +12,18 @@
         <Label Content="Speicherort:" x:Name="Path_Label" Height="25" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="20,70,0,0" VerticalContentAlignment="Center"/>
         <TextBox x:Name="Path" Height="25" Width="300" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="190,70,0,0" VerticalContentAlignment="Center"/>
         <Button Content="..." Height="25" Width="30" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="510,70,0,0" FontSize="15" Click="FileButton_Click"/>
-        <local:InputField x:Name="ColumnStart" Margin="20,120,0,0" LabelContent="Starte in Spalte:" InputText="2" Distance="170" AllowLetterConversion="True"/>
-        <local:InputField x:Name="ColumnEnd" Margin="20,160,0,0" LabelContent="Ende in Spalte:" Distance="170" AllowLetterConversion="True"/>
-        <local:InputField x:Name="RowStart" Margin="20,200,0,0" LabelContent="Starte in Zeile:" InputText="2" Distance="170"/>
-        <local:InputField x:Name="RowEnd" Margin="20,240,0,0" LabelContent="Ende in Zeile:" Distance="170"/>
-        <local:InputField x:Name="ColumnStudentsNames" Margin="20,280,0,0" LabelContent="Spalte der Namen der Sus:" Distance="170" IsEnabled="False" AllowLetterConversion="True"/>
+        <WPFUtils:InputField x:Name="ColumnStart" Margin="20,120,0,0" LabelContent="Starte in Spalte:" InputText="2" Distance="170" AllowLetterConversion="True"/>
+        <WPFUtils:InputField x:Name="ColumnEnd" Margin="20,160,0,0" LabelContent="Ende in Spalte:" Distance="170" AllowLetterConversion="True"/>
+        <WPFUtils:InputField x:Name="RowStart" Margin="20,200,0,0" LabelContent="Starte in Zeile:" InputText="2" Distance="170"/>
+        <WPFUtils:InputField x:Name="RowEnd" Margin="20,240,0,0" LabelContent="Ende in Zeile:" Distance="170"/>
+        <WPFUtils:InputField x:Name="ColumnStudentsNames" Margin="20,280,0,0" LabelContent="Spalte der Namen der Sus:" Distance="170" IsEnabled="False" AllowLetterConversion="True"/>
         <CheckBox x:Name="ImportNamesStudents" Margin="360,280,0,0" Content="Importiere Namen der SuS" Checked="ImportNamesStudents_Checked" Unchecked="ImportNamesStudents_Unchecked" HorizontalAlignment="Left" VerticalAlignment="Top" Height="25" VerticalContentAlignment="Center" IsChecked="False"/>
-        <local:InputField x:Name="RowCoursesIDs" Margin="20,320,0,0" LabelContent="Zeile der IDs der Kurse:" Distance="170" IsEnabled="False"/>
+        <WPFUtils:InputField x:Name="RowCoursesIDs" Margin="20,320,0,0" LabelContent="Zeile der IDs der Kurse:" Distance="170" IsEnabled="False"/>
         <CheckBox x:Name="ImportIDsCourses" Margin="360,320,0,0" Content="Importiere die IDs der Kurse" Checked="ImportIDsCourses_Checked" Unchecked="ImportIDsCourses_Unchecked" HorizontalAlignment="Left" VerticalAlignment="Top" Height="25" VerticalContentAlignment="Center" IsChecked="False"/>
-        <local:InputField x:Name="RowPeriods" LabelContent="Reihe der Kursstunden:" Distance="170" Margin="20,360,0,0" IsEnabled="False"/>
+        <WPFUtils:InputField x:Name="RowPeriods" LabelContent="Reihe der Kursstunden:" Distance="170" Margin="20,360,0,0" IsEnabled="False"/>
         <CheckBox x:Name="ImportRowPeriods" Margin="360,360,0,0" Content="Importiere die Kursstunden" Checked="ImportRowPeriods_Checked" Unchecked="ImportRowPeriods_Unchecked" HorizontalAlignment="Left" VerticalAlignment="Top" Height="25" VerticalContentAlignment="Center" IsChecked="False"/>
-        <local:InputField x:Name="DefaultPeriods" LabelContent="Standardwert der Stunden:" Distance="170" Margin="20,400,0,0" InputText="2"/>
-        <local:InputField x:Name="ThresholdCourse" LabelContent="Schwellenwert Kursaufteilung:" Distance="170" Margin="20,440,0,0" InputText="23"/>
+        <WPFUtils:InputField x:Name="DefaultPeriods" LabelContent="Standardwert der Stunden:" Distance="170" Margin="20,400,0,0" InputText="2"/>
+        <WPFUtils:InputField x:Name="ThresholdCourse" LabelContent="Schwellenwert Kursaufteilung:" Distance="170" Margin="20,440,0,0" InputText="23"/>
 
         <Button HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,20,20" Padding="5" Content="Daten Importieren" Click="ImportButton_Click"/>
     </Grid>

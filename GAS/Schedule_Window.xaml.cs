@@ -11,10 +11,14 @@ namespace GAS
     public partial class Schedule_Window : Window
     {
         (Person, ComboBoxItem)[] PeopleC;
+        (Course, ComboBoxItem)[] CoursesC;
+        Schedule Schedule;
 
         public Schedule_Window(Schedule schedule)
         {
             InitializeComponent();
+
+            this.Schedule = schedule;
 
             HashSet<Person> people = new();
             people.Add(new Person(schedule.Courses, "Alle Kurse"));
@@ -43,18 +47,35 @@ namespace GAS
                 counter++;
             }
 
+            this.CoursesC = new (Course, ComboBoxItem)[this.Schedule.Courses.Length];
+            for (int i = 0; i < this.CoursesC.Length; i++)
+            {
+                ComboBoxItem comboBoxItem = new();
+                comboBoxItem.Content = this.Schedule.Courses[i].ID;
+                this.CoursePicker.Items.Add(comboBoxItem);
+                this.CoursesC[i] = (this.Schedule.Courses[i], comboBoxItem);
+            }
+
             this.PersonPicker.SelectedIndex = 0;
+            this.CoursePicker.SelectedIndex = 0;
         }
 
         private void PersonPicker_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             Person person = (from t in PeopleC where t.Item2 == this.PersonPicker.SelectedItem select t.Item1).First();
 
-            this.Grid.Children.Remove(this.Timetable);
+            this.GridSchedules.Children.Remove(this.Timetable);
             this.Timetable = new Timetabel();
             this.Timetable.Margin = new Thickness(20, 80, 20, 20);
-            this.Grid.Children.Add(this.Timetable);
+            this.GridSchedules.Children.Add(this.Timetable);
             this.Timetable.DisplaySchedule(person);
+        }
+
+        private void CoursePicker_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            Course course = (from t in CoursesC where t.Item2 == this.CoursePicker.SelectedItem select t.Item1).First();
+
+            this.Course.LoadCourse(this.Schedule, course);
         }
     }
 }

@@ -1,5 +1,4 @@
-﻿using GeneticFramework;
-using Microsoft.Win32;
+﻿using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,6 +7,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using Utils;
 
 namespace GAS
 {
@@ -385,7 +385,7 @@ namespace GAS
                 GroupCourse[] groupCourses = GroupCourse.GetDeepCopy(this.Courses.ToArray());
 
                 //Erstelle eine Array für die neu verteilten Kurse:
-                Course[] courses = new Course[Utils.Sum(groupCourses, (GroupCourse c) => c.Teachers.Length)];
+                Course[] courses = new Course[ArrayExt.Sum(groupCourses, (GroupCourse c) => c.Teachers.Length)];
 
                 //Verteile die Kurse und weise sie dem Array zu:
                 int counter = 0;
@@ -517,7 +517,7 @@ namespace GAS
 
         private void ResetColors_Course()
         {
-            this.Periods_Course.Label.Foreground = Brushes.Black;
+            this.Periods_Course.SetLabelColor(Brushes.Black);
             this.TeachersLabel_Course.Foreground = Brushes.Black;
         }
 

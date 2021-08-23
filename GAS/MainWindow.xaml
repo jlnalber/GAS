@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:GAS"
+        xmlns:WPFUtils="clr-namespace:WPFUtils;assembly=WPFUtils"
         mc:Ignorable="d"
         Title="GAS" MinHeight="500" MinWidth="800" Height="600" Width="900" WindowStartupLocation="CenterScreen" WindowState="Maximized">
     <DockPanel>
@@ -33,8 +34,8 @@
                     <Label Content="Kurse:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="20,20,0,0" Height="25"></Label>
                     <ComboBox x:Name="Course_Picker" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="100,20,0,0" Height="25" MinWidth="150" SelectionChanged="Course_Picker_SelectionChanged"></ComboBox>
 
-                    <local:InputField x:Name="ID_Course" Margin="20,80,0,0" Distance="80" LabelContent="ID:"/>
-                    <local:InputField LabelContent="Stunden:" Distance="80" Margin="20,120,0,0" x:Name="Periods_Course"/>
+                    <WPFUtils:InputField x:Name="ID_Course" Margin="20,80,0,0" Distance="80" LabelContent="ID:"/>
+                    <WPFUtils:InputField LabelContent="Stunden:" Distance="80" Margin="20,120,0,0" x:Name="Periods_Course"/>
                     <CheckBox Content="Verwende fixe Stunden" Height="25" HorizontalAlignment="Left" VerticalAlignment="Top" VerticalContentAlignment="Center" Margin="270,120,0,0" x:Name="FixPeriods_Course" Checked="FixPeriods_Course_Checked" Unchecked="FixPeriods_Course_Unchecked" IsChecked="False"/>
                     <ListBox x:Name="PeriodsSelection_Course" Margin="450,120,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" MinHeight="25" MaxHeight="50" Width="200" IsEnabled="False"/>
                     <Button Margin="670,120,0,0" Width="25" Height="25" Content="+" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" HorizontalAlignment="Left" VerticalAlignment="Top" x:Name="AddPeriod_Course" Click="AddPeriod_Click" IsEnabled="False"/>
@@ -58,8 +59,8 @@
                     <Label Content="LuL:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="20,20,0,0" Height="25"></Label>
                     <ComboBox x:Name="Teacher_Picker" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="100,20,0,0" Height="25" MinWidth="150" SelectionChanged="Teacher_Picker_SelectionChanged"></ComboBox>
 
-                    <local:InputField x:Name="ID_Teacher" LabelContent="ID:" Margin="20,80,0,0" Distance="80"/>
-                    <local:InputField x:Name="Name_Teacher" LabelContent="Name:" Distance="80" Margin="20,120,0,0"/>
+                    <WPFUtils:InputField x:Name="ID_Teacher" LabelContent="ID:" Margin="20,80,0,0" Distance="80"/>
+                    <WPFUtils:InputField x:Name="Name_Teacher" LabelContent="Name:" Distance="80" Margin="20,120,0,0"/>
                     <Label HorizontalAlignment="Left" VerticalAlignment="Top" Content="Kurse:" Margin="20,160,0,0" Height="25"/>
                     <ListBox HorizontalAlignment="Left" VerticalAlignment="Top" Width="150" x:Name="Courses_Teacher" Margin="100,160,20,20" MinHeight="25" MaxHeight="100" VerticalContentAlignment="Center"></ListBox>
 
@@ -73,8 +74,8 @@
                     <Label Content="SuS:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="20,20,0,0" Height="25"></Label>
                     <ComboBox x:Name="Student_Picker" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="100,20,0,0" Height="25" MinWidth="150" SelectionChanged="Student_Picker_SelectionChanged"></ComboBox>
 
-                    <local:InputField x:Name="ID_Student" LabelContent="ID:" Distance="80" Margin="20,80,0,0"/>
-                    <local:InputField x:Name="Name_Student" LabelContent="Name:" Distance="80" Margin="20,120,0,0"/>
+                    <WPFUtils:InputField x:Name="ID_Student" LabelContent="ID:" Distance="80" Margin="20,80,0,0"/>
+                    <WPFUtils:InputField x:Name="Name_Student" LabelContent="Name:" Distance="80" Margin="20,120,0,0"/>
                     <Label HorizontalAlignment="Left" VerticalAlignment="Top" Content="Kurse:" Margin="20,160,0,0" Height="25"/>
                     <ListBox HorizontalAlignment="Left" VerticalAlignment="Top" Width="150" x:Name="SelectedCourses_Student" Margin="100,160,20,20" MinHeight="25" MaxHeight="100" VerticalContentAlignment="Center"></ListBox>
                     <Button HorizontalAlignment="Left" VerticalAlignment="Top" Content="Verschieben" Padding="5" Margin="270,160,0,0" Width="90" Click="SwitchButton3_Click"></Button>
