@@ -18,7 +18,7 @@ namespace GAS
         {
             //Stelle die ID dar:
             this.ID.OutputText = course.ID;
-            
+
             //Stelle die Anzahl der Stunden dar:
             this.AmountPeriods.OutputText = course.Periods.Length.ToString();
 
