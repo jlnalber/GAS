@@ -74,10 +74,10 @@ namespace GAS
                 this.Status.Content = "Warte auf Eingabe...";
             }
             catch (FormatException) { }
-            catch (Exception f)
+            catch
             {
                 SystemSounds.Asterisk.Play();
-                MessageBox.Show(f.Message + "\n" + f.ToString());
+                //MessageBox.Show(f.Message + "\n" + f.ToString());
                 this.Status.Content = "Warte auf Eingabe...";
             }
             this.Calculate.IsEnabled = true;

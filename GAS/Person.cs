@@ -96,7 +96,7 @@ namespace GAS
         {
             //Berechne einen Score anhand von den Sunden:
             var periods = this.GetPeriods();
-            return RATE_FREEDAYS * this.GetFreeDays() + RATE_PERIODS * IEnumerableExt.Average(periods, p => RatePeriod(p, periods)) + RATE_RANGES / this.GetAverageRange();
+            return RATE_FREEDAYS * this.GetFreeDays() + RATE_PERIODS * IEnumerableExt.GetAverage(periods, p => RatePeriod(p, periods)) + RATE_RANGES / this.GetAverageRange();
         }
 
         public static double RatePeriod(Period period, Period[] periods)
@@ -171,6 +171,8 @@ namespace GAS
     public class Teacher : Person
     {
         public Teacher(Course[] courses, string ID) : base(courses, ID) { }
+
+        public bool HideTeacher = false;
 
         public void AddToCourse(Course course)
         {

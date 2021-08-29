@@ -14,6 +14,7 @@ namespace GAS
         public Course[] PartnerCourses;
         public bool FixParticipants;
         public bool FixPeriods;
+        public bool HideCourse = false;
 
         public Course(int periods, Student[] students, Teacher teacher, string ID)
         {
@@ -83,7 +84,7 @@ namespace GAS
         public int IssuesWith(Period period)
         {
             //Methode, die zurückgibt, wie viele Probleme der Kurs wegen einer bestimmten Stunde hat.
-            return ArrayExt.Sum(this.Students, (Student s) => s.IsFreeAt(period, this) ? 0 : 1) + (this.Teacher.IsFreeAt(period, this) ? 0 : 1) + ArrayExt.Sum(this.Periods, (Period p) => this.WorksWith(p, p) ? 0 : 1) / 2;
+            return ArrayExt.Sum(this.Students, (Student s) => s.IsFreeAt(period, this) ? 0 : 1) + (this.Teacher.IsFreeAt(period, this) ? 0 : 1) + ArrayExt.Sum(this.Periods, (Period p) => this.WorksWith(p, p) || this.FixPeriods ? 0 : 1) / 2;
         }
 
         public Person[] GetPeopleGroup()
@@ -356,7 +357,7 @@ namespace GAS
         {
             //Erstelle eine zufällige Stunde:
             Random random = new();
-            Period period = new((Weekday)random.Next(1, 6), (Hour)random.Next(1, 12));
+            Period period = new Random().Choices((from p in GetAllPeriods() select (p, 1.0 / forCourse.IssuesWith(p))).ToArray()).Item1;
             Period bestPeriod = period;
 
             //Gehe solange durch, bis eine passende Stunde gefunden wurde.

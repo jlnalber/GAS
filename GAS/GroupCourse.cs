@@ -47,6 +47,7 @@ namespace GAS
                 courses[i].PartnerCourses = courses.Filter((Course c) => c != courses[i]);
                 courses[i].FixParticipants = this.FixParticipants;
                 courses[i].FixPeriods = this.FixPeriods;
+                courses[i].HideCourse = this.HideCourse;
             }
 
             //Verteile die SuS:
@@ -105,6 +106,7 @@ namespace GAS
                 }
                 newTeachers[counter] = new Teacher(courses, i.ID);
                 newTeachers[counter].Name = i.Name;
+                newTeachers[counter].HideTeacher = i.HideTeacher;
                 counter++;
             }
 
@@ -117,6 +119,7 @@ namespace GAS
                 //Kopiere die Daten...
                 newCourse.FixPeriods = courses[i].FixPeriods;
                 newCourse.FixParticipants = courses[i].FixParticipants;
+                newCourse.HideCourse = courses[i].HideCourse;
 
                 //... dann die Stunden...
                 for (int j = 0; j < courses[i].Periods.Length; j++)

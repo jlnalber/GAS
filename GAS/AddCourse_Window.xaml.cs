@@ -192,7 +192,8 @@ namespace GAS
         private void AddPeriod_Click(object sender, RoutedEventArgs e)
         {
             AddPeriod_Window addPeriod_Window = new AddPeriod_Window();
-            if (addPeriod_Window.ShowDialog() == true && (from i in this.PeriodsC where i.Item1 == addPeriod_Window.Period select i).Count() == 0)
+            bool? dialog = addPeriod_Window.ShowDialog();
+            if (dialog == true && (from i in this.PeriodsC where i.Item1 == addPeriod_Window.Period select i).Count() == 0)
             {
                 ListBoxItem listBoxItem = new();
                 listBoxItem.Content = addPeriod_Window.Period.ToString();
@@ -200,7 +201,7 @@ namespace GAS
                 this.PeriodsSelection.Items.Add(listBoxItem);
                 this.PeriodsC.Add((addPeriod_Window.Period, listBoxItem));
             }
-            else
+            else if (dialog == true)
             {
                 SystemSounds.Asterisk.Play();
             }

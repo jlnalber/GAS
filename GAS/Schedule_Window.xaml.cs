@@ -25,7 +25,10 @@ namespace GAS
 
             foreach (Course i in schedule.Courses)
             {
-                people.Add(i.Teacher);
+                if (!i.Teacher.HideTeacher)
+                {
+                    people.Add(i.Teacher);
+                }
             }
             foreach (Course i in schedule.Courses)
             {
@@ -47,14 +50,18 @@ namespace GAS
                 counter++;
             }
 
-            this.CoursesC = new (Course, ComboBoxItem)[this.Schedule.Courses.Length];
-            for (int i = 0; i < this.CoursesC.Length; i++)
+            List<(Course, ComboBoxItem)> coursesC = new();
+            for (int i = 0; i < this.Schedule.Courses.Length; i++)
             {
-                ComboBoxItem comboBoxItem = new();
-                comboBoxItem.Content = this.Schedule.Courses[i].ID;
-                this.CoursePicker.Items.Add(comboBoxItem);
-                this.CoursesC[i] = (this.Schedule.Courses[i], comboBoxItem);
+                if (!this.Schedule.Courses[i].HideCourse)
+                {
+                    ComboBoxItem comboBoxItem = new();
+                    comboBoxItem.Content = this.Schedule.Courses[i].ID;
+                    this.CoursePicker.Items.Add(comboBoxItem);
+                    coursesC.Add((this.Schedule.Courses[i], comboBoxItem));
+                }
             }
+            this.CoursesC = coursesC.ToArray();
 
             this.PersonPicker.SelectedIndex = 0;
             this.CoursePicker.SelectedIndex = 0;

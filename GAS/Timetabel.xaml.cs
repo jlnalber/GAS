@@ -23,7 +23,7 @@ namespace GAS
                 for (int j = 1; j <= 11; j++)
                 {
                     TextBlock textBlock = new TextBlock();
-                    textBlock.Text = string.Join(", ", from k in schedule.Courses where k.Periods.Contains(new Period((Weekday)i, (Hour)j)) select k.ID);
+                    textBlock.Text = string.Join(", ", from k in schedule.Courses where k.Periods.Contains(new Period((Weekday)i, (Hour)j)) && !k.HideCourse select k.ID);
                     textBlock.TextAlignment = TextAlignment.Center;
                     textBlock.TextWrapping = TextWrapping.WrapWithOverflow;
 
@@ -44,7 +44,7 @@ namespace GAS
                 for (int j = 1; j <= 11; j++)
                 {
                     TextBlock textBlock = new TextBlock();
-                    textBlock.Text = string.Join(", ", from k in person.Courses where k.Periods.Contains(new Period((Weekday)i, (Hour)j)) select k.ID);
+                    textBlock.Text = string.Join(", ", from k in person.Courses where k.Periods.Contains(new Period((Weekday)i, (Hour)j)) && !k.HideCourse select k.ID);
                     textBlock.TextAlignment = TextAlignment.Center;
                     textBlock.TextWrapping = TextWrapping.WrapWithOverflow;
 

@@ -19,6 +19,7 @@
                 <MenuItem Header="Kurs Hinzufügen" Click="AddCourse_Click"></MenuItem>
                 <MenuItem Header="LuL Hinzufügen" Click="AddTeacher_Click"></MenuItem>
                 <MenuItem Header="SuS Hinzufügen" Click="AddStudent_Click"></MenuItem>
+                <MenuItem Header="Sperrstunde Hinzufügen" Click="AddHiddenCourse_Click"></MenuItem>
             </MenuItem>
             <MenuItem Header="Über">
                 <MenuItem Header="Hilfe" Click="Hilfe_Click"></MenuItem>
@@ -28,7 +29,7 @@
             <Button Content="Stundenplan Berechnen" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,10,10" Padding="5" Click="CalculateButton_Click"></Button>
         </Grid>
         <TabControl Margin="5">
-            <TabItem Header="Kurse" Padding="3" Width="50">
+            <TabItem Header="Kurse" Padding="3" Width="80">
                 <Grid>
                     <Button HorizontalAlignment="Right" VerticalAlignment="Top" Content="Kurs Hinzufügen" Padding="5" Margin="10" Click="AddCourse_Click"/>
                     <Label Content="Kurse:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="20,20,0,0" Height="25"></Label>
@@ -38,7 +39,7 @@
                     <WPFUtils:InputField LabelContent="Stunden:" Distance="80" Margin="20,120,0,0" x:Name="Periods_Course"/>
                     <CheckBox Content="Verwende fixe Stunden" Height="25" HorizontalAlignment="Left" VerticalAlignment="Top" VerticalContentAlignment="Center" Margin="270,120,0,0" x:Name="FixPeriods_Course" Checked="FixPeriods_Course_Checked" Unchecked="FixPeriods_Course_Unchecked" IsChecked="False"/>
                     <ListBox x:Name="PeriodsSelection_Course" Margin="450,120,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" MinHeight="25" MaxHeight="50" Width="200" IsEnabled="False"/>
-                    <Button Margin="670,120,0,0" Width="25" Height="25" Content="+" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" HorizontalAlignment="Left" VerticalAlignment="Top" x:Name="AddPeriod_Course" Click="AddPeriod_Click" IsEnabled="False"/>
+                    <Button Margin="670,120,0,0" Width="25" Height="25" Content="+" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" HorizontalAlignment="Left" VerticalAlignment="Top" x:Name="AddPeriod_Course" Click="AddPeriod_Course_Click" IsEnabled="False"/>
                     <Button Margin="715,120,0,0" Width="25" Height="25" Content="-" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" HorizontalAlignment="Left" VerticalAlignment="Top" x:Name="RemovePeriod_Course" Click="RemovePeriod_Click" IsEnabled="False"/>
                     <Label HorizontalAlignment="Left" VerticalAlignment="Top" Content="LuL:" Margin="20,185,0,0" Height="25" x:Name="TeachersLabel_Course"/>
                     <ListBox HorizontalAlignment="Left" VerticalAlignment="Top" Width="150" x:Name="SelectedTeachers_Course" Margin="100,185,20,20" MinHeight="25" MaxHeight="100" VerticalContentAlignment="Center"></ListBox>
@@ -53,7 +54,7 @@
                     <Button Content="Speichern" HorizontalAlignment="Right" VerticalAlignment="Bottom" Padding="5" Margin="0,0,10,10" Click="SaveCourse_Click"/>
                 </Grid>
             </TabItem>
-            <TabItem Header="LuL" Padding="3" Width="50">
+            <TabItem Header="LuL" Padding="3" Width="80">
                 <Grid>
                     <Button HorizontalAlignment="Right" VerticalAlignment="Top" Content="LuL Hinzufügen" Padding="5" Margin="10" Click="AddTeacher_Click"/>
                     <Label Content="LuL:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="20,20,0,0" Height="25"></Label>
@@ -68,7 +69,7 @@
                     <Button Content="Speichern" HorizontalAlignment="Right" VerticalAlignment="Bottom" Padding="5" Margin="0,0,10,10" Click="SaveTeacher_Click"/>
                 </Grid>
             </TabItem>
-            <TabItem Header="SuS" Padding="3" Width="50">
+            <TabItem Header="SuS" Padding="3" Width="80">
                 <Grid>
                     <Button HorizontalAlignment="Right" VerticalAlignment="Top" Content="SuS Hinzufügen" Padding="5" Margin="10" Click="AddStudent_Click"/>
                     <Label Content="SuS:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="20,20,0,0" Height="25"></Label>
@@ -83,6 +84,28 @@
 
                     <Button Content="Löschen" HorizontalAlignment="Right" VerticalAlignment="Bottom" Padding="5" Margin="0,0,100,10" Click="DeleteStudent_Click"/>
                     <Button Content="Speichern" HorizontalAlignment="Right" VerticalAlignment="Bottom" Padding="5" Margin="0,0,10,10" Click="SaveStudent_Click"/>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Sperrstunden" Padding="3" Width="80">
+                <Grid>
+                    <Button HorizontalAlignment="Right" VerticalAlignment="Top" Content="Sperrstunde Hinzufügen" Padding="5" Margin="10" Click="AddHiddenCourse_Click"/>
+                    <Label Content="Sperrstunde:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="20,20,0,0" Height="25"></Label>
+                    <ComboBox x:Name="HiddenCourse_Picker" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="100,20,0,0" Height="25" MinWidth="150" SelectionChanged="HiddenCourse_Picker_SelectionChanged"></ComboBox>
+
+                    <WPFUtils:InputField x:Name="ID_HiddenCourse" Margin="20,80,0,0" Distance="80" LabelContent="ID:"/>
+                    <Label Content="Stunden" Height="25" VerticalContentAlignment="Center" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="20,120,0,0"/>
+                    <ListBox x:Name="PeriodsSelection_HiddenCourse" Margin="100,120,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" MinHeight="25" MaxHeight="50" Width="200"/>
+                    <Button Margin="320,120,0,0" Width="25" Height="25" Content="+" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" HorizontalAlignment="Left" VerticalAlignment="Top" x:Name="AddPeriod_HiddenCourse" Click="AddPeriod_HiddenCourse_Click"/>
+                    <Button Margin="365,120,0,0" Width="25" Height="25" Content="-" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" HorizontalAlignment="Left" VerticalAlignment="Top" x:Name="RemovePeriod_HiddenCourse" Click="RemovePeriod_HiddenCourse_Click"/>
+                    <Label HorizontalAlignment="Left" VerticalAlignment="Top" Content="Personen:" Margin="20,185,0,0" Height="25" x:Name="PeopleLabel_HiddenCourse"/>
+                    <ListBox HorizontalAlignment="Left" VerticalAlignment="Top" Width="150" x:Name="SelectedPeople_HiddenCourse" Margin="100,185,20,20" MinHeight="25" MaxHeight="100" VerticalContentAlignment="Center"></ListBox>
+                    <Button HorizontalAlignment="Left" VerticalAlignment="Top" Content="Verschieben" Padding="5" Margin="270,185,0,0" Width="90" Click="SwitchButtonP_Click"></Button>
+                    <Button HorizontalAlignment="Left" VerticalAlignment="Top" Content="Alle ergänzen" Padding="5" Margin="270,225,0,0" Width="90" Click="AddAll_Click"></Button>
+                    <Button HorizontalAlignment="Left" VerticalAlignment="Top" Content="Alle entfernen" Padding="5" Margin="270,265,0,0" Width="90" Click="RemoveAll_Click"></Button>
+                    <ListBox HorizontalAlignment="Left" VerticalAlignment="Top" Width="150" x:Name="NotSelectedPeople_HiddenCourse" Margin="380,185,20,20" MinHeight="25" MaxHeight="100" VerticalContentAlignment="Center"></ListBox>
+                    
+                    <Button Content="Löschen" HorizontalAlignment="Right" VerticalAlignment="Bottom" Padding="5" Margin="0,0,100,10" Click="DeleteHiddenCourse_Click"/>
+                    <Button Content="Speichern" HorizontalAlignment="Right" VerticalAlignment="Bottom" Padding="5" Margin="0,0,10,10" Click="SaveHiddenCourse_Click"/>
                 </Grid>
             </TabItem>
         </TabControl>

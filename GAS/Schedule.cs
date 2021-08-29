@@ -67,7 +67,7 @@ namespace GAS
             Schedule schedule1 = this.GetDeepCopy();
             Schedule schedule2 = (chromosome as Schedule).GetDeepCopy();
 
-            Course course1 = RandomExt.PickRoulette((from i in schedule1.Courses select (i, i.Issues() + ADDITION_CHOOSE_COURSE)).ToArray()).Item1;
+            Course course1 = RandomExt.PickRoulette((from i in schedule1.Courses select (i, i.HideCourse ? 0 : i.Issues() + ADDITION_CHOOSE_COURSE)).ToArray()).Item1;
             Course course2 = (from i in schedule2.Courses where i.ID == course1.ID select i).First();
 
             //Crossover mit den Teilnehmern:
@@ -211,7 +211,7 @@ namespace GAS
         {
             //Erstelle eine Zufallsvariable und wähle einen Kurs je nach Issues aus:
             Random random = new();
-            Course course = RandomExt.PickRoulette((from i in this.Courses select (i, i.Issues() + ADDITION_CHOOSE_COURSE)).ToArray()).Item1;
+            Course course = RandomExt.PickRoulette((from i in this.Courses select (i, i.HideCourse ? 0 : i.Issues() + ADDITION_CHOOSE_COURSE)).ToArray()).Item1;
 
             //Mutiere die Teilnehmer...
             if ((course.PartnerCourses.Length != 0 && random.NextDouble() < MUTATE_PARTICIPANTS && !course.FixParticipants) || (!course.FixParticipants && course.FixPeriods && course.PartnerCourses.Length != 0))
@@ -393,8 +393,9 @@ namespace GAS
                 {
                     courses[j] = i.Courses[j];
                 }
-                newTeachers[counter] = new Teacher(courses, i.ID);
+                newTeachers[counter] = new Teacher(courses, i.ID) { HideTeacher = i.HideTeacher };
                 newTeachers[counter].Name = i.Name;
+                newTeachers[counter].HideTeacher = i.HideTeacher;
                 counter++;
             }
 
@@ -432,6 +433,7 @@ namespace GAS
                 teacher.Courses = teacher.Courses.RemoveFromArray(this.Courses[i]);
                 teacher.Courses = teacher.Courses.AddToArray(newCourse);
                 newCourse.Teacher = teacher;
+                newCourse.HideCourse = this.Courses[i].HideCourse;
 
                 //Zuweisung:
                 newCourses[i] = newCourse;
@@ -501,7 +503,7 @@ namespace GAS
         public double GetScore()
         {
             //Berechne einen Durchschnitts Score:
-            return IEnumerableExt.Average(this.GetPeople(), p => p.GetScore());
+            return IEnumerableExt.GetAverage(this.GetPeople(), p => p.GetScore());
         }
 
         public class Exceptions

@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:GAS"
         mc:Ignorable="d"
-        Title="GAS - Stundenplan" Height="700" Width="1000">
+        Title="GAS - Stundenplan" Height="700" Width="1000" MinHeight="400" MinWidth="400">
     <TabControl Margin="5,5,5,5">
         <TabItem Header="Stundenplan" Width="100" Padding="3">
             <Grid x:Name="GridSchedules">

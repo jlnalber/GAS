@@ -27,12 +27,15 @@ namespace GAS
 
             foreach (GroupCourse i in this.MainWindow.GetCourses())
             {
-                ListBoxItem listBoxItem = new();
-                listBoxItem.Content = i.ID;
-                this.CoursesC.Add((i, listBoxItem));
-                listBoxItem.MouseDoubleClick += ListBoxItem_MouseDoubleClick;
-                listBoxItem.LostFocus += ListBoxItem_LostFocus;
-                this.NotSelectedCourses.Items.Add(listBoxItem);
+                if (!i.HideCourse)
+                {
+                    ListBoxItem listBoxItem = new();
+                    listBoxItem.Content = i.ID;
+                    this.CoursesC.Add((i, listBoxItem));
+                    listBoxItem.MouseDoubleClick += ListBoxItem_MouseDoubleClick;
+                    listBoxItem.LostFocus += ListBoxItem_LostFocus;
+                    this.NotSelectedCourses.Items.Add(listBoxItem);
+                }
             }
         }
 
