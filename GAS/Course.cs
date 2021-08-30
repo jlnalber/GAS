@@ -357,7 +357,7 @@ namespace GAS
         {
             //Erstelle eine zufällige Stunde:
             Random random = new();
-            Period period = new Random().Choices((from p in GetAllPeriods() select (p, 1.0 / forCourse.IssuesWith(p))).ToArray()).Item1;
+            Period period = new Random().Choices((from p in GetAllPeriods() select (p, 1.0 / (forCourse.IssuesWith(p) + 1.0))).ToArray()).Item1;
             Period bestPeriod = period;
 
             //Gehe solange durch, bis eine passende Stunde gefunden wurde.
@@ -390,7 +390,14 @@ namespace GAS
         {
             //Suche eine zufällige Stunde aus.
             Random random = new();
-            int index = random.Next(fromCourse.Periods.Length);
+            IEnumerable<(int, double)> periodsEnumerable()
+            {
+                for (int i = 0; i < fromCourse.Periods.Length; i++)
+                {
+                    yield return (i, 1.0 / (forCourse.IssuesWith(fromCourse.Periods[i]) + 1.0));
+                }
+            }
+            int index = new Random().Choices(periodsEnumerable().ToArray()).Item1;
             Period bestPeriod = fromCourse.Periods[index];
 
             //Gehe solange durch, bis eine passende Stunde gefunden wurde.
