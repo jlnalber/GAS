@@ -209,7 +209,6 @@ namespace GAS
                 this.SelectedPeople_HiddenCourse.Items.Clear();
                 this.NotSelectedPeople_HiddenCourse.Items.Clear();
                 this.PeriodsSelection_HiddenCourse.Items.Clear();
-                this.FixPeriods_Course.IsChecked = false;
             }
         }
 
